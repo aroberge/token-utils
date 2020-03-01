@@ -9,7 +9,7 @@ import tokenize as py_tokenize
 
 from io import StringIO
 
-__version__ = "0.0.9"
+__version__ = "0.0.10"
 _token_format = "type={type}  string={string}  start={start}  end={end}  line={line}"
 
 
