@@ -108,9 +108,6 @@ class Token:
         )
 
 
-Null = Token((-1, "", (0, 0), (0, 0), ""))
-
-
 def fix_empty_line(source, tokens):
     """Python's tokenizer drops entirely a last line if it consists only of
     space characters and/or tab characters.  To ensure that we can always have::
@@ -250,26 +247,6 @@ def get_last_index(tokens, exclude_comment=True):
         - 1
         - get_first_index(reversed(tokens), exclude_comment=exclude_comment)
     )
-
-
-def get_pairs(tokens):
-    """Given a list of tokens having at least two items, returns a list of
-    pairs of consecutive tokens, with the first pair consisting of a Null
-    token and the first token in the list.
-    Thus, given a list like ``[1, 2, 3]``, this function would return
-    ``[(Null, 1), (1, 2), (2, 3)]``.
-
-    Returns an empty list if the original list contains fewer than two items.
-    """
-    if len(tokens) < 2:
-        return []
-
-    first = tokens[0]
-    pairs = [(Null, first)]
-    for token in tokens[1:]:
-        pairs.append((first, token))
-        first = token
-    return pairs
 
 
 def dedent(tokens, nb):
