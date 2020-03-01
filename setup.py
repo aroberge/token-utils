@@ -1,6 +1,6 @@
 # pylint: skip-file
-from setuptools import setup, find_packages
-from ideas import __version__  # keep in sync
+from setuptools import setup
+from token_utils import __version__
 
 with open("README.md", encoding="utf8") as f:
     README = f.read()
@@ -22,6 +22,6 @@ setup(
     url="https://github.com/aroberge/token-utils",
     author="André Roberge",
     author_email="Andre.Roberge@gmail.com",
-    packages=find_packages(),
+    py_modules=["token_utils"],
     python_requires=">=3.6",
 )
