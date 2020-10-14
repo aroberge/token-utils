@@ -9,7 +9,7 @@ import tokenize as py_tokenize
 
 from io import StringIO
 
-__version__ = "0.0.10"
+__version__ = "0.1.0"
 _token_format = "type={type}  string={string}  start={start}  end={end}  line={line}"
 
 
@@ -39,7 +39,7 @@ class Token:
 
     def __eq__(self, other):
         """Compares a Token with another object; returns true if
-           self.string == other.string or if self.string == other.
+        self.string == other.string or if self.string == other.
         """
         if hasattr(other, "string"):
             return self.string == other.string
@@ -91,6 +91,10 @@ class Token:
             py_tokenize.ENDMARKER,
         )
 
+    def is_string(self):
+        """Returns True if the token is a string"""
+        return self.type == py_tokenize.STRING
+
     def __repr__(self):
         """Nicely formatted token to help with debugging session.
 
@@ -106,6 +110,21 @@ class Token:
             end=str(self.end),
             line=repr(self.line),
         )
+
+
+def find_token_by_position(tokens, row, column):
+    """Given a list of tokens, a specific row and column, the token
+    found at that position is returned as well as its list index.
+
+    If no such token can be found, ``None, None`` is returned.
+    """
+    for index, tok in enumerate(tokens):
+        if (
+            tok.start_row <= row <= tok.end_row
+            and tok.start_col <= column <= tok.end_col
+        ):
+            return tok, index
+    return None, None
 
 
 def fix_empty_line(source, tokens):
