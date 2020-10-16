@@ -9,7 +9,7 @@ import tokenize as py_tokenize
 
 from io import StringIO
 
-__version__ = "0.1.0"
+__version__ = "0.1.1"
 _token_format = "type={type}  string={string}  start={start}  end={end}  line={line}"
 
 
@@ -113,15 +113,16 @@ class Token:
 
 
 def find_token_by_position(tokens, row, column):
-    """Given a list of tokens, a specific row and column, the token
-    found at that position is returned as well as its list index.
+    """Given a list of tokens, a specific row (linenumber) and column,
+    a two-tuple is returned that includes the token
+    found at that position as well as its list index.
 
     If no such token can be found, ``None, None`` is returned.
     """
     for index, tok in enumerate(tokens):
         if (
             tok.start_row <= row <= tok.end_row
-            and tok.start_col <= column <= tok.end_col
+            and tok.start_col <= column < tok.end_col
         ):
             return tok, index
     return None, None
@@ -158,6 +159,29 @@ def tokenize(source):
 
     if source.endswith((" ", "\t")):
         fix_empty_line(source, tokens)
+
+    return tokens
+
+
+def get_significant_tokens(source):
+    """Gets a list of tokens from a source (str), ignoring comments
+    as well as any token whose string value is either null or
+    consists of spaces, newline or tab characters.
+
+    If an exception is raised by Python's tokenize module, the list of tokens
+    accumulated up to that point is returned.
+    """
+    tokens = []
+    try:
+        for tok in tokenize.generate_tokens(StringIO(source).readline):
+            token = Token(tok)
+            if not token.string.strip():
+                continue
+            if token.type == tokenize.COMMENT:
+                continue
+            tokens.append(token)
+    except tokenize.TokenError:
+        return tokens
 
     return tokens
 
