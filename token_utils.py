@@ -9,7 +9,7 @@ import tokenize as py_tokenize
 
 from io import StringIO
 
-__version__ = "0.1.1"
+__version__ = "0.1.4"
 _token_format = "type={type}  string={string}  start={start}  end={end}  line={line}"
 
 
@@ -173,14 +173,14 @@ def get_significant_tokens(source):
     """
     tokens = []
     try:
-        for tok in tokenize.generate_tokens(StringIO(source).readline):
+        for tok in py_tokenize.generate_tokens(StringIO(source).readline):
             token = Token(tok)
             if not token.string.strip():
                 continue
-            if token.type == tokenize.COMMENT:
+            if token.is_comment():
                 continue
             tokens.append(token)
-    except tokenize.TokenError:
+    except py_tokenize.TokenError:
         return tokens
 
     return tokens
