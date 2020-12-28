@@ -4,12 +4,13 @@
 A collection of useful functions and methods to deal with tokenizing
 source code.
 """
+import ast
 import keyword
 import tokenize as py_tokenize
 
 from io import StringIO
 
-__version__ = "0.1.4"
+__version__ = "0.1.5"
 _token_format = "type={type}  string={string}  start={start}  end={end}  line={line}"
 
 
@@ -50,6 +51,26 @@ class Token:
                 "A token can only be compared to another token or to a string."
             )
 
+    def __repr__(self):
+        """Nicely formatted token to help with debugging session.
+
+        Note that it does **not** print a string representation that could be
+        used to create a new ``Token`` instance, which is something you should
+        never need to do other than indirectly by using the functions
+        provided in this module.
+        """
+        return _token_format.format(
+            type="%s (%s)" % (self.type, py_tokenize.tok_name[self.type]),
+            string=repr(self.string),
+            start=str(self.start),
+            end=str(self.end),
+            line=repr(self.line),
+        )
+
+    def __str__(self):
+        """Returns the string attribute."""
+        return self.string
+
     def is_comment(self):
         """Returns True if the token is a comment."""
         return self.type == py_tokenize.COMMENT
@@ -63,9 +84,9 @@ class Token:
         """
         return self.string.isidentifier() and not self.is_keyword()
 
-    def is_integer(self):
-        """Returns True if the token represents an integer"""
-        return self.is_number() and self.string.isdigit()
+    def is_name(self):
+        """Returns ``True`` if the token is a type NAME"""
+        return self.type == py_tokenize.NAME
 
     def is_keyword(self):
         """Returns True if the token represents a Python keyword."""
@@ -74,6 +95,18 @@ class Token:
     def is_number(self):
         """Returns True if the token represents a number"""
         return self.type == py_tokenize.NUMBER
+
+    def is_float(self):
+        """Returns True if the token represents a float"""
+        return self.is_number() and isinstance(ast.literal_eval(self.string), float)
+
+    def is_integer(self):
+        """Returns True if the token represents an integer"""
+        return self.is_number() and isinstance(ast.literal_eval(self.string), int)
+
+    def is_complex(self):
+        """Returns True if the token represents a complex number"""
+        return self.is_number() and isinstance(ast.literal_eval(self.string), complex)
 
     def is_space(self):
         """Returns True if the token indicates a change in indentation,
@@ -95,21 +128,13 @@ class Token:
         """Returns True if the token is a string"""
         return self.type == py_tokenize.STRING
 
-    def __repr__(self):
-        """Nicely formatted token to help with debugging session.
+    def is_in(self, iterable):
+        """Returns True if the string attribute is found as an item of iterable."""
+        return self.string in iterable
 
-        Note that it does **not** print a string representation that could be
-        used to create a new ``Token`` instance, which is something you should
-        never need to do other than indirectly by using the functions
-        provided in this module.
-        """
-        return _token_format.format(
-            type="%s (%s)" % (self.type, py_tokenize.tok_name[self.type]),
-            string=repr(self.string),
-            start=str(self.start),
-            end=str(self.end),
-            line=repr(self.line),
-        )
+    def is_not_in(self, iterable):
+        """Returns True if the string attribute is found as an item of iterable."""
+        return self.string not in iterable
 
 
 def find_token_by_position(tokens, row, column):
@@ -145,8 +170,12 @@ def fix_empty_line(source, tokens):
     tokens[-1].string = source[-nb:]
 
 
-def tokenize(source):
-    """Transforms a source (string) into a list of Tokens."""
+def tokenize(source, warning=True):
+    """Transforms a source (string) into a list of Tokens.
+
+    If an exception is raised by Python's tokenize module, the list of tokens
+    accumulated up to that point is returned.
+    """
     tokens = []
 
     for tok in py_tokenize.generate_tokens(StringIO(source).readline):
@@ -154,8 +183,13 @@ def tokenize(source):
             token = Token(tok)
             tokens.append(token)
         except (py_tokenize.TokenError, Exception) as exc:
-            print("WARNING: the following error was raised in ", f"{__name__}.tokenize")
-            print(exc)
+            if warning:
+                print(
+                    "WARNING: the following error was raised in ",
+                    f"{__name__}.tokenize",
+                )
+                print(exc)
+            return tokens
 
     if source.endswith((" ", "\t")):
         fix_empty_line(source, tokens)
@@ -231,6 +265,38 @@ def get_number(tokens, exclude_comment=True):
         elif exclude_comment and token.is_comment():
             nb -= 1
     return nb
+
+
+def strip_comment(line):
+    """Removes comments from a line"""
+    tokens = []
+    try:
+        for tok in py_tokenize.generate_tokens(StringIO(line).readline):
+            token = Token(tok)
+            if token.is_comment():
+                continue
+            tokens.append(token)
+    except py_tokenize.TokenError:
+        pass
+    return untokenize(tokens)
+
+
+# TODO: add unit test for this
+def find_substring_index(main, substring):
+    """Somewhat similar to the find() method for strings,
+    this function determines if the tokens for substring appear
+    as a subsequence of the tokens for main. If so, the index
+    of the first token in returned, otherwise -1 is returned.
+    """
+    main_tokens = [tok.string for tok in get_significant_tokens(main)]
+    sub_tokens = [tok.string for tok in get_significant_tokens(substring)]
+    for index, token in enumerate(main_tokens):
+        if (
+            token == sub_tokens[0]
+            and main_tokens[index : index + len(sub_tokens)] == sub_tokens
+        ):
+            return index
+    return -1
 
 
 def get_first(tokens, exclude_comment=True):
@@ -388,5 +454,5 @@ def print_tokens(source):
 
     for lines in get_lines(source):
         for token in lines:
-            print(token)
+            print(repr(token))
         print()
