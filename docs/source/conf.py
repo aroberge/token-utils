@@ -58,7 +58,7 @@ master_doc = "index"
 
 # General information about the project.
 project = "token-utils"
-copyright = "2020, André Roberge"
+copyright = "2026, André Roberge"
 author = "André Roberge"
 
 # The version info for the project you're documenting, acts as replacement for

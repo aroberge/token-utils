@@ -1,0 +1,38 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "token-utils"
+dynamic = ["version"]
+description = 'Convenient tools to deal with tokens.'
+readme = "README.md"
+requires-python = ">=3.6"
+license = "MIT"
+keywords = []
+authors = [
+  { name = "André Roberge", email = "andre.roberge@gmail.com" },
+]
+classifiers = [
+  "Development Status :: 4 - Beta",
+  "Programming Language :: Python",
+  "Programming Language :: Python :: 3.6",
+  "Programming Language :: Python :: 3.7",
+  "Programming Language :: Python :: 3.8",
+  "Programming Language :: Python :: 3.9",
+  "Programming Language :: Python :: 3.10",
+  "Programming Language :: Python :: 3.11",
+  "Programming Language :: Python :: 3.12",
+  "Programming Language :: Python :: 3.13",
+  "Programming Language :: Python :: 3.14",
+  "Programming Language :: Python :: Implementation :: CPython",
+]
+
+[project.urls]
+Documentation = "https://aroberge.github.io/token-utils/docs/html/"
+Issues = "https://github.com/aroberge/token-utils/issues"
+Source = "https://github.com/aroberge/token-utils"
+
+[tool.hatch.version]
+path = "src/token_utils/__about__.py"
+

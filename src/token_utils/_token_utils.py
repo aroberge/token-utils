@@ -4,13 +4,12 @@
 A collection of useful functions and methods to deal with tokenizing
 source code.
 """
-import ast
-import keyword
+import ast as _ast
+import keyword as _keyword
 import tokenize as py_tokenize
 
-from io import StringIO
+from io import StringIO as _StringIO
 
-__version__ = "0.1.5"
 _token_format = "type={type}  string={string}  start={start}  end={end}  line={line}"
 
 
@@ -90,7 +89,7 @@ class Token:
 
     def is_keyword(self):
         """Returns True if the token represents a Python keyword."""
-        return keyword.iskeyword(self.string)
+        return _keyword.iskeyword(self.string)
 
     def is_number(self):
         """Returns True if the token represents a number"""
@@ -98,15 +97,15 @@ class Token:
 
     def is_float(self):
         """Returns True if the token represents a float"""
-        return self.is_number() and isinstance(ast.literal_eval(self.string), float)
+        return self.is_number() and isinstance(_ast.literal_eval(self.string), float)
 
     def is_integer(self):
         """Returns True if the token represents an integer"""
-        return self.is_number() and isinstance(ast.literal_eval(self.string), int)
+        return self.is_number() and isinstance(_ast.literal_eval(self.string), int)
 
     def is_complex(self):
         """Returns True if the token represents a complex number"""
-        return self.is_number() and isinstance(ast.literal_eval(self.string), complex)
+        return self.is_number() and isinstance(_ast.literal_eval(self.string), complex)
 
     def is_space(self):
         """Returns True if the token indicates a change in indentation,
@@ -178,7 +177,7 @@ def tokenize(source, warning=True):
     """
     tokens = []
 
-    for tok in py_tokenize.generate_tokens(StringIO(source).readline):
+    for tok in py_tokenize.generate_tokens(_StringIO(source).readline):
         try:
             token = Token(tok)
             tokens.append(token)
@@ -207,7 +206,7 @@ def get_significant_tokens(source):
     """
     tokens = []
     try:
-        for tok in py_tokenize.generate_tokens(StringIO(source).readline):
+        for tok in py_tokenize.generate_tokens(_StringIO(source).readline):
             token = Token(tok)
             if not token.string.strip():
                 continue
@@ -227,7 +226,7 @@ def get_lines(source):
     lines = []
     current_row = -1
     new_line = []
-    for tok in py_tokenize.generate_tokens(StringIO(source).readline):
+    for tok in py_tokenize.generate_tokens(_StringIO(source).readline):
         try:
             token = Token(tok)
             if token.start_row != current_row:
@@ -271,7 +270,7 @@ def strip_comment(line):
     """Removes comments from a line"""
     tokens = []
     try:
-        for tok in py_tokenize.generate_tokens(StringIO(line).readline):
+        for tok in py_tokenize.generate_tokens(_StringIO(line).readline):
             token = Token(tok)
             if token.is_comment():
                 continue
@@ -456,3 +455,14 @@ def print_tokens(source):
         for token in lines:
             print(repr(token))
         print()
+
+
+__all__ = ["__all__"]
+_names = dir()
+
+def _make_all():
+    for name in _names:
+        if not name.startswith("_") and not name.startswith("py"):
+            __all__.append(name)
+
+_make_all()
