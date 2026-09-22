@@ -153,7 +153,8 @@ def find_token_by_position(tokens, row, column):
 
 
 def fix_empty_line(source, tokens):
-    """Python's tokenizer drops entirely a last line if it consists only of
+    """Prior to version 3.12, 
+    Python's tokenizer drops entirely a last line if it consists only of
     space characters and/or tab characters.  To ensure that we can always have::
 
         untokenize(tokenize(source)) == source
@@ -190,8 +191,11 @@ def tokenize(source, warning=True):
                 print(exc)
             return tokens
 
+
+
     if source.endswith((" ", "\t")):
-        fix_empty_line(source, tokens)
+        if not tokens[-2].line.endswith((" ", "\t")):
+            fix_empty_line(source, tokens)
 
     return tokens
 
@@ -244,8 +248,12 @@ def get_lines(source):
 
     if new_line:
         lines.append(new_line)
+  
     if source.endswith((" ", "\t")):
-        fix_empty_line(source, lines[-1])
+        if len(lines) > 1:
+            penultimate_line = lines[-2]
+            if not penultimate_line[-1].line.endswith((" ", "\t")):
+                fix_empty_line(source, lines[-1])
     return lines
 
 

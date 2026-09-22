@@ -1,5 +1,6 @@
 # token-utils
 
+
 This project consists of a single module which is extracted from the
 [ideas](https://github.com/aroberge/ideas) package.
 Its purpose is to simplify manipulations of tokens from
@@ -15,4 +16,4 @@ source = "Arbitrary Python code here"
 assert source == untokenize(tokenize(source))
 ```
 
-See [ideas documentation](https://aroberge.github.io/ideas/docs/html/) for more information
+See [the documentation](https://aroberge.github.io/token-utils/docs/html/) for more information
