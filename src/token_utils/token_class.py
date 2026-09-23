@@ -2,7 +2,7 @@
 from ast import literal_eval as py_literal_eval
 from keyword import iskeyword as py_iskeyword
 
-import tokenize as py_tokenize
+from token_utils import py_tokenize
 
 _token_format = "type={type}  string={string}  start={start}  end={end}  line={line}"
 

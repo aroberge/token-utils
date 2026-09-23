@@ -4,7 +4,7 @@
 A collection of useful functions and methods to deal with tokenizing
 source code.
 """
-import tokenize as py_tokenize
+from token_utils import py_tokenize
 
 from io import StringIO as _StringIO
 
