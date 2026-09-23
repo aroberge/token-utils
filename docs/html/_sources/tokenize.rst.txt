@@ -83,5 +83,5 @@ Below is the API from the ``token_utils`` module.
 token_utils.py API extracted by Sphinx
 --------------------------------------
 
-.. automodule:: ideas.token_utils
+.. automodule:: token_utils
    :members:
