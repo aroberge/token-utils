@@ -74,6 +74,12 @@ N_TOKENS = 64
 # Special definitions for cooperation with parser
 NT_OFFSET = 256
 
+# Special values for token_utils
+
+BAD_DEDENT = -8
+UNCLOSED_STRING = -9
+
+
 tok_name = {value: name
             for name, value in globals().items()
             if isinstance(value, int) and not name.startswith('_')}

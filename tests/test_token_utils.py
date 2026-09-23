@@ -87,6 +87,17 @@ def test_last_line_empty():
     check_lines(source)
     check_lines(source2)
 
+def test_bad_dedent():
+    """Instead of raising and IndentationError, we should have a special
+    token inserted, allowing us to reconstruct the source."""
+    source = """
+    def test():
+        a = b
+       c = d
+        e = f
+    """
+    check(source)
+
 
 source1 = "a = b"
 source2 = "a = b # comment\n"

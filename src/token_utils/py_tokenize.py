@@ -1,7 +1,12 @@
-"""This has been adapted from Python 3.11 tokenize.py
+"""Tokenization help for Python programs.
 
+This has been adapted from Python 3.11 tokenize.py
+It has been mostly copied almost exactly except that anything
+about "untokenizing" has been removed as we rely on our
+own version.
 
-Tokenization help for Python programs.
+Anything in this module should NOT be called directly;
+rather, function from token_utils should be used.
 
 tokenize(readline) is a generator that breaks a stream of bytes into
 Python tokens.  It decodes the bytes according to PEP-0263 for
@@ -388,9 +393,8 @@ def _tokenize(readline, encoding):
                 yield TokenInfo(INDENT, line[:pos], (lnum, 0), (lnum, pos), line)
             while column < indents[-1]:
                 if column not in indents:
-                    raise IndentationError(
-                        "unindent does not match any outer indentation level",
-                        ("<tokenize>", lnum, pos, line))
+                    yield TokenInfo(BAD_DEDENT, line[:pos], (lnum, 0), (lnum, pos), line)
+                    break
                 indents = indents[:-1]
 
                 yield TokenInfo(DEDENT, '', (lnum, pos), (lnum, pos), line)
