@@ -1,10 +1,10 @@
-
 from ast import literal_eval as py_literal_eval
 from keyword import iskeyword as py_iskeyword
 
 from token_utils import py_tokenize
 
 _token_format = "type={type}  string={string}  start={start}  end={end}  line={line}"
+
 
 class Token:
     """Token as generated from Python's tokenize.generate_tokens written here in
@@ -127,4 +127,3 @@ class Token:
     def is_not_in(self, iterable):
         """Returns True if the string attribute is found as an item of iterable."""
         return self.string not in iterable
-

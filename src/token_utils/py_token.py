@@ -3,7 +3,7 @@
 Adapted from Python 3.11 token.py
 """
 
-__all__ = ['tok_name', 'ISTERMINAL', 'ISNONTERMINAL', 'ISEOF', 'EXACT_TOKEN_TYPES']
+__all__ = ["tok_name", "ISTERMINAL", "ISNONTERMINAL", "ISEOF", "EXACT_TOKEN_TYPES"]
 
 ENDMARKER = 0
 NAME = 1
@@ -80,66 +80,71 @@ BAD_DEDENT = -8
 UNCLOSED_STRING = -9
 
 
-tok_name = {value: name
-            for name, value in globals().items()
-            if isinstance(value, int) and not name.startswith('_')}
+tok_name = {
+    value: name
+    for name, value in globals().items()
+    if isinstance(value, int) and not name.startswith("_")
+}
 __all__.extend(tok_name.values())
 
 EXACT_TOKEN_TYPES = {
-    '!=': NOTEQUAL,
-    '%': PERCENT,
-    '%=': PERCENTEQUAL,
-    '&': AMPER,
-    '&=': AMPEREQUAL,
-    '(': LPAR,
-    ')': RPAR,
-    '*': STAR,
-    '**': DOUBLESTAR,
-    '**=': DOUBLESTAREQUAL,
-    '*=': STAREQUAL,
-    '+': PLUS,
-    '+=': PLUSEQUAL,
-    ',': COMMA,
-    '-': MINUS,
-    '-=': MINEQUAL,
-    '->': RARROW,
-    '.': DOT,
-    '...': ELLIPSIS,
-    '/': SLASH,
-    '//': DOUBLESLASH,
-    '//=': DOUBLESLASHEQUAL,
-    '/=': SLASHEQUAL,
-    ':': COLON,
-    ':=': COLONEQUAL,
-    ';': SEMI,
-    '<': LESS,
-    '<<': LEFTSHIFT,
-    '<<=': LEFTSHIFTEQUAL,
-    '<=': LESSEQUAL,
-    '=': EQUAL,
-    '==': EQEQUAL,
-    '>': GREATER,
-    '>=': GREATEREQUAL,
-    '>>': RIGHTSHIFT,
-    '>>=': RIGHTSHIFTEQUAL,
-    '@': AT,
-    '@=': ATEQUAL,
-    '[': LSQB,
-    ']': RSQB,
-    '^': CIRCUMFLEX,
-    '^=': CIRCUMFLEXEQUAL,
-    '{': LBRACE,
-    '|': VBAR,
-    '|=': VBAREQUAL,
-    '}': RBRACE,
-    '~': TILDE,
+    "!=": NOTEQUAL,
+    "%": PERCENT,
+    "%=": PERCENTEQUAL,
+    "&": AMPER,
+    "&=": AMPEREQUAL,
+    "(": LPAR,
+    ")": RPAR,
+    "*": STAR,
+    "**": DOUBLESTAR,
+    "**=": DOUBLESTAREQUAL,
+    "*=": STAREQUAL,
+    "+": PLUS,
+    "+=": PLUSEQUAL,
+    ",": COMMA,
+    "-": MINUS,
+    "-=": MINEQUAL,
+    "->": RARROW,
+    ".": DOT,
+    "...": ELLIPSIS,
+    "/": SLASH,
+    "//": DOUBLESLASH,
+    "//=": DOUBLESLASHEQUAL,
+    "/=": SLASHEQUAL,
+    ":": COLON,
+    ":=": COLONEQUAL,
+    ";": SEMI,
+    "<": LESS,
+    "<<": LEFTSHIFT,
+    "<<=": LEFTSHIFTEQUAL,
+    "<=": LESSEQUAL,
+    "=": EQUAL,
+    "==": EQEQUAL,
+    ">": GREATER,
+    ">=": GREATEREQUAL,
+    ">>": RIGHTSHIFT,
+    ">>=": RIGHTSHIFTEQUAL,
+    "@": AT,
+    "@=": ATEQUAL,
+    "[": LSQB,
+    "]": RSQB,
+    "^": CIRCUMFLEX,
+    "^=": CIRCUMFLEXEQUAL,
+    "{": LBRACE,
+    "|": VBAR,
+    "|=": VBAREQUAL,
+    "}": RBRACE,
+    "~": TILDE,
 }
+
 
 def ISTERMINAL(x):
     return x < NT_OFFSET
 
+
 def ISNONTERMINAL(x):
     return x >= NT_OFFSET
+
 
 def ISEOF(x):
     return x == ENDMARKER

@@ -4,6 +4,7 @@
 A collection of useful functions and methods to deal with tokenizing
 source code.
 """
+
 from token_utils import py_tokenize
 
 from io import StringIO as _StringIO
@@ -28,9 +29,9 @@ def find_token_by_position(tokens, row, column):
 
 
 def fix_empty_line(source, tokens):
-    """Prior to version 3.12,  Python's tokenizer drops entirely a last line 
+    """Prior to version 3.12,  Python's tokenizer drops entirely a last line
     if it consists only of space characters and/or tab characters.
-    
+
     To ensure that we can always have::
 
         untokenize(tokenize(source)) == source
@@ -122,7 +123,7 @@ def get_lines(source):
 
     if new_line:
         lines.append(new_line)
-  
+
     if source.endswith((" ", "\t")):
         if len(lines) > 1:
             penultimate_line = lines[-2]
@@ -342,9 +343,11 @@ def print_tokens(source):
 __all__ = ["__all__"]
 _names = dir()
 
+
 def _make_all():
     for name in _names:
         if not name.startswith("_") and not name.startswith("py"):
             __all__.append(name)
+
 
 _make_all()
