@@ -20,8 +20,7 @@ def check_lines(source):
 
 
 def test_untokenize():
-    check(
-        '''
+    check('''
 
 def zap():
 
@@ -33,38 +32,31 @@ def zap():
     x \t= \t\t  \t 1
 
 
-'''
-    )
+''')
 
 
 def test_untokenize_with_tab_indentation():
-    check(
-        """
+    check("""
 if True:
 \tdef zap():
 \t\tx \t= \t\t  \t 1
-"""
-    )
+""")
 
 
 def test_untokenize_with_backslash_in_comment():
-    check(
-        r'''
+    check(r'''
 def foo():
     """Hello foo."""
     def zap(): bar(1) # \
-'''
-    )
+''')
 
 
 def test_untokenize_with_escaped_newline():
-    check(
-        r'''def foo():
+    check(r'''def foo():
     """Hello foo."""
     x = \
             1
-'''
-    )
+''')
 
 
 def test_cpython_bug_35107():
@@ -86,6 +78,7 @@ def test_last_line_empty():
 
     check_lines(source)
     check_lines(source2)
+
 
 def test_bad_dedent():
     """Instead of raising and IndentationError, we should have a special
@@ -147,3 +140,83 @@ def test_self():
     with open(__file__, "r") as f:
         source = f.read()
     check(source)
+
+
+# Many of the following tests are trivial but they are there in
+# case we make a typo when changing code
+
+
+def test_is_comment():
+    tokens = token_utils.tokenize("a # comment")
+    assert not tokens[0].is_comment()
+    assert tokens[0] == "a"
+    assert tokens[1].is_comment()
+    assert tokens[1] == "# comment"
+
+
+def test_is_complex():
+    tokens = token_utils.tokenize("1.0 + 2.0j - 1")
+    assert tokens[0] == "1.0"
+    assert not tokens[0].is_complex()
+    assert tokens[2] == "2.0j"
+    assert tokens[2].is_complex()
+    assert tokens[4] == "1"
+    assert not tokens[4].is_complex()
+
+
+def test_is_float():
+    tokens = token_utils.tokenize("1.0 + 2.0j - 1")
+    assert tokens[0] == "1.0"
+    assert tokens[0].is_float()
+    assert tokens[2] == "2.0j"
+    assert not tokens[2].is_float()
+    assert tokens[4] == "1"
+    assert not tokens[4].is_float()
+
+
+def test_is_identifier():
+    tokens = token_utils.tokenize("def test")
+    assert tokens[0] == "def"
+    assert not tokens[0].is_identifier()
+    assert tokens[1] == "test"
+    assert tokens[1].is_identifier()
+
+
+def test_is_integer():
+    tokens = token_utils.tokenize("1.0 + 2.0j - 1")
+    assert tokens[0] == "1.0"
+    assert not tokens[0].is_integer()
+    assert tokens[2] == "2.0j"
+    assert not tokens[2].is_integer()
+    assert tokens[4] == "1"
+    assert tokens[4].is_integer()
+
+
+def test_is_keyword():
+    tokens = token_utils.tokenize("def test")
+    assert tokens[0] == "def"
+    assert tokens[0].is_keyword()
+    assert tokens[1] == "test"
+    assert not tokens[1].is_keyword()
+
+
+def test_is_name():
+    tokens = token_utils.tokenize("def test")
+    assert tokens[0] == "def"
+    assert tokens[0].is_name()
+    assert tokens[1] == "test"
+    assert tokens[1].is_name()
+
+
+def test_is_number():
+    tokens = token_utils.tokenize("1.0 + 2.0j - 1 + 0o123 + 0x1A")
+    assert tokens[0] == "1.0"
+    assert tokens[0].is_number()
+    assert tokens[2] == "2.0j"
+    assert tokens[2].is_number()
+    assert tokens[4] == "1"
+    assert tokens[4].is_number()
+    assert tokens[6] == "0o123"
+    assert tokens[6].is_number()
+    assert tokens[8] == "0x1A"
+    assert tokens[8].is_number()
