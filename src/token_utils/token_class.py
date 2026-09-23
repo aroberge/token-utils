@@ -67,6 +67,14 @@ class Token:
         """Returns True if the token is a comment."""
         return self.type == py_tokenize.COMMENT
 
+    def is_complex(self):
+        """Returns True if the token represents a complex number"""
+        return self.is_number() and isinstance(py_literal_eval(self.string), complex)
+
+    def is_float(self):
+        """Returns True if the token represents a float"""
+        return self.is_number() and isinstance(py_literal_eval(self.string), float)
+
     def is_identifier(self):
         """Returns ``True`` if the token represents a valid Python identifier
         excluding Python keywords.
@@ -76,36 +84,28 @@ class Token:
         """
         return self.string.isidentifier() and not self.is_keyword()
 
-    def is_name(self):
-        """Returns ``True`` if the token is a type NAME"""
-        return self.type == py_tokenize.NAME
+    def is_integer(self):
+        """Returns True if the token represents an integer"""
+        return self.is_number() and isinstance(py_literal_eval(self.string), int)
 
     def is_keyword(self):
         """Returns True if the token represents a Python keyword."""
         return py_iskeyword(self.string)
 
+    def is_name(self):
+        """Returns ``True`` if the token is a type NAME"""
+        return self.type == py_tokenize.NAME
+
     def is_number(self):
         """Returns True if the token represents a number"""
         return self.type == py_tokenize.NUMBER
-
-    def is_float(self):
-        """Returns True if the token represents a float"""
-        return self.is_number() and isinstance(py_literal_eval(self.string), float)
-
-    def is_integer(self):
-        """Returns True if the token represents an integer"""
-        return self.is_number() and isinstance(py_literal_eval(self.string), int)
-
-    def is_complex(self):
-        """Returns True if the token represents a complex number"""
-        return self.is_number() and isinstance(py_literal_eval(self.string), complex)
 
     def is_space(self):
         """Returns True if the token indicates a change in indentation,
         the end of a line, or the end of the source
         (``INDENT``, ``DEDENT``, ``NEWLINE``, ``NL``, and ``ENDMARKER``).
 
-        Note that spaces, including tab charcters ``\\t``, between tokens
+        Note that spaces, including tab characters ``\\t``, between tokens
         on a given line are not considered to be tokens themselves.
         """
         return self.type in (
@@ -119,11 +119,3 @@ class Token:
     def is_string(self):
         """Returns True if the token is a string"""
         return self.type == py_tokenize.STRING
-
-    def is_in(self, iterable):
-        """Returns True if the string attribute is found as an item of iterable."""
-        return self.string in iterable
-
-    def is_not_in(self, iterable):
-        """Returns True if the string attribute is found as an item of iterable."""
-        return self.string not in iterable
