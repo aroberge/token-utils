@@ -190,10 +190,6 @@ class TokenError(Exception):
     pass
 
 
-class StopTokenizing(Exception):
-    pass
-
-
 def _get_normal_name(orig_enc):
     """Imitates get_normal_name in tokenizer.c."""
     # Only care about the first 12 characters.

@@ -1,5 +1,7 @@
 # token-utils
 
+Installation: `pip install token-utils`.
+
 The purpose of token-utils is to simplify manipulations of tokens normally
 obtaind from Python's [tokenize module](https://docs.python.org/3/library/tokenize.html).
 One of token-utils' features is that, unlike Python's version, the following

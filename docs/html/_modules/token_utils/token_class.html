@@ -1,0 +1,268 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>token_utils.token_class &mdash; token-utils 0.2.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=03e43079" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=9edc463e" />
+      <link rel="stylesheet" type="text/css" href="../../_static/custom.css?v=c7e4a82f" />
+
+  
+      <script src="../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../_static/documentation_options.js?v=938c9ccc"></script>
+      <script src="../../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../index.html" class="icon icon-home">
+            token-utils
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../about_tokens.html"> About tokens and token-utils</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../api.html"> API</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Appendix</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../history.html">Origin and history of token-utils</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tokenize_notebook.html">Tokenizing notebook</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">token-utils</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content style-external-links">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">token_utils.token_class</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for token_utils.token_class</h1><div class="highlight"><pre>
+<span></span><span class="kn">from</span><span class="w"> </span><span class="nn">ast</span><span class="w"> </span><span class="kn">import</span> <span class="n">literal_eval</span> <span class="k">as</span> <span class="n">py_literal_eval</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">keyword</span><span class="w"> </span><span class="kn">import</span> <span class="n">iskeyword</span> <span class="k">as</span> <span class="n">py_iskeyword</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">token_utils</span><span class="w"> </span><span class="kn">import</span> <span class="n">py_tokenize</span>
+
+<span class="n">_token_format</span> <span class="o">=</span> <span class="s2">"type=</span><span class="si">{type}</span><span class="s2">  string=</span><span class="si">{string}</span><span class="s2">  start=</span><span class="si">{start}</span><span class="s2">  end=</span><span class="si">{end}</span><span class="s2">  line=</span><span class="si">{line}</span><span class="s2">"</span>
+
+
+<div class="viewcode-block" id="Token">
+<a class="viewcode-back" href="../../api.html#token_utils.Token">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">Token</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">"""Token as generated from Python's tokenize.generate_tokens written here in</span>
+<span class="sd">    a more convenient form, and with some custom methods.</span>
+
+<span class="sd">    The various parameters are::</span>
+
+<span class="sd">        type: token type</span>
+<span class="sd">        string: the token written as a string</span>
+<span class="sd">        start = (start_row, start_col)</span>
+<span class="sd">        end = (end_row, end_col)</span>
+<span class="sd">        line: entire line of code where the token is found.</span>
+
+<span class="sd">    Token instances are mutable objects. Therefore, given a list of tokens,</span>
+<span class="sd">    we can change the value of any token's attribute, untokenize the list and</span>
+<span class="sd">    automatically obtain a transformed source.</span>
+<span class="sd">    """</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">token</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">type</span> <span class="o">=</span> <span class="n">token</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">string</span> <span class="o">=</span> <span class="n">token</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">start</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">start_row</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">start_col</span> <span class="o">=</span> <span class="n">token</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">end</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">end_row</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">end_col</span> <span class="o">=</span> <span class="n">token</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">line</span> <span class="o">=</span> <span class="n">token</span><span class="p">[</span><span class="mi">4</span><span class="p">]</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__eq__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">"""Compares a Token with another object; returns true if</span>
+<span class="sd">        self.string == other.string or if self.string == other.</span>
+<span class="sd">        """</span>
+        <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">other</span><span class="p">,</span> <span class="s2">"string"</span><span class="p">):</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">string</span> <span class="o">==</span> <span class="n">other</span><span class="o">.</span><span class="n">string</span>
+        <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">other</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">string</span> <span class="o">==</span> <span class="n">other</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span>
+                <span class="s2">"A token can only be compared to another token or to a string."</span>
+            <span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">"""Nicely formatted token to help with debugging session.</span>
+
+<span class="sd">        Note that it does **not** print a string representation that could be</span>
+<span class="sd">        used to create a new ``Token`` instance, which is something you should</span>
+<span class="sd">        never need to do other than indirectly by using the functions</span>
+<span class="sd">        provided in this module.</span>
+<span class="sd">        """</span>
+        <span class="k">return</span> <span class="n">_token_format</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+            <span class="nb">type</span><span class="o">=</span><span class="s2">"</span><span class="si">%s</span><span class="s2"> (</span><span class="si">%s</span><span class="s2">)"</span> <span class="o">%</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">type</span><span class="p">,</span> <span class="n">py_tokenize</span><span class="o">.</span><span class="n">tok_name</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">type</span><span class="p">]),</span>
+            <span class="n">string</span><span class="o">=</span><span class="nb">repr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">string</span><span class="p">),</span>
+            <span class="n">start</span><span class="o">=</span><span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">start</span><span class="p">),</span>
+            <span class="n">end</span><span class="o">=</span><span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">end</span><span class="p">),</span>
+            <span class="n">line</span><span class="o">=</span><span class="nb">repr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">line</span><span class="p">),</span>
+        <span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">"""Returns the string attribute."""</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">string</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__contains__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">str_arg</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">"""Returns True if the string argument is a substring of the token string attribute"""</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">str_arg</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+            <span class="k">return</span> <span class="kc">False</span>
+        <span class="k">return</span> <span class="n">str_arg</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">string</span>
+
+<div class="viewcode-block" id="Token.is_comment">
+<a class="viewcode-back" href="../../api.html#token_utils.Token.is_comment">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">is_comment</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">"""Returns True if the token is a comment."""</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">type</span> <span class="o">==</span> <span class="n">py_tokenize</span><span class="o">.</span><span class="n">COMMENT</span></div>
+
+
+<div class="viewcode-block" id="Token.is_complex">
+<a class="viewcode-back" href="../../api.html#token_utils.Token.is_complex">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">is_complex</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">"""Returns True if the token represents a complex number"""</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">is_number</span><span class="p">()</span> <span class="ow">and</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">py_literal_eval</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">string</span><span class="p">),</span> <span class="nb">complex</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="Token.is_float">
+<a class="viewcode-back" href="../../api.html#token_utils.Token.is_float">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">is_float</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">"""Returns True if the token represents a float"""</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">is_number</span><span class="p">()</span> <span class="ow">and</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">py_literal_eval</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">string</span><span class="p">),</span> <span class="nb">float</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="Token.is_identifier">
+<a class="viewcode-back" href="../../api.html#token_utils.Token.is_identifier">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">is_identifier</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">"""Returns ``True`` if the token represents a valid Python identifier</span>
+<span class="sd">        excluding Python keywords.</span>
+
+<span class="sd">        Note: this is different from Python's string method ``isidentifier``</span>
+<span class="sd">        which also returns ``True`` if the string is a keyword.</span>
+<span class="sd">        """</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">string</span><span class="o">.</span><span class="n">isidentifier</span><span class="p">()</span> <span class="ow">and</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">is_keyword</span><span class="p">()</span></div>
+
+
+<div class="viewcode-block" id="Token.is_integer">
+<a class="viewcode-back" href="../../api.html#token_utils.Token.is_integer">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">is_integer</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">"""Returns True if the token represents an integer"""</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">is_number</span><span class="p">()</span> <span class="ow">and</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">py_literal_eval</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">string</span><span class="p">),</span> <span class="nb">int</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="Token.is_keyword">
+<a class="viewcode-back" href="../../api.html#token_utils.Token.is_keyword">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">is_keyword</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">"""Returns True if the token represents a Python keyword."""</span>
+        <span class="k">return</span> <span class="n">py_iskeyword</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">string</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="Token.is_name">
+<a class="viewcode-back" href="../../api.html#token_utils.Token.is_name">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">is_name</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">"""Returns ``True`` if the token is a type NAME"""</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">type</span> <span class="o">==</span> <span class="n">py_tokenize</span><span class="o">.</span><span class="n">NAME</span></div>
+
+
+<div class="viewcode-block" id="Token.is_number">
+<a class="viewcode-back" href="../../api.html#token_utils.Token.is_number">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">is_number</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">"""Returns True if the token represents a number"""</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">type</span> <span class="o">==</span> <span class="n">py_tokenize</span><span class="o">.</span><span class="n">NUMBER</span></div>
+
+
+<div class="viewcode-block" id="Token.is_space">
+<a class="viewcode-back" href="../../api.html#token_utils.Token.is_space">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">is_space</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">"""Returns True if the token indicates a change in indentation,</span>
+<span class="sd">        the end of a line, or the end of the source</span>
+<span class="sd">        (``INDENT``, ``DEDENT``, ``NEWLINE``, ``NL``, and ``ENDMARKER``).</span>
+
+<span class="sd">        Note that spaces, including tab characters ``\\t``, between tokens</span>
+<span class="sd">        on a given line are not considered to be tokens themselves.</span>
+<span class="sd">        """</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">type</span> <span class="ow">in</span> <span class="p">(</span>
+            <span class="n">py_tokenize</span><span class="o">.</span><span class="n">INDENT</span><span class="p">,</span>
+            <span class="n">py_tokenize</span><span class="o">.</span><span class="n">DEDENT</span><span class="p">,</span>
+            <span class="n">py_tokenize</span><span class="o">.</span><span class="n">NEWLINE</span><span class="p">,</span>
+            <span class="n">py_tokenize</span><span class="o">.</span><span class="n">NL</span><span class="p">,</span>
+            <span class="n">py_tokenize</span><span class="o">.</span><span class="n">ENDMARKER</span><span class="p">,</span>
+        <span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="Token.is_string">
+<a class="viewcode-back" href="../../api.html#token_utils.Token.is_string">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">is_string</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">"""Returns True if the token is a string"""</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">type</span> <span class="o">==</span> <span class="n">py_tokenize</span><span class="o">.</span><span class="n">STRING</span></div>
+</div>
+
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2026, André Roberge.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
