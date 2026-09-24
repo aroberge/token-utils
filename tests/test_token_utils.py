@@ -146,6 +146,12 @@ def test_self():
 # case we make a typo when changing code
 
 
+def test_contains():
+    token = token_utils.tokenize("'Hello World!'")[0]
+    assert token == "'Hello World!'"  # token define equality this way
+    assert "Hello" in token
+
+
 def test_is_comment():
     tokens = token_utils.tokenize("a # comment")
     assert not tokens[0].is_comment()

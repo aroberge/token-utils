@@ -63,6 +63,12 @@ class Token:
         """Returns the string attribute."""
         return self.string
 
+    def __contains__(self, str_arg):
+        """Returns True if the string argument is a substring of the token string attribute"""
+        if not isinstance(str_arg, str):
+            return False
+        return str_arg in self.string
+
     def is_comment(self):
         """Returns True if the token is a comment."""
         return self.type == py_tokenize.COMMENT
