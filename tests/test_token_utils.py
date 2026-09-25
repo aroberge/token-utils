@@ -152,6 +152,16 @@ def test_contains():
     assert "Hello" in token
 
 
+def test_len():
+    tokens = token_utils.tokenize("name = 'Albert'")
+    assert tokens[0] == "name"
+    assert len(tokens[0]) == 4
+    assert tokens[1] == "="
+    assert len(tokens[1]) == 1
+    assert tokens[2] == "'Albert'"
+    assert len(tokens[2]) == 8
+
+
 def test_is_comment():
     tokens = token_utils.tokenize("a # comment")
     assert not tokens[0].is_comment()

@@ -24,6 +24,7 @@ class Token:
     """
 
     def __init__(self, token):
+        """Initializes using a token produced by Python's tokenize function as input."""
         self.type = token[0]
         self.string = token[1]
         self.start = self.start_row, self.start_col = token[2]
@@ -69,16 +70,20 @@ class Token:
             return False
         return str_arg in self.string
 
+    def __len__(self):
+        """Returns the length of the string attribute"""
+        return len(self.string)
+
     def is_comment(self):
         """Returns True if the token is a comment."""
         return self.type == py_tokenize.COMMENT
 
     def is_complex(self):
-        """Returns True if the token represents a complex number"""
+        """Returns True if the token represents a complex number.cavie"""
         return self.is_number() and isinstance(py_literal_eval(self.string), complex)
 
     def is_float(self):
-        """Returns True if the token represents a float"""
+        """Returns True if the token represents a float."""
         return self.is_number() and isinstance(py_literal_eval(self.string), float)
 
     def is_identifier(self):
@@ -103,7 +108,7 @@ class Token:
         return self.type == py_tokenize.NAME
 
     def is_number(self):
-        """Returns True if the token represents a number"""
+        """Returns True if the token represents a number."""
         return self.type == py_tokenize.NUMBER
 
     def is_space(self):
@@ -123,5 +128,5 @@ class Token:
         )
 
     def is_string(self):
-        """Returns True if the token is a string"""
+        """Returns True if the token represents a string"""
         return self.type == py_tokenize.STRING
