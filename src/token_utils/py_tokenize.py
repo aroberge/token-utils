@@ -351,6 +351,7 @@ def _tokenize(readline, encoding):
         yield TokenInfo(ENCODING, encoding, (0, 0), (0, 0), "")
     last_line = b""
     line = b""
+    unterminated_triple = False
     while True:  # loop over lines in stream
         try:
             # We capture the value of the line variable here because
@@ -371,6 +372,7 @@ def _tokenize(readline, encoding):
             if not line:
                 end = len(contline.split("\n")[-1])
                 print("ERROR: Unterminated triple quoted string.")
+                unterminated_triple = True
                 yield TokenInfo(
                     UNCLOSED_STRING_TRIPLE, contstr, strstart, (lnum, end), contline
                 )
@@ -459,6 +461,7 @@ def _tokenize(readline, encoding):
             if not line:
                 end = len(contline.split("\n")[-1])
                 print("ERROR: Unterminated triple quoted string.")
+                unterminated_triple = True
                 yield TokenInfo(
                     UNCLOSED_STRING_TRIPLE, contstr, strstart, (lnum, end), contline
                 )
@@ -563,21 +566,23 @@ def _tokenize(readline, encoding):
                 pos += 1
 
     # Add an implicit NEWLINE if the input doesn't end in one
-    if (
-        last_line
-        and last_line[-1] not in "\r\n"
-        and not last_line.strip().startswith("#")
-    ):
-        yield TokenInfo(
-            NEWLINE,
-            last_line,
-            (lnum - 1, len(last_line)),
-            (lnum - 1, len(last_line) + 1),
-            last_line,
-        )
-    for indent in indents[1:]:  # pop remaining indent levels
-        yield TokenInfo(DEDENT, "", (lnum, 0), (lnum, 0), "")
-    yield TokenInfo(ENDMARKER, "", (lnum, 0), (lnum, 0), "")
+    if not unterminated_triple:
+        if (
+            last_line
+            and last_line[-1] not in "\r\n"
+            and not last_line.strip().startswith("#")
+        ):
+            yield TokenInfo(
+                NEWLINE,
+                last_line,
+                (lnum - 1, len(last_line)),
+                (lnum - 1, len(last_line) + 1),
+                last_line,
+            )
+        # print(f"{last_line=}")
+        # for indent in indents[1:]:  # pop remaining indent levels
+        #     yield TokenInfo(DEDENT, "", (lnum, 0), (lnum, 0), "")
+        yield TokenInfo(ENDMARKER, "", (lnum, 0), (lnum, 0), "")
 
 
 def generate_tokens(readline):

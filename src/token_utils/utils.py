@@ -28,9 +28,10 @@ def find_token_by_position(tokens, row, column):
     return None, None
 
 
-def fix_empty_line(source, last_token):
-    """Prior to version 3.12,  Python's tokenizer drops entirely a last line
-    if it consists only of space characters and/or tab characters.
+def fix_empty_line(source, prev_token, last_token):
+    """Our tokenizer is based on Python's 3.11 tokenizer
+    which drops entirely a last line if it consists only of
+    space characters and/or tab characters.
 
     To ensure that we can always have::
 
@@ -38,6 +39,11 @@ def fix_empty_line(source, last_token):
 
     we correct the last token content if needed.
     """
+    if prev_token is None:  # should not happen
+        return last_token
+    if prev_token.line.endswith((" ", "\t")):  # fix not needed
+        return last_token
+
     nb = 0
     for char in reversed(source):
         if char in (" ", "\t"):
@@ -45,6 +51,7 @@ def fix_empty_line(source, last_token):
         else:
             break
     last_token.string = source[-nb:]
+    assert nb > 0
     return last_token
 
 
@@ -56,18 +63,20 @@ def tokenize(source, warning=True):
 
 def generate_tokens(source):
     """Tokenize a source (string) yielding tokens one at a time."""
+    # Unfortunately, there is still a bug in py_tokenize._tokenize
+    # that drops entirely a last line
+    # if it consists only of space characters and/or tab characters.
+    # So, we keep watch for the last token (ENDMARKER) and
+    # apply a fix if needed.
     prev_token = None
+    fix_needed = source.endswith((" ", "\t"))
     try:
         for tok in py_tokenize.generate_tokens(_StringIO(source).readline):
             token = Token(tok)
-            if token.type != py_tokenize.ENDMARKER:
+            if token.type != py_tokenize.ENDMARKER or not fix_needed:
                 yield token
-            elif not source.endswith((" ", "\t")):
-                yield token
-            elif prev_token is not None and not prev_token.line.endswith((" ", "\t")):
-                yield fix_empty_line(source, token)
             else:
-                yield token
+                yield fix_empty_line(source, prev_token, token)
             prev_token = token
     except Exception as exc:
         print(
@@ -131,7 +140,7 @@ def get_lines(source):
         if len(lines) > 1:
             penultimate_line = lines[-2]
             if not penultimate_line[-1].line.endswith((" ", "\t")):
-                fix_empty_line(source, lines[-1][-1])
+                fix_empty_line(source, penultimate_line[-1], lines[-1][-1])
     return lines
 
 
