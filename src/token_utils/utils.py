@@ -28,7 +28,7 @@ def find_token_by_position(tokens, row, column):
     return None, None
 
 
-def fix_empty_line(source, tokens):
+def fix_empty_line(source, last_token):
     """Prior to version 3.12,  Python's tokenizer drops entirely a last line
     if it consists only of space characters and/or tab characters.
 
@@ -44,34 +44,38 @@ def fix_empty_line(source, tokens):
             nb += 1
         else:
             break
-    tokens[-1].string = source[-nb:]
+    last_token.string = source[-nb:]
+    return last_token
 
 
 def tokenize(source, warning=True):
-    """Transforms a source (string) into a list of Tokens.
+    """Transforms a source (string) into a list of Tokens."""
 
-    If an exception is raised by Python's tokenize module, the list of tokens
-    accumulated up to that point is returned.
-    """
-    tokens = []
+    return list(generate_tokens(source))
 
+
+def generate_tokens(source):
+    """Tokenize a source (string) yielding tokens one at a time."""
+    prev_token = None
     try:
         for tok in py_tokenize.generate_tokens(_StringIO(source).readline):
             token = Token(tok)
-            tokens.append(token)
+            if token.type != py_tokenize.ENDMARKER:
+                yield token
+            elif not source.endswith((" ", "\t")):
+                yield token
+            elif prev_token is not None and not prev_token.line.endswith((" ", "\t")):
+                yield fix_empty_line(source, token)
+            else:
+                yield token
+            prev_token = token
     except Exception as exc:
-        if warning:
-            print(
-                "WARNING: the following unexpected error was raised in ",
-                f"{__name__}.tokenize",
-            )
-            print(exc, repr(exc))
-        return tokens
-    if source.endswith((" ", "\t")):
-        if not tokens[-2].line.endswith((" ", "\t")):
-            fix_empty_line(source, tokens)
-
-    return tokens
+        print(
+            "WARNING: the following unexpected error was raised in ",
+            f"{__name__}.generate_tokens\n",
+            "Please report this as an issue.",
+        )
+        print(exc, repr(exc))
 
 
 def get_significant_tokens(source):
@@ -127,7 +131,7 @@ def get_lines(source):
         if len(lines) > 1:
             penultimate_line = lines[-2]
             if not penultimate_line[-1].line.endswith((" ", "\t")):
-                fix_empty_line(source, lines[-1])
+                fix_empty_line(source, lines[-1][-1])
     return lines
 
 
