@@ -186,8 +186,8 @@ del t, u
 tabsize = 8
 
 
-class TokenError(Exception):
-    pass
+# class TokenError(Exception):
+#     pass
 
 
 def _get_normal_name(orig_enc):
@@ -369,7 +369,12 @@ def _tokenize(readline, encoding):
 
         if contstr:  # continued string
             if not line:
-                raise TokenError("EOF in multi-line string", strstart)
+                end = len(contline.split("\n")[-1])
+                print("ERROR: Unterminated triple quoted string.")
+                yield TokenInfo(
+                    UNCLOSED_STRING_TRIPLE, contstr, strstart, (lnum, end), contline
+                )
+                break
             endmatch = endprog.match(line)
             if endmatch:
                 pos = end = endmatch.end(0)
@@ -379,9 +384,24 @@ def _tokenize(readline, encoding):
                 contstr, needcont = "", 0
                 contline = None
             elif needcont and line[-2:] != "\\\n" and line[-3:] != "\\\r\n":
-                yield TokenInfo(
-                    ERRORTOKEN, contstr + line, strstart, (lnum, len(line)), contline
-                )
+                current_str = contstr + line
+                if current_str.strip():
+                    if current_str in ("'", '"'):
+                        yield TokenInfo(
+                            UNCLOSED_STRING_SINGLE,
+                            current_str,
+                            strstart,
+                            (lnum, len(line)),
+                            contline,
+                        )
+                    else:
+                        yield TokenInfo(
+                            ERRORTOKEN,
+                            current_str,
+                            strstart,
+                            (lnum, len(line)),
+                            contline,
+                        )
                 contstr = ""
                 contline = None
                 continue
@@ -437,7 +457,12 @@ def _tokenize(readline, encoding):
 
         else:  # continued statement
             if not line:
-                raise TokenError("EOF in multi-line statement", (lnum, 0))
+                end = len(contline.split("\n")[-1])
+                print("ERROR: Unterminated triple quoted string.")
+                yield TokenInfo(
+                    UNCLOSED_STRING_TRIPLE, contstr, strstart, (lnum, end), contline
+                )
+                break
             continued = 0
 
         while pos < max:
@@ -521,9 +546,20 @@ def _tokenize(readline, encoding):
                         parenlev -= 1
                     yield TokenInfo(OP, token, spos, epos, line)
             else:
-                yield TokenInfo(
-                    ERRORTOKEN, line[pos], (lnum, pos), (lnum, pos + 1), line
-                )
+                current_char = line[pos]
+                if current_char.strip():
+                    if current_char in ("'", '"'):
+                        yield TokenInfo(
+                            UNCLOSED_STRING_SINGLE,
+                            line[pos],
+                            (lnum, pos),
+                            (lnum, pos + 1),
+                            line,
+                        )
+                    else:
+                        yield TokenInfo(
+                            ERRORTOKEN, line[pos], (lnum, pos), (lnum, pos + 1), line
+                        )
                 pos += 1
 
     # Add an implicit NEWLINE if the input doesn't end in one
@@ -533,7 +569,11 @@ def _tokenize(readline, encoding):
         and not last_line.strip().startswith("#")
     ):
         yield TokenInfo(
-            NEWLINE, "", (lnum - 1, len(last_line)), (lnum - 1, len(last_line) + 1), ""
+            NEWLINE,
+            last_line,
+            (lnum - 1, len(last_line)),
+            (lnum - 1, len(last_line) + 1),
+            last_line,
         )
     for indent in indents[1:]:  # pop remaining indent levels
         yield TokenInfo(DEDENT, "", (lnum, 0), (lnum, 0), "")

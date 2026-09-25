@@ -74,10 +74,11 @@ N_TOKENS = 64
 # Special definitions for cooperation with parser
 NT_OFFSET = 256
 
-# Special values for token_utils
+# Special values for token_utils; negative values for errors
 
-BAD_DEDENT = -8
-UNCLOSED_STRING = -9
+BAD_DEDENT = -1
+UNCLOSED_STRING_SINGLE = -2
+UNCLOSED_STRING_TRIPLE = -3
 
 
 tok_name = {

@@ -55,19 +55,18 @@ def tokenize(source, warning=True):
     """
     tokens = []
 
-    for tok in py_tokenize.generate_tokens(_StringIO(source).readline):
-        try:
+    try:
+        for tok in py_tokenize.generate_tokens(_StringIO(source).readline):
             token = Token(tok)
             tokens.append(token)
-        except (py_tokenize.TokenError, Exception) as exc:
-            if warning:
-                print(
-                    "WARNING: the following error was raised in ",
-                    f"{__name__}.tokenize",
-                )
-                print(exc)
-            return tokens
-
+    except Exception as exc:
+        if warning:
+            print(
+                "WARNING: the following unexpected error was raised in ",
+                f"{__name__}.tokenize",
+            )
+            print(exc, repr(exc))
+        return tokens
     if source.endswith((" ", "\t")):
         if not tokens[-2].line.endswith((" ", "\t")):
             fix_empty_line(source, tokens)
