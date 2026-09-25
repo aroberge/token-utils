@@ -136,6 +136,11 @@ def test_indent():
     assert new_line_a == new_line_b
 
 
+def test_find_substring_index():
+    assert token_utils.find_substring_index(source2, source3) == -1
+    assert token_utils.find_substring_index(source3, source2) == 3
+
+
 def test_self():
     with open(__file__, "r") as f:
         source = f.read()

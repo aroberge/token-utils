@@ -1,4 +1,4 @@
-"""token_utils.py
+"""token_utils.utils.py
 ------------------
 
 A collection of useful functions and methods to deal with tokenizing
@@ -10,22 +10,6 @@ from token_utils import py_tokenize
 from io import StringIO as _StringIO
 
 from token_utils.token_class import Token
-
-
-def find_token_by_position(tokens, row, column):
-    """Given a list of tokens, a specific row (linenumber) and column,
-    a two-tuple is returned that includes the token
-    found at that position as well as its list index.
-
-    If no such token can be found, ``None, None`` is returned.
-    """
-    for index, tok in enumerate(tokens):
-        if (
-            tok.start_row <= row <= tok.end_row
-            and tok.start_col <= column < tok.end_col
-        ):
-            return tok, index
-    return None, None
 
 
 def fix_empty_line(source, prev_token, last_token):
@@ -55,12 +39,6 @@ def fix_empty_line(source, prev_token, last_token):
     return last_token
 
 
-def tokenize(source, warning=True):
-    """Transforms a source (string) into a list of Tokens."""
-
-    return list(generate_tokens(source))
-
-
 def generate_tokens(source):
     """Tokenize a source (string) yielding tokens one at a time."""
     # Unfortunately, there is still a bug in py_tokenize._tokenize
@@ -87,25 +65,24 @@ def generate_tokens(source):
         print(exc, repr(exc))
 
 
+def tokenize(source, warning=True):
+    """Transforms a source (string) into a list of Tokens."""
+
+    return list(generate_tokens(source))
+
+
 def get_significant_tokens(source):
     """Gets a list of tokens from a source (str), ignoring comments
     as well as any token whose string value is either null or
     consists of spaces, newline or tab characters.
-
-    If an exception is raised by Python's tokenize module, the list of tokens
-    accumulated up to that point is returned.
     """
     tokens = []
-    try:
-        for tok in py_tokenize.generate_tokens(_StringIO(source).readline):
-            token = Token(tok)
-            if not token.string.strip():
-                continue
-            if token.is_comment():
-                continue
-            tokens.append(token)
-    except py_tokenize.TokenError:
-        return tokens
+    for token in generate_tokens(source):
+        if not token.string.strip():
+            continue
+        if token.is_comment():
+            continue
+        tokens.append(token)
 
     return tokens
 
@@ -117,33 +94,21 @@ def get_lines(source):
     lines = []
     current_row = -1
     new_line = []
-    for tok in py_tokenize.generate_tokens(_StringIO(source).readline):
-        try:
-            token = Token(tok)
-            if token.start_row != current_row:
-                current_row = token.start_row
-                if new_line:
-                    lines.append(new_line)
-                new_line = []
-            new_line.append(token)
-        except (py_tokenize.TokenError, Exception) as exc:
-            print(
-                "WARNING: the following tokenize error was raised in "
-                f"{__name__}.get_lines"
-            )
-            print(exc)
-
+    for token in generate_tokens(source):
+        if token.start_row != current_row:
+            current_row = token.start_row
+            if new_line:
+                lines.append(new_line)
+            new_line = []
+        new_line.append(token)
     if new_line:
         lines.append(new_line)
-
-    if source.endswith((" ", "\t")):
-        if len(lines) > 1:
-            penultimate_line = lines[-2]
-            if not penultimate_line[-1].line.endswith((" ", "\t")):
-                fix_empty_line(source, penultimate_line[-1], lines[-1][-1])
     return lines
 
 
+# this can be eliminated by using significant tokens and len()
+# However, it is currently used in ideas, so we need to change the
+# code there first.
 def get_number(tokens, exclude_comment=True):
     """Given a list of tokens, gives a count of the number of
     tokens which are not space tokens (such as ``NEWLINE``, ``INDENT``,
@@ -193,6 +158,9 @@ def find_substring_index(main, substring):
     return -1
 
 
+# this can be eliminated by using significant tokens and [0]
+# However, it is currently used in ideas, so we need to change the
+# code there first.
 def get_first(tokens, exclude_comment=True):
     """Given a list of tokens, find the first token which is not a space token
     (such as a ``NEWLINE``, ``INDENT``, ``DEDENT``, etc.) and,
@@ -209,6 +177,9 @@ def get_first(tokens, exclude_comment=True):
     return None
 
 
+# this can be eliminated by using significant tokens and [0]
+# However, it is currently used in ideas, so we need to change the
+# code there first.
 def get_first_index(tokens, exclude_comment=True):
     """Given a list of tokens, find the index of the first token which is
     not a space token (such as a ``NEWLINE``, ``INDENT``, ``DEDENT``, etc.) nor
@@ -224,6 +195,9 @@ def get_first_index(tokens, exclude_comment=True):
     return None
 
 
+# this can be eliminated by using significant tokens and [-1]
+# However, it is currently used in ideas, so we need to change the
+# code there first.
 def get_last(tokens, exclude_comment=True):
     """Given a list of tokens, find the last token which is not a space token
     (such as a ``NEWLINE``, ``INDENT``, ``DEDENT``, etc.) and, by default,
@@ -237,6 +211,9 @@ def get_last(tokens, exclude_comment=True):
     return get_first(reversed(tokens), exclude_comment=exclude_comment)
 
 
+# this can be eliminated by using significant tokens and [0]
+# However, it is currently used in ideas, so we need to change the
+# code there first.
 def get_last_index(tokens, exclude_comment=True):
     """Given a list of tokens, find the index of the last token which is
     not a space token (such as a ``NEWLINE``, ``INDENT``, ``DEDENT``, etc.) nor
@@ -256,11 +233,13 @@ def dedent(tokens, nb):
     """Given a list of tokens, produces an equivalent list corresponding
     to a line of code with the first nb characters removed.
     """
+    # currently used in ideas
     line = untokenize(tokens)
     line = line[nb:]
     return tokenize(line)
 
 
+# This can probably be eliminated; not used anywhere
 def indent(tokens, nb, tab=False):
     """Given a list of tokens, produces an equivalent list corresponding
     to a line of code with nb space characters inserted at the beginning.
