@@ -236,3 +236,12 @@ def test_is_number():
     assert tokens[6].is_number()
     assert tokens[8] == "0x1A"
     assert tokens[8].is_number()
+
+
+def test_is_operator():
+    tokens = token_utils.tokenize("a = - 3")
+    assert tokens[1] == "="
+    assert tokens[1].is_operator()
+    assert tokens[2] == "-"
+    assert tokens[2].is_operator()
+    assert not tokens[0].is_operator()

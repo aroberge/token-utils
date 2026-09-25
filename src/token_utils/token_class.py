@@ -111,6 +111,10 @@ class Token:
         """Returns True if the token represents a number."""
         return self.type == py_tokenize.NUMBER
 
+    def is_operator(self) -> bool:
+        """Returns true if the token is of type OP"""
+        return self.type == py_tokenize.OP
+
     def is_space(self):
         """Returns True if the token indicates a change in indentation,
         the end of a line, or the end of the source
