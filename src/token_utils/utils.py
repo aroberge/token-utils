@@ -23,6 +23,7 @@ def fix_empty_line(source, prev_token, last_token):
 
     we correct the last token content if needed.
     """
+    print(f"{last_token=}")
     if prev_token is None:  # should not happen
         return last_token
     if prev_token.line.endswith((" ", "\t")):  # fix not needed
@@ -36,6 +37,7 @@ def fix_empty_line(source, prev_token, last_token):
             break
     last_token.string = source[-nb:]
     assert nb > 0
+    print(f"Fix applied {last_token=}")
     return last_token
 
 

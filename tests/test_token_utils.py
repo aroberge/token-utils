@@ -91,6 +91,23 @@ def test_bad_dedent():
     """
     check(source)
 
+def test_problematic_newline():
+    """When modifying Python's tokenize, I accidently added a
+    string attribute to "NEWLINE" token. This test is to
+    ensure that this does not happen again!
+    """
+    source = "2n"
+    assert token_utils.untokenize(token_utils.tokenize(source)) == source
+    #
+    # test inserting non-token
+    tokens = token_utils.tokenize(source)
+    new_tokens = []
+    for tok in tokens:
+        new_tokens.append(tok)
+        if tok.is_number():
+            new_tokens.append("*")
+    assert token_utils.untokenize(new_tokens) == "2*n"
+
 
 source1 = "a = b"
 source2 = "a = b # comment\n"
