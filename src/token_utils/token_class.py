@@ -115,16 +115,11 @@ class Token:
         """Returns true if the token is of type OP"""
         return self.type == py_tokenize.OP
 
-    def is_significant(self):
-        """Returns True if the token is not a comment nor any token 
-        whose string value is either null or consists of spaces, newline
-        or tab characters."""
-        return not self.is_comment() and self.string.strip()
-
     def is_space(self):
         """Returns True if the token indicates a change in indentation,
         the end of a line, or the end of the source
-        (``INDENT``, ``DEDENT``, ``NEWLINE``, ``NL``, and ``ENDMARKER``).
+        (``INDENT``, ``DEDENT``, ``BAD_DEDENT``, ``NEWLINE``,
+        ``NL``, and ``ENDMARKER``).
 
         Note that spaces, including tab characters ``\\t``, between tokens
         on a given line are not considered to be tokens themselves.
@@ -132,9 +127,20 @@ class Token:
         return self.type in (
             py_tokenize.INDENT,
             py_tokenize.DEDENT,
+            py_tokenize.BAD_DEDENT,
             py_tokenize.NEWLINE,
             py_tokenize.NL,
             py_tokenize.ENDMARKER,
+        )
+
+    def is_indentation(self):
+        """Returns True if the token indicates a change in indentation,
+        (``INDENT``, ``DEDENT``, ``BAD_DEDENT``).
+        """
+        return self.type in (
+            py_tokenize.INDENT,
+            py_tokenize.DEDENT,
+            py_tokenize.BAD_DEDENT,
         )
 
     def is_string(self):
