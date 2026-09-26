@@ -21,7 +21,6 @@ import os
 import sys
 
 sys.path.insert(0, os.path.abspath("../../src"))
-print(sys.path[0])
 from token_utils import version
 
 # -- General configuration ------------------------------------------------
@@ -38,10 +37,8 @@ extensions = [
     "sphinx.ext.todo",
     "sphinx.ext.viewcode",
     "sphinx.ext.githubpages",
-    'nbsphinx',
-    'sphinx.ext.mathjax',
+    "sphinx.ext.mathjax",
 ]
-exclude_patterns = ['_build', '**.ipynb_checkpoints']
 nbsphinx_allow_errors = True
 
 # Add any paths that contain templates here, relative to this directory.
@@ -51,7 +48,7 @@ templates_path = ["_templates"]
 # You can specify multiple suffix as a list of string:
 #
 # source_suffix = ['.rst', '.md']
-source_suffix = ".rst"
+source_suffix = {".rst": "restructuredtext"}
 
 # The master toctree document.
 master_doc = "index"
@@ -80,7 +77,8 @@ language = "en"
 # List of patterns, relative to source directory, that match files and
 # directories to ignore when looking for source files.
 # This patterns also effect to html_static_path and html_extra_path
-exclude_patterns = []
+exclude_patterns = ["_build"]
+nbsphinx_allow_errors = True
 
 # The name of the Pygments (syntax highlighting) style to use.
 pygments_style = "sphinx"
@@ -102,8 +100,8 @@ html_theme = "sphinx_rtd_theme"  # installed separately
 # documentation.
 #
 html_theme_options = {
-    'prev_next_buttons_location': 'both',
-    'style_external_links': True,
+    "prev_next_buttons_location": "both",
+    "style_external_links": True,
 }
 
 # Add any paths that contain custom static files (such as style sheets) here,
@@ -112,7 +110,7 @@ html_theme_options = {
 html_static_path = ["_static"]
 
 html_css_files = [
-    'custom.css',
+    "custom.css",
 ]
 
 
@@ -143,7 +141,13 @@ latex_elements = {
 # (source start file, target name, title,
 #  author, documentclass [howto, manual, or own class]).
 latex_documents = [
-    (master_doc, "token-utils.tex", "token-utils Documentation", "André Roberge", "manual")
+    (
+        master_doc,
+        "token-utils.tex",
+        "token-utils Documentation",
+        "André Roberge",
+        "manual",
+    )
 ]
 
 

@@ -6,7 +6,7 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>About tokens and token-utils &mdash; token-utils 0.2.0 documentation</title>
+  <title>About tokens Python vs token-utils &mdash; token-utils 0.2.4 documentation</title>
       <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=03e43079" />
       <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=9edc463e" />
       <link rel="stylesheet" type="text/css" href="_static/custom.css?v=c7e4a82f" />
@@ -14,10 +14,9 @@
   
       <script src="_static/jquery.js?v=5d32c60e"></script>
       <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="_static/documentation_options.js?v=938c9ccc"></script>
+      <script src="_static/documentation_options.js?v=6ffd866b"></script>
       <script src="_static/doctools.js?v=9bcbadda"></script>
       <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
-      <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
     <script src="_static/js/theme.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
@@ -45,9 +44,17 @@
 </div>
         </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
               <ul class="current">
-<li class="toctree-l1 current"><a class="current reference internal" href="#"> About tokens and token-utils</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="#about-tokens">About tokens</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#origin-of-token-utils">Origin of token-utils</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#"> About tokens: Python vs token-utils</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#about-python-tokens">About Python tokens</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#about-token-utils-tokens">About token-utils tokens</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#comparing-tokenizing-untokenizing-results">Comparing tokenizing/untokenizing results</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#continuation-character">Continuation character</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#mix-of-tabs-and-spaces">Mix of tabs and spaces</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#indentationerror">IndentationError</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#unterminated-string">Unterminated string</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#the-dreaded-eof">The dreaded EOF …</a></li>
+</ul>
+</li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="api.html"> API</a></li>
@@ -55,7 +62,6 @@
 <p class="caption" role="heading"><span class="caption-text">Appendix</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="history.html">Origin and history of token-utils</a></li>
-<li class="toctree-l1"><a class="reference internal" href="tokenize_notebook.html">Tokenizing notebook</a></li>
 </ul>
 
         </div>
@@ -72,7 +78,7 @@
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
       <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
-      <li class="breadcrumb-item active">About tokens and token-utils</li>
+      <li class="breadcrumb-item active">About tokens Python vs token-utils</li>
       <li class="wy-breadcrumbs-aside">
             <a href="_sources/about_tokens.rst.txt" rel="nofollow"> View page source</a>
       </li>
@@ -85,38 +91,37 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <section id="about-tokens-and-token-utils">
-<h1>About tokens and token-utils<a class="headerlink" href="#about-tokens-and-token-utils" title="Link to this heading"></a></h1>
-<section id="about-tokens">
-<h2>About tokens<a class="headerlink" href="#about-tokens" title="Link to this heading"></a></h2>
+  <section id="about-tokens-python-vs-token-utils">
+<h1>About tokens Python vs token-utils<a class="headerlink" href="#about-tokens-python-vs-token-utils" title="Link to this heading"></a></h1>
+<div class="admonition-summary admonition">
+<p class="admonition-title">Summary</p>
+<p>We highlight the diffences between tokenizing code with Python
+and token-utils. We show how token-utils can handle some
+“difficult” situations, which might be useful when one
+uses it to convert syntax in multiple steps, some of which
+may temporarily yield syntactically invalid Python code.</p>
+</div>
+<section id="about-python-tokens">
+<h2>About Python tokens<a class="headerlink" href="#about-python-tokens" title="Link to this heading"></a></h2>
 <p>Using token-utils requires knowing what “tokens” produced
 by Python’s tokenize module are.
-An outstanding tutorial about this module is
+If you are not familiar with those, we suggest that
+you read through at least once through the
+<a class="reference external" href="https://docs.python.org/3/library/tokenize.html">documentation about Python’s tokenize module</a>.
+Perhaps even better would be to go through the outstanding tutorial
 <a class="reference external" href="https://www.asmeurer.com/brown-water-python/">Brown Water Python</a>
 written by Aaron Meurer.</p>
-</section>
-<section id="origin-of-token-utils">
-<h2>Origin of token-utils<a class="headerlink" href="#origin-of-token-utils" title="Link to this heading"></a></h2>
-<p>In our description of these tools below, we assume that you are
-somewhat familiar with the concept of token objects generated by Python’s
-tokenize module.  If you are not familiar with those, we suggest that
-you read through at least once through the documentation about Python’s
-tokenize module mentioned above.</p>
-<div class="admonition-an-excellent-tutorial admonition">
-<p class="admonition-title">An excellent tutorial</p>
-<dl class="simple">
-<dt><a class="reference external" href="https://www.asmeurer.com/brown-water-python/">Brown Water Python</a>, written by Aaron Meurer,</dt><dd><p>is an excellent and very comprehensive tutorial about Python’s</p>
-</dd>
-</dl>
-<p>tokenize module.</p>
-</div>
 <p>The main points to understand:</p>
 <ul>
 <li><p>Using the <code class="docutils literal notranslate"><span class="pre">tokenize</span></code> function, a source can be broken down in tokens,
 which, as generated by Python, are 5-tuples carrying information about their
 <strong>type</strong>, their <strong>string</strong> content, their position in the source
 (identified by starting and ending <strong>row</strong>, aka line number, and <strong>column</strong>),
-as well as the content of the line where they are found.</p></li>
+as well as the content of the line where they are found.</p>
+<blockquote>
+<div><p>Because they are tuples, Python’s tokens are <strong>immutable</strong>.</p>
+</div></blockquote>
+</li>
 <li><p>From a list of tokens, the original source can essentially recreated
 by using the <code class="docutils literal notranslate"><span class="pre">untokenize</span></code> function.
 However, as stated in the documentation:</p>
@@ -127,27 +132,339 @@ The guarantee applies only to the token type and
 token string as the spacing between tokens (column positions) may change.</em></p>
 </div></blockquote>
 </li>
+<li><p>Furthermore, since Python 3.12, the following notice appears in Python’s documentation:</p>
+<blockquote>
+<div><p><strong>Warning:</strong> Note that the functions in this module are only designed
+to parse syntactically valid Python code
+(code that does not raise when parsed using ast.parse()).
+The behavior of the functions in this module is <strong>undefined</strong> when
+providing invalid Python code and it can change at any point.</p>
+</div></blockquote>
+</li>
 <li><p>To <code class="docutils literal notranslate"><span class="pre">untokenize</span></code> using the function from the Python
 standard library, one can use either a list of 5-tuple tokens,
-or a list of two-tuple tokens that include only the <strong>type</strong> and <strong>string</strong>
-information.</p></li>
+or a list of <strong>two-tuple tokens</strong> that include only the <strong>type</strong> and <strong>string</strong>
+information as we have seen in the previous example to which we will
+soon come back.</p></li>
 </ul>
-<aside class="sidebar">
-<p class="sidebar-title">Perfect round-trip</p>
-<p>Unlike Python’s version, the process of tokenizing and untokenizing a source
-using ideas’ own <code class="docutils literal notranslate"><span class="pre">tokenize</span></code> and <code class="docutils literal notranslate"><span class="pre">untokenize</span></code> functions
-is guaranteed to yield back an exact copy of the original source, with all
+</section>
+<section id="about-token-utils-tokens">
+<h2>About token-utils tokens<a class="headerlink" href="#about-token-utils-tokens" title="Link to this heading"></a></h2>
+<p><strong>token_utils</strong> tokens are instances of a class created via the following:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">token</span> <span class="o">=</span> <span class="n">Token</span><span class="p">(</span><span class="n">python_token</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>By contrast with Python’s tokens, we have the following:</p>
+<ul class="simple">
+<li><p>token-utils tokens are <strong>mutable</strong>; in particular, we will see how
+mutating their string attribute can facilitate code transformation.</p></li>
+<li><p>Unlike Python’s version, the process of tokenizing and untokenizing a source
+using token-utils’ own <code class="docutils literal notranslate"><span class="pre">tokenize</span></code> and <code class="docutils literal notranslate"><span class="pre">untokenize</span></code> functions
+is guaranteed to yield back <strong>an exact copy</strong> of the original source, with all
 the spacing information intact.
 Experience has shown that being able to recover the
 original source with spacing included is <strong>extremely</strong> useful when writing
-tests about the expected results for some source transformation.</p>
-</aside>
-<div class="admonition tip">
-<p class="admonition-title">Tip</p>
-<p>While we show below the full API of the <cite>token_utils</cite> module,
-you might want to first to to next page to see a demonstration
-of its usage, done in an actual programming session using a Jupyter notebook.</p>
+tests about the expected results for some source transformation.</p></li>
+<li><p>While it is based on Python’s 3.11 version, the <code class="docutils literal notranslate"><span class="pre">tokenize()</span></code> function
+included with token-utils can produce tokens with invalid Python code
+without raising any exception.</p></li>
+<li><p>To <code class="docutils literal notranslate"><span class="pre">untokenize</span></code> using the function included with token-utils, we can
+mix tokens and <strong>regular strings</strong> in a predictable fashion.</p></li>
+</ul>
+</section>
+<section id="comparing-tokenizing-untokenizing-results">
+<h2>Comparing tokenizing/untokenizing results<a class="headerlink" href="#comparing-tokenizing-untokenizing-results" title="Link to this heading"></a></h2>
+<p>Let’s compare the result of first tokenizing followed by untokenizing
+some “problematic” source code, to illustrate the differences between
+Python and token-utils. We will proceed from the least problematic cases
+to the worst ones; admittedly, the first few cases will likely not
+seem as problematic by most Python programmers.</p>
+<p>In the following, we will do something like:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">output</span> <span class="o">=</span> <span class="n">untokenize</span><span class="p">(</span><span class="n">tokenize</span><span class="p">(</span><span class="n">source</span><span class="p">))</span>  <span class="c1"># actual code different for Python</span>
+
+<span class="k">for</span> <span class="n">line1</span><span class="p">,</span> <span class="n">line2</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">source</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">"</span><span class="se">\n</span><span class="s2">"</span><span class="p">),</span> <span class="n">output</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">"</span><span class="se">\n</span><span class="s2">"</span><span class="p">)):</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"line </span><span class="si">{</span><span class="n">lineno</span><span class="si">}</span><span class="s2"> in : </span><span class="si">{</span><span class="nb">repr</span><span class="p">(</span><span class="n">line1</span><span class="p">)</span><span class="si">}</span><span class="s2">|"</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"line </span><span class="si">{</span><span class="n">lineno</span><span class="si">}</span><span class="s2"> out: </span><span class="si">{</span><span class="nb">repr</span><span class="p">(</span><span class="n">line2</span><span class="p">)</span><span class="si">}</span><span class="s2">|"</span><span class="p">)</span>
+    <span class="n">lineno</span> <span class="o">+=</span> <span class="mi">1</span>
+    <span class="nb">print</span><span class="p">()</span>
+</pre></div>
 </div>
+<aside class="sidebar">
+<p class="sidebar-title">Do not take my word for it!</p>
+<p>Try by yourself and see how token-utils
+does do a perfect tokenize/untokenize
+round trip!</p>
+</aside>
+<section id="continuation-character">
+<h3>Continuation character<a class="headerlink" href="#continuation-character" title="Link to this heading"></a></h3>
+<p>Our first example is for a code sample containing a continuation
+character.</p>
+<p>First, the result using Python:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">Source</span> <span class="k">with</span> <span class="n">continuation</span> <span class="n">character</span><span class="p">:</span>
+<span class="n">x</span> <span class="o">=</span>   \
+    <span class="mi">1</span>
+<span class="n">line</span> <span class="mi">1</span> <span class="ow">in</span> <span class="p">:</span> <span class="s1">'x =   </span><span class="se">\\</span><span class="s1">'</span><span class="o">|</span>
+<span class="n">line</span> <span class="mi">1</span> <span class="n">out</span><span class="p">:</span> <span class="s1">'x =</span><span class="se">\\</span><span class="s1">'</span><span class="o">|</span>
+
+<span class="n">line</span> <span class="mi">2</span> <span class="ow">in</span> <span class="p">:</span> <span class="s1">'    1'</span><span class="o">|</span>
+<span class="n">line</span> <span class="mi">2</span> <span class="n">out</span><span class="p">:</span> <span class="s1">'    1'</span><span class="o">|</span>
+</pre></div>
+</div>
+<p>Note how the space before the continuation character is removed
+using Python. Using token-utils, as advertised, the output
+is identical to the input:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">Source</span> <span class="k">with</span> <span class="n">continuation</span> <span class="n">character</span><span class="p">:</span>
+<span class="n">x</span> <span class="o">=</span>   \
+    <span class="mi">1</span>
+<span class="n">line</span> <span class="mi">1</span> <span class="ow">in</span> <span class="p">:</span> <span class="s1">'x =   </span><span class="se">\\</span><span class="s1">'</span><span class="o">|</span>
+<span class="n">line</span> <span class="mi">1</span> <span class="n">out</span><span class="p">:</span> <span class="s1">'x =   </span><span class="se">\\</span><span class="s1">'</span><span class="o">|</span>
+
+<span class="n">line</span> <span class="mi">2</span> <span class="ow">in</span> <span class="p">:</span> <span class="s1">'    1'</span><span class="o">|</span>
+<span class="n">line</span> <span class="mi">2</span> <span class="n">out</span><span class="p">:</span> <span class="s1">'    1'</span><span class="o">|</span>
+</pre></div>
+</div>
+</section>
+<section id="mix-of-tabs-and-spaces">
+<h3>Mix of tabs and spaces<a class="headerlink" href="#mix-of-tabs-and-spaces" title="Link to this heading"></a></h3>
+<p>Next, we consider some code containing tab characters and spaces.</p>
+<p>Using Python 3.11 and earlier, we would observe the following:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">Source</span> <span class="k">with</span> <span class="n">tabs</span> <span class="ow">and</span> <span class="n">spaces</span> <span class="p">(</span><span class="s1">'x </span><span class="se">\t</span><span class="s1">= </span><span class="se">\t</span><span class="s1"> 1</span><span class="se">\n</span><span class="s1"> </span><span class="se">\t</span><span class="s1"> '</span><span class="p">):</span>
+<span class="n">x</span>       <span class="o">=</span>        <span class="mi">1</span>
+
+<span class="n">line</span> <span class="mi">1</span> <span class="ow">in</span> <span class="p">:</span> <span class="s1">'x </span><span class="se">\t</span><span class="s1">= </span><span class="se">\t</span><span class="s1"> 1'</span><span class="o">|</span>
+<span class="n">line</span> <span class="mi">1</span> <span class="n">out</span><span class="p">:</span> <span class="s1">'x  =   1'</span><span class="o">|</span>
+
+<span class="n">line</span> <span class="mi">2</span> <span class="ow">in</span> <span class="p">:</span> <span class="s1">' </span><span class="se">\t</span><span class="s1"> '</span><span class="o">|</span>
+<span class="n">line</span> <span class="mi">2</span> <span class="n">out</span><span class="p">:</span> <span class="s1">''</span><span class="o">|</span>
+</pre></div>
+</div>
+<p>All the tab characters are replaced by single spaces.
+Furthermore, when the last line contains only space-like characters,
+the content is entirely dropped. With Python 3.12+ this last observation
+is no longer valid: Python now keep in the space in the last line,
+albeit with tab characters still converted to space characters.</p>
+<p>As might be expected from what we said, the result from
+token-utils is perfect:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">Source</span> <span class="k">with</span> <span class="n">tabs</span> <span class="ow">and</span> <span class="n">spaces</span> <span class="p">(</span><span class="s1">'x </span><span class="se">\t</span><span class="s1">= </span><span class="se">\t</span><span class="s1"> 1</span><span class="se">\n</span><span class="s1"> </span><span class="se">\t</span><span class="s1"> '</span><span class="p">):</span>
+<span class="n">x</span>       <span class="o">=</span>        <span class="mi">1</span>
+
+<span class="n">line</span> <span class="mi">1</span> <span class="ow">in</span> <span class="p">:</span> <span class="s1">'x </span><span class="se">\t</span><span class="s1">= </span><span class="se">\t</span><span class="s1"> 1'</span><span class="o">|</span>
+<span class="n">line</span> <span class="mi">1</span> <span class="n">out</span><span class="p">:</span> <span class="s1">'x </span><span class="se">\t</span><span class="s1">= </span><span class="se">\t</span><span class="s1"> 1'</span><span class="o">|</span>
+
+<span class="n">line</span> <span class="mi">2</span> <span class="ow">in</span> <span class="p">:</span> <span class="s1">' </span><span class="se">\t</span><span class="s1"> '</span><span class="o">|</span>
+<span class="n">line</span> <span class="mi">2</span> <span class="n">out</span><span class="p">:</span> <span class="s1">' </span><span class="se">\t</span><span class="s1"> '</span><span class="o">|</span>
+</pre></div>
+</div>
+</section>
+<section id="indentationerror">
+<h3>IndentationError<a class="headerlink" href="#indentationerror" title="Link to this heading"></a></h3>
+<p>Next, let’s look at a more problematic example, first using
+Python’s tokenize module.</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">tokenize</span><span class="w"> </span><span class="kn">import</span> <span class="n">untokenize</span><span class="p">,</span> <span class="n">generate_tokens</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">io</span><span class="w"> </span><span class="kn">import</span> <span class="n">StringIO</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="s1">'temp.txt'</span><span class="p">,</span> <span class="s1">'r'</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+<span class="gp">... </span>   <span class="n">source</span> <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
+<span class="gp">...</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">for</span> <span class="n">token</span> <span class="ow">in</span> <span class="n">generate_tokens</span><span class="p">(</span><span class="n">StringIO</span><span class="p">(</span><span class="n">source</span><span class="p">)</span><span class="o">.</span><span class="n">readline</span><span class="p">):</span>
+<span class="gp">... </span>   <span class="nb">print</span><span class="p">(</span><span class="n">token</span><span class="p">)</span>
+<span class="gp">...</span>
+<span class="go">TokenInfo(type=1 (NAME), string='def', start=(1, 0), end=(1, 3), line='def test():\n')</span>
+<span class="go">TokenInfo(type=1 (NAME), string='test', start=(1, 4), end=(1, 8), line='def test():\n')</span>
+<span class="go">TokenInfo(type=54 (OP), string='(', start=(1, 8), end=(1, 9), line='def test():\n')</span>
+<span class="go">TokenInfo(type=54 (OP), string=')', start=(1, 9), end=(1, 10), line='def test():\n')</span>
+<span class="go">TokenInfo(type=54 (OP), string=':', start=(1, 10), end=(1, 11), line='def test():\n')</span>
+<span class="go">TokenInfo(type=4 (NEWLINE), string='\n', start=(1, 11), end=(1, 12), line='def test():\n')</span>
+<span class="go">TokenInfo(type=5 (INDENT), string='    ', start=(2, 0), end=(2, 4), line='    a = b\n')</span>
+<span class="go">TokenInfo(type=1 (NAME), string='a', start=(2, 4), end=(2, 5), line='    a = b\n')</span>
+<span class="go">TokenInfo(type=54 (OP), string='=', start=(2, 6), end=(2, 7), line='    a = b\n')</span>
+<span class="go">TokenInfo(type=1 (NAME), string='b', start=(2, 8), end=(2, 9), line='    a = b\n')</span>
+<span class="go">TokenInfo(type=4 (NEWLINE), string='\n', start=(2, 9), end=(2, 10), line='    a = b\n')</span>
+<span class="gt">Traceback (most recent call last):</span>
+  File <span class="nb">"&lt;stdin&gt;"</span>, line <span class="m">1</span>, in <span class="n">&lt;module&gt;</span>
+  File <span class="nb">"C:\Users\Andre\AppData\Local\Programs\Python\Python311\Lib\tokenize.py"</span>, line <span class="m">516</span>, in <span class="n">_tokenize</span>
+<span class="w">    </span><span class="k">raise</span> <span class="ne">IndentationError</span><span class="p">(</span>
+  File <span class="nb">"&lt;tokenize&gt;"</span>, line <span class="m">3</span>
+<span class="w">    </span><span class="n">c</span> <span class="o">=</span> <span class="n">d</span>
+<span class="gr">IndentationError</span>: <span class="n">unindent does not match any outer indentation level</span>
+</pre></div>
+</div>
+<p>We definitely have a problem. In the above example, we used Python 3.11.
+Let’s try with Python 3.12, which gives essentially the same result except
+for the traceback which indicates that the error was in the _generate_tokens_from_c_tokenizer
+writen in C:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">...</span>
+<span class="n">TokenInfo</span><span class="p">(</span><span class="nb">type</span><span class="o">=</span><span class="mi">4</span> <span class="p">(</span><span class="n">NEWLINE</span><span class="p">),</span> <span class="n">string</span><span class="o">=</span><span class="s1">'</span><span class="se">\n</span><span class="s1">'</span><span class="p">,</span> <span class="n">start</span><span class="o">=</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">9</span><span class="p">),</span> <span class="n">end</span><span class="o">=</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">10</span><span class="p">),</span> <span class="n">line</span><span class="o">=</span><span class="s1">'    a = b</span><span class="se">\n</span><span class="s1">'</span><span class="p">)</span>
+<span class="n">Traceback</span> <span class="p">(</span><span class="n">most</span> <span class="n">recent</span> <span class="n">call</span> <span class="n">last</span><span class="p">):</span>
+  <span class="n">File</span> <span class="s2">"&lt;stdin&gt;"</span><span class="p">,</span> <span class="n">line</span> <span class="mi">1</span><span class="p">,</span> <span class="ow">in</span> <span class="o">&lt;</span><span class="n">module</span><span class="o">&gt;</span>
+  <span class="n">File</span> <span class="s2">"C:\Users\Andre\AppData\Local\Programs\Python\Python312\Lib</span><span class="se">\t</span><span class="s2">okenize.py"</span><span class="p">,</span> <span class="n">line</span> <span class="mi">574</span><span class="p">,</span> <span class="ow">in</span> <span class="n">_generate_tokens_from_c_tokenizer</span>
+    <span class="k">raise</span> <span class="n">e</span> <span class="kn">from</span><span class="w"> </span><span class="kc">None</span>
+  <span class="n">File</span> <span class="s2">"C:\Users\Andre\AppData\Local\Programs\Python\Python312\Lib</span><span class="se">\t</span><span class="s2">okenize.py"</span><span class="p">,</span> <span class="n">line</span> <span class="mi">570</span><span class="p">,</span> <span class="ow">in</span> <span class="n">_generate_tokens_from_c_tokenizer</span>
+    <span class="k">for</span> <span class="n">info</span> <span class="ow">in</span> <span class="n">it</span><span class="p">:</span>
+                <span class="o">^^</span>
+  <span class="n">File</span> <span class="s2">"&lt;string&gt;"</span><span class="p">,</span> <span class="n">line</span> <span class="mi">3</span>
+    <span class="n">c</span> <span class="o">=</span> <span class="n">d</span>
+        <span class="o">^</span>
+<span class="ne">IndentationError</span><span class="p">:</span> <span class="n">unindent</span> <span class="n">does</span> <span class="ow">not</span> <span class="n">match</span> <span class="nb">any</span> <span class="n">outer</span> <span class="n">indentation</span> <span class="n">level</span>
+</pre></div>
+</div>
+<p>Let’s try with token-utils,
+by first doing the tokenize/untokenize round trip, and then look
+at the individual tokens.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">token_utils</span><span class="w"> </span><span class="kn">import</span> <span class="n">tokenize</span><span class="p">,</span> <span class="n">untokenize</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="s1">'temp.txt'</span><span class="p">,</span> <span class="s1">'r'</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+<span class="gp">... </span>    <span class="n">source</span> <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
+<span class="gp">...</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">output</span> <span class="o">=</span> <span class="n">untokenize</span><span class="p">(</span><span class="n">tokenize</span><span class="p">(</span><span class="n">source</span><span class="p">))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c1"># no exception raised!</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">output</span> <span class="o">==</span> <span class="n">source</span>
+<span class="go">True</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">source</span><span class="p">)</span>
+<span class="go">def test():</span>
+<span class="go">    a = b</span>
+<span class="go">  c = d</span>
+<span class="go">    e = f</span>
+
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">token_utils</span><span class="w"> </span><span class="kn">import</span> <span class="n">print_tokens</span>  <span class="c1"># easier to read, line by line</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">print_tokens</span><span class="p">(</span><span class="n">source</span><span class="p">)</span>
+<span class="go">type=1 (NAME)  string='def'  start=(1, 0)  end=(1, 3)  line='def test():\n'</span>
+<span class="go">type=1 (NAME)  string='test'  start=(1, 4)  end=(1, 8)  line='def test():\n'</span>
+<span class="go">type=54 (OP)  string='('  start=(1, 8)  end=(1, 9)  line='def test():\n'</span>
+<span class="go">type=54 (OP)  string=')'  start=(1, 9)  end=(1, 10)  line='def test():\n'</span>
+<span class="go">type=54 (OP)  string=':'  start=(1, 10)  end=(1, 11)  line='def test():\n'</span>
+<span class="go">type=4 (NEWLINE)  string='\n'  start=(1, 11)  end=(1, 12)  line='def test():\n'</span>
+
+<span class="go">type=5 (INDENT)  string='    '  start=(2, 0)  end=(2, 4)  line='    a = b\n'</span>
+<span class="go">type=1 (NAME)  string='a'  start=(2, 4)  end=(2, 5)  line='    a = b\n'</span>
+<span class="go">type=54 (OP)  string='='  start=(2, 6)  end=(2, 7)  line='    a = b\n'</span>
+<span class="go">type=1 (NAME)  string='b'  start=(2, 8)  end=(2, 9)  line='    a = b\n'</span>
+<span class="go">type=4 (NEWLINE)  string='\n'  start=(2, 9)  end=(2, 10)  line='    a = b\n'</span>
+
+<span class="go">type=-1 (BAD_DEDENT)  string='  '  start=(3, 0)  end=(3, 2)  line='  c = d\n'</span>
+<span class="go">type=1 (NAME)  string='c'  start=(3, 2)  end=(3, 3)  line='  c = d\n'</span>
+<span class="go">type=54 (OP)  string='='  start=(3, 4)  end=(3, 5)  line='  c = d\n'</span>
+<span class="go">type=1 (NAME)  string='d'  start=(3, 6)  end=(3, 7)  line='  c = d\n'</span>
+<span class="go">type=4 (NEWLINE)  string='\n'  start=(3, 7)  end=(3, 8)  line='  c = d\n'</span>
+
+<span class="go">type=1 (NAME)  string='e'  start=(4, 4)  end=(4, 5)  line='    e = f\n'</span>
+<span class="go">type=54 (OP)  string='='  start=(4, 6)  end=(4, 7)  line='    e = f\n'</span>
+<span class="go">type=1 (NAME)  string='f'  start=(4, 8)  end=(4, 9)  line='    e = f\n'</span>
+<span class="go">type=4 (NEWLINE)  string='\n'  start=(4, 9)  end=(4, 10)  line='    e = f\n'</span>
+
+<span class="go">type=0 (ENDMARKER)  string=''  start=(5, 0)  end=(5, 0)  line=''</span>
+</pre></div>
+</div>
+<p>Note how the first token of the third line has <code class="docutils literal notranslate"><span class="pre">BAD_DEDENT</span></code> as a token type:
+this is a type that does not exists in Python’s tokens.</p>
+</section>
+<section id="unterminated-string">
+<h3>Unterminated string<a class="headerlink" href="#unterminated-string" title="Link to this heading"></a></h3>
+<p>Next, we consider a simple example where we have an
+unterminated single-quoted string.
+We first use Python 3.11:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">&gt;</span> <span class="n">py</span>
+<span class="n">Python</span> <span class="mf">3.11.9</span> <span class="o">...</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="kn">from</span><span class="w"> </span><span class="nn">tokenize</span><span class="w"> </span><span class="kn">import</span> <span class="n">generate_tokens</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="kn">from</span><span class="w"> </span><span class="nn">io</span><span class="w"> </span><span class="kn">import</span> <span class="n">StringIO</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">source</span> <span class="o">=</span> <span class="s2">" ' "</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="k">for</span> <span class="n">token</span> <span class="ow">in</span> <span class="n">generate_tokens</span><span class="p">(</span><span class="n">StringIO</span><span class="p">(</span><span class="n">source</span><span class="p">)</span><span class="o">.</span><span class="n">readline</span><span class="p">):</span>
+<span class="o">...</span>    <span class="nb">print</span><span class="p">(</span><span class="n">token</span><span class="p">)</span>
+<span class="o">...</span>
+<span class="n">TokenInfo</span><span class="p">(</span><span class="nb">type</span><span class="o">=</span><span class="mi">5</span> <span class="p">(</span><span class="n">INDENT</span><span class="p">),</span> <span class="n">string</span><span class="o">=</span><span class="s1">' '</span><span class="p">,</span> <span class="n">start</span><span class="o">=</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="n">end</span><span class="o">=</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span> <span class="n">line</span><span class="o">=</span><span class="s2">" ' "</span><span class="p">)</span>
+<span class="n">TokenInfo</span><span class="p">(</span><span class="nb">type</span><span class="o">=</span><span class="mi">60</span> <span class="p">(</span><span class="n">ERRORTOKEN</span><span class="p">),</span> <span class="n">string</span><span class="o">=</span><span class="s2">"'"</span><span class="p">,</span> <span class="n">start</span><span class="o">=</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span> <span class="n">end</span><span class="o">=</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">),</span> <span class="n">line</span><span class="o">=</span><span class="s2">" ' "</span><span class="p">)</span>
+<span class="n">TokenInfo</span><span class="p">(</span><span class="nb">type</span><span class="o">=</span><span class="mi">4</span> <span class="p">(</span><span class="n">NEWLINE</span><span class="p">),</span> <span class="n">string</span><span class="o">=</span><span class="s1">''</span><span class="p">,</span> <span class="n">start</span><span class="o">=</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">),</span> <span class="n">end</span><span class="o">=</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">4</span><span class="p">),</span> <span class="n">line</span><span class="o">=</span><span class="s1">''</span><span class="p">)</span>
+<span class="n">TokenInfo</span><span class="p">(</span><span class="nb">type</span><span class="o">=</span><span class="mi">6</span> <span class="p">(</span><span class="n">DEDENT</span><span class="p">),</span> <span class="n">string</span><span class="o">=</span><span class="s1">''</span><span class="p">,</span> <span class="n">start</span><span class="o">=</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="n">end</span><span class="o">=</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="n">line</span><span class="o">=</span><span class="s1">''</span><span class="p">)</span>
+<span class="n">TokenInfo</span><span class="p">(</span><span class="nb">type</span><span class="o">=</span><span class="mi">0</span> <span class="p">(</span><span class="n">ENDMARKER</span><span class="p">),</span> <span class="n">string</span><span class="o">=</span><span class="s1">''</span><span class="p">,</span> <span class="n">start</span><span class="o">=</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="n">end</span><span class="o">=</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="n">line</span><span class="o">=</span><span class="s1">''</span><span class="p">)</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">tokens</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">generate_tokens</span><span class="p">(</span><span class="n">StringIO</span><span class="p">(</span><span class="n">source</span><span class="p">)</span><span class="o">.</span><span class="n">readline</span><span class="p">)</span>
+<span class="o">...</span> <span class="p">)</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="kn">from</span><span class="w"> </span><span class="nn">tokenize</span><span class="w"> </span><span class="kn">import</span> <span class="n">untokenize</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">output</span> <span class="o">=</span> <span class="n">untokenize</span><span class="p">(</span><span class="n">tokens</span><span class="p">)</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">output</span> <span class="o">==</span> <span class="n">source</span>
+<span class="kc">True</span>
+</pre></div>
+</div>
+<p>We note that we have an <code class="docutils literal notranslate"><span class="pre">ERRORTOKEN</span></code>, but that we can do
+the untokenize/tokenize round trip with no problem.</p>
+<p>Next we try with Python 3.12:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">Python</span> <span class="mf">3.12.9</span> <span class="o">...</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="kn">from</span><span class="w"> </span><span class="nn">tokenize</span><span class="w"> </span><span class="kn">import</span> <span class="n">untokenize</span><span class="p">,</span> <span class="n">generate_tokens</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="kn">from</span><span class="w"> </span><span class="nn">io</span><span class="w"> </span><span class="kn">import</span> <span class="n">StringIO</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">source</span> <span class="o">=</span> <span class="s2">" ' "</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="k">for</span> <span class="n">token</span> <span class="ow">in</span> <span class="n">generate_tokens</span><span class="p">(</span><span class="n">StringIO</span><span class="p">(</span><span class="n">source</span><span class="p">)</span><span class="o">.</span><span class="n">readline</span><span class="p">):</span>
+<span class="o">...</span>    <span class="nb">print</span><span class="p">(</span><span class="n">token</span><span class="p">)</span>
+<span class="o">...</span>
+<span class="n">TokenInfo</span><span class="p">(</span><span class="nb">type</span><span class="o">=</span><span class="mi">5</span> <span class="p">(</span><span class="n">INDENT</span><span class="p">),</span> <span class="n">string</span><span class="o">=</span><span class="s1">' '</span><span class="p">,</span> <span class="n">start</span><span class="o">=</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="n">end</span><span class="o">=</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span> <span class="n">line</span><span class="o">=</span><span class="s2">" ' "</span><span class="p">)</span>
+<span class="n">Traceback</span> <span class="p">(</span><span class="n">most</span> <span class="n">recent</span> <span class="n">call</span> <span class="n">last</span><span class="p">):</span>
+  <span class="n">File</span> <span class="s2">"&lt;stdin&gt;"</span><span class="p">,</span> <span class="n">line</span> <span class="mi">1</span><span class="p">,</span> <span class="ow">in</span> <span class="o">&lt;</span><span class="n">module</span><span class="o">&gt;</span>
+  <span class="n">File</span> <span class="s2">"C:\Users\Andre\AppData\Local\Programs\Python\Python312\Lib</span><span class="se">\t</span><span class="s2">okenize.py"</span><span class="p">,</span> <span class="n">line</span> <span class="mi">576</span><span class="p">,</span> <span class="ow">in</span> <span class="n">_generate_tokens_from_c_tokenizer</span>
+    <span class="k">raise</span> <span class="n">TokenError</span><span class="p">(</span><span class="n">msg</span><span class="p">,</span> <span class="p">(</span><span class="n">e</span><span class="o">.</span><span class="n">lineno</span><span class="p">,</span> <span class="n">e</span><span class="o">.</span><span class="n">offset</span><span class="p">))</span> <span class="kn">from</span><span class="w"> </span><span class="kc">None</span>
+<span class="n">tokenize</span><span class="o">.</span><span class="n">TokenError</span><span class="p">:</span> <span class="p">(</span><span class="s1">'unterminated string literal (detected at line 1)'</span><span class="p">,</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">))</span>
+</pre></div>
+</div>
+<p>As expected from the warning in the documentation, tokenizing cannot be done.</p>
+<p>Finally, we try with token-utils:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>  &gt;&gt;&gt; from token_utils import tokenize, untokenize, generate_tokens
+  &gt;&gt;&gt; source = " ' "
+  &gt;&gt;&gt; for token in generate_tokens(source):
+  ...    print(repr(token))
+  ...
+  type=5 (INDENT)  string=' '  start=(1, 0)  end=(1, 1)  line=" ' "
+  type=-2 (UNCLOSED_STRING_SINGLE)  string="'"  start=(1, 1)  end=(1, 2)  line=" ' "
+  type=4 (NEWLINE)  string=''  start=(1, 3)  end=(1, 4)  line=" ' "
+  type=0 (ENDMARKER)  string=''  start=(2, 0)  end=(2, 0)  line=''
+  &gt;&gt;&gt; untokenize(tokenize(source)) == source
+  True
+
+This time, rather than using ``tokenize`` which produces a list
+of tokens, we use ``generate_tokens``. Note that we have
+a special type of token, ``UNCLOSED_STRING_SINGLE`` rather than a
+generic ``ERRORTOKEN``. Also, we print the ``repr`` of tokens:
+with token-utils, the ``__str__`` value is its string attribute only.
+</pre></div>
+</div>
+</section>
+<section id="the-dreaded-eof">
+<h3>The dreaded EOF …<a class="headerlink" href="#the-dreaded-eof" title="Link to this heading"></a></h3>
+<p>For our final example of this category,
+we use an unterminated triple-quoted string.
+We know that this is an invalid syntax, so we
+don’t need to check with Python 3.12+.
+Let’s try with Python 3.11:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">tokenize</span><span class="w"> </span><span class="kn">import</span> <span class="n">generate_tokens</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">io</span><span class="w"> </span><span class="kn">import</span> <span class="n">StringIO</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">source</span> <span class="o">=</span> <span class="s2">" ''' this is the end"</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">for</span> <span class="n">token</span> <span class="ow">in</span> <span class="n">generate_tokens</span><span class="p">(</span><span class="n">StringIO</span><span class="p">(</span><span class="n">source</span><span class="p">)</span><span class="o">.</span><span class="n">readline</span><span class="p">):</span>
+<span class="gp">... </span>  <span class="nb">print</span><span class="p">(</span><span class="n">token</span><span class="p">)</span>
+<span class="gp">...</span>
+<span class="go">TokenInfo(type=5 (INDENT), string=' ', start=(1, 0), end=(1, 1), line=" ''' this is the end")</span>
+<span class="gt">Traceback (most recent call last):</span>
+  File <span class="nb">"&lt;stdin&gt;"</span>, line <span class="m">1</span>, in <span class="n">&lt;module&gt;</span>
+  File <span class="nb">"C:\Users\Andre\AppData\Local\Programs\Python\Python311\Lib\tokenize.py"</span>, line <span class="m">465</span>, in <span class="n">_tokenize</span>
+<span class="w">    </span><span class="k">raise</span> <span class="n">TokenError</span><span class="p">(</span><span class="s2">"EOF in multi-line string"</span><span class="p">,</span> <span class="n">strstart</span><span class="p">)</span>
+<span class="gr">tokenize.TokenError</span>: <span class="n">('EOF in multi-line string', (1, 1))</span>
+</pre></div>
+</div>
+<p>So, this doesn’t work. What about with token_utils?</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">token_utils</span><span class="w"> </span><span class="kn">import</span> <span class="n">generate_tokens</span><span class="p">,</span> <span class="n">untokenize</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">source</span> <span class="o">=</span> <span class="s2">" ''' this is the end"</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">for</span> <span class="n">token</span> <span class="ow">in</span> <span class="n">generate_tokens</span><span class="p">(</span><span class="n">source</span><span class="p">):</span>
+<span class="gp">... </span>   <span class="nb">print</span><span class="p">(</span><span class="nb">repr</span><span class="p">(</span><span class="n">token</span><span class="p">))</span>
+<span class="gp">...</span>
+<span class="go">type=5 (INDENT)  string=' '  start=(1, 0)  end=(1, 1)  line=" ''' this is the end"</span>
+<span class="go">ERROR: Unterminated triple quoted string.</span>
+<span class="go">type=-3 (UNCLOSED_STRING_TRIPLE)  string="''' this is the end"  start=(1, 1)  end=(2, 20)  line=" ''' this is the end"</span>
+</pre></div>
+</div>
+<p>For now, we get an additional error message interfering with the
+printout of tokens. This will likely be turned into <code class="docutils literal notranslate"><span class="pre">Warning</span></code> which
+might be silenced by default.</p>
+<p>We also notice yet another type of token: <code class="docutils literal notranslate"><span class="pre">UNCLOSED_STRING_TRIPLE</span></code>.
+Finally, can we do the round trip as we said we could?</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">untokenize</span><span class="p">(</span><span class="n">generate_tokens</span><span class="p">(</span><span class="n">source</span><span class="p">))</span> <span class="o">==</span> <span class="n">source</span>
+<span class="go">ERROR: Unterminated triple quoted string.</span>
+<span class="go">True</span>
+</pre></div>
+</div>
+</section>
 </section>
 </section>
 

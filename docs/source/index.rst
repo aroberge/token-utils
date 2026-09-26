@@ -72,7 +72,7 @@ Quick links to topics
 .. toctree::
    :maxdepth: 2
 
-    About tokens and token-utils <about_tokens>
+    About tokens: Python vs token-utils <about_tokens>
     API <api>
 
 
@@ -80,7 +80,6 @@ Quick links to topics
     :caption: Appendix
 
     Origin and history of token-utils <history>
-    Tokenizing notebook <tokenize_notebook>
 
 
 
