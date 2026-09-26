@@ -159,3 +159,16 @@ def test_unterminated_triple_quoted_string():
         untokenize(tokenize(unclosed_triple_quoted_string))
         == unclosed_triple_quoted_string
     )
+
+
+def test_invalid_octal():
+    # See https://github.com/friendly-traceback/friendly-traceback/issues/242
+    source = "b = 0o1876 + 0o2"
+    assert untokenize(tokenize(source)) == source
+    source = "a = 0o23 + 0O2987"
+    assert untokenize(tokenize(source)) == source
+
+
+def test_non_printable_character():
+    source = 'print\x17("Hello")'
+    assert untokenize(tokenize(source)) == source

@@ -82,6 +82,12 @@ class Token:
         """Returns True if the token represents a complex number.cavie"""
         return self.is_number() and isinstance(py_literal_eval(self.string), complex)
 
+    def is_f_string(self):
+        """Return True if the token is an f-string"""
+        return self.type == py_tokenize.STRING and (
+            self.string.startswith("f") or self.string.startswith("F")
+        )
+
     def is_float(self):
         """Returns True if the token represents a float."""
         return self.is_number() and isinstance(py_literal_eval(self.string), float)
@@ -94,6 +100,32 @@ class Token:
         which also returns ``True`` if the string is a keyword.
         """
         return self.string.isidentifier() and not self.is_keyword()
+
+    def is_immediately_before(self, other):
+        """Returns True if the current token is immediately before other,
+        without any intervening space in between the two tokens.
+        """
+        if not isinstance(other, Token):  # pragma: no cover
+            return False
+        return self.end_row == other.start_row and self.end_col == other.start_col
+
+    def is_immediately_after(self, other):
+        """Returns True if the current token is immediately after other,
+        without any intervening space in between the two tokens.
+        """
+        if not isinstance(other, Token):  # pragma: no cover
+            return False
+        return other.is_immediately_before(self)
+
+    def is_indentation(self):
+        """Returns True if the token indicates a change in indentation,
+        (``INDENT``, ``DEDENT``, ``BAD_DEDENT``).
+        """
+        return self.type in (
+            py_tokenize.INDENT,
+            py_tokenize.DEDENT,
+            py_tokenize.BAD_DEDENT,
+        )
 
     def is_integer(self):
         """Returns True if the token represents an integer"""
@@ -133,16 +165,13 @@ class Token:
             py_tokenize.ENDMARKER,
         )
 
-    def is_indentation(self):
-        """Returns True if the token indicates a change in indentation,
-        (``INDENT``, ``DEDENT``, ``BAD_DEDENT``).
-        """
-        return self.type in (
-            py_tokenize.INDENT,
-            py_tokenize.DEDENT,
-            py_tokenize.BAD_DEDENT,
-        )
-
     def is_string(self):
         """Returns True if the token represents a string"""
         return self.type == py_tokenize.STRING
+
+    def is_unclosed_string(self):
+        """Returns True if the token is an unclosed string"""
+        return self.type in (
+            py_tokenize.UNCLOSED_STRING_SINGLE,
+            py_tokenize.UNCLOSED_STRING_TRIPLE,
+        )

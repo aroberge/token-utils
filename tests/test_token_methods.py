@@ -1,4 +1,4 @@
-# Most, if not all of the following tests are trivial but they are there in
+# Most of the following tests are trivial but they are there in
 # case we make a typo when changing code. It happens...
 
 
@@ -40,6 +40,14 @@ def test_is_complex():
     assert not tokens[4].is_complex()
 
 
+def test_is_f_string():
+    tokens = tokenize("f'{something}' 'other'")
+    assert tokens[0].is_string()
+    assert tokens[0].is_f_string()
+    assert tokens[1].is_string()
+    assert not tokens[1].is_f_string()
+
+
 def test_is_float():
     tokens = tokenize("1.0 + 2.0j - 1")
     assert tokens[0] == "1.0"
@@ -56,6 +64,17 @@ def test_is_identifier():
     assert not tokens[0].is_identifier()
     assert tokens[1] == "test"
     assert tokens[1].is_identifier()
+
+
+def test_immediately_before_and_after():
+    tokens = tokenize("**/ =")
+    assert tokens[0] == "**"
+    assert tokens[1] == "/"
+    assert tokens[2] == "="
+    assert tokens[0].is_immediately_before(tokens[1])
+    assert tokens[1].is_immediately_after(tokens[0])
+    assert not tokens[1].is_immediately_before(tokens[2])
+    assert not tokens[2].is_immediately_after(tokens[1])
 
 
 def test_is_integer():
@@ -105,3 +124,17 @@ def test_is_operator():
     assert tokens[2] == "-"
     assert tokens[2].is_operator()
     assert not tokens[0].is_operator()
+
+
+def test_is_string():
+    tokens = tokenize("name = 'Bob'")
+    assert not tokens[0].is_string()
+    assert tokens[2].is_string()
+
+
+def test_is_unclosed_string():
+    tokens = tokenize("' a")
+    assert tokens[0].is_unclosed_string()
+
+    tokens = tokenize("'''   ")
+    assert tokens[0].is_unclosed_string()
