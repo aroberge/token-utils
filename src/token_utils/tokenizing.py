@@ -5,7 +5,6 @@ tokenizing.py
 All the functions dealing with tokenizing/untokenizing.
 """
 
-
 from token_utils import py_tokenize
 
 from io import StringIO as _StringIO
@@ -77,6 +76,9 @@ def get_significant_tokens(source, remove_comments=True):
     as well as any token that signal a change in indentation.
 
     Set ``remove_comments`` to ``False`` to keep comments.
+
+    Note that, regardless of the ``remove_comment`` value,
+    untokenizing will reinsert the comments!
     """
     tokens = []
     for token in generate_tokens(source):
@@ -108,13 +110,14 @@ def get_lines(source):
         lines.append(new_line)
     return lines
 
+
 def get_stripped_lines(source, remove_comments=True):
     """Transforms a source (string) into a list of of list of Tokens,
     with each (inner) list containing all the tokens found on a given
-    line of code, removing any token related to change in 
+    line of code, removing any token related to change in
     indentation as well as comments.
 
-    Set ``remove_comments`` to ``False`` to keep comments.
+    Set ``remove_comments`` to ``False`` to keep comments as tokens.
     """
     lines = []
     current_row = -1
@@ -139,53 +142,38 @@ def get_stripped_lines(source, remove_comments=True):
 
 
 def untokenize_lines_of_tokens(lines):
-    """Given a line of lines of tokens, such as that 
+    """Given a line of lines of tokens, such as that
     obtained by ``get_lines()`` or ``get_stripped_lines``,
     returns a string containing the source.
 
     The following should be true::
 
         untokenize_lines_of_tokens(get_lines(source)) == source
-
-    The same should be true when using ``get_stripped_lines``
-    with ``remove_comments=False``.
     """
     tokens = [token for line in lines for token in line]
     return untokenize(tokens)
 
 
-# this can be eliminated by using significant tokens and len()
-# However, it is currently used in ideas, so we need to change the
-# code there first.
-def get_number(tokens, exclude_comment=True):
-    """Given a list of tokens, gives a count of the number of
-    tokens which are not space tokens (such as ``NEWLINE``, ``INDENT``,
-    ``DEDENT``, etc.)
-
-    By default, ``COMMMENT`` tokens are not included in the count.
-    If you wish to include them, set ``exclude_comment`` to ``False``.
-    """
-    nb = len(tokens)
-    for token in tokens:
-        if token.is_space():
-            nb -= 1
-        elif exclude_comment and token.is_comment():
-            nb -= 1
-    return nb
-
-
-def strip_comment(line):
-    """Removes comments from a line"""
+def strip_comments(source):
+    """Removes the comments in a source"""
+    # Our untokenizing function uses not only the string attribute
+    # of each token but also their line attribute in recreating the
+    # source; this is because the string attribute might have some
+    # tab characters converted into spaces, and lost continuation characters, etc.
+    # So, simply removing the comments token is not enough.
     tokens = []
-    try:
-        for tok in py_tokenize.generate_tokens(_StringIO(line).readline):
-            token = Token(tok)
-            if token.is_comment():
-                continue
-            tokens.append(token)
-    except py_tokenize.TokenError:
-        pass
-    return untokenize(tokens)
+    for token in generate_tokens(source):
+        if token.is_comment():
+            token.string = " " * len(token.string)
+        tokens.append(token)
+    new_source = untokenize(tokens)  # this now includes some extra spaces
+    # at the end of lines which we need to remove
+    new_lines = []
+    lines = new_source.split("\n")
+    for line in lines:
+        new_lines.append(line.rstrip())
+    return "\n".join(new_lines)
+
 
 def untokenize(tokens):
     """Return source code based on tokens.
@@ -208,6 +196,9 @@ def untokenize(tokens):
     Instead of full token object, ``untokenize`` will accept simple
     strings; however, it will only insert them *as is* without taking them
     into account when it comes with figuring out spacing between tokens.
+
+    It is often more effective to "mutate" a token string to insert new
+    content.
     """
     words = []
     previous_line = ""
@@ -262,6 +253,7 @@ def print_tokens(source):
             print(repr(token))
         print()
 
+
 __all__ = ["__all__"]
 _names = dir()
 
@@ -273,3 +265,5 @@ def _make_all():
 
 
 _make_all()
+__all__.remove("__all__")
+print("from tokenizing", __all__)

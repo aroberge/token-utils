@@ -9,6 +9,7 @@ from token_utils import (
     dedent,
     untokenize,
     find_substring_index,
+    strip_comments,
 )
 
 source1 = "a = b"
@@ -58,3 +59,9 @@ def test_indent():
 def test_find_substring_index():
     assert find_substring_index(source2, source3) == -1
     assert find_substring_index(source3, source2) == 3
+
+
+def test_strip_commments():
+    statement = "if True: # a comment"
+    stripped = strip_comments(statement)
+    assert stripped == "if True:"

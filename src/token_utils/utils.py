@@ -101,6 +101,27 @@ def get_last_index(tokens, exclude_comment=True):
     )
 
 
+# this can be eliminated by using significant tokens and len()
+# However, it is currently used in ideas, so we need to change the
+# code there first.
+# UNTESTED ...
+def get_number(tokens, exclude_comment=True):
+    """Given a list of tokens, gives a count of the number of
+    tokens which are not space tokens (such as ``NEWLINE``, ``INDENT``,
+    ``DEDENT``, etc.)
+
+    By default, ``COMMMENT`` tokens are not included in the count.
+    If you wish to include them, set ``exclude_comment`` to ``False``.
+    """
+    nb = len(tokens)
+    for token in tokens:
+        if token.is_space():
+            nb -= 1
+        elif exclude_comment and token.is_comment():
+            nb -= 1
+    return nb
+
+
 def dedent(tokens, nb):
     """Given a list of tokens, produces an equivalent list corresponding
     to a line of code with the first nb characters removed.
@@ -140,3 +161,6 @@ def _make_all():
 
 
 _make_all()
+_make_all()
+__all__.remove("__all__")
+print("from utils.py", __all__)

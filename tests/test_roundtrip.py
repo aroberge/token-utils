@@ -15,6 +15,7 @@ from token_utils import (
 
 
 def check_all(source):
+    # "remove_comments" simply does not include them as tokens.
     assert untokenize(tokenize(source)) == source
     assert untokenize(get_significant_tokens(source, remove_comments=False)) == source
     assert untokenize_lines_of_tokens(get_lines(source)) == source

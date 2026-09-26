@@ -2,7 +2,7 @@
 # case we make a typo when changing code. It happens...
 
 
-from token_utils import tokenize
+from token_utils import tokenize, untokenize
 
 
 def test_contains():
@@ -147,3 +147,23 @@ def test_is_unclosed_string():
 
     tokens = tokenize("'''   ")
     assert tokens[0].is_unclosed_string()
+
+
+def test_replace_string_by_next():
+    source = "first_token other more_content"
+    expect = "other             more_content"
+    tokens = tokenize(source)
+    first = None
+    new_tokens = []
+    for token in tokens:
+        if token == "first_token":
+            first = token
+            continue
+        if first is not None:
+            first, second = first.replace_string_by_next(token)
+            new_tokens.append(first)
+            new_tokens.append(second)
+            first = None
+            continue
+        new_tokens.append(token)
+    assert untokenize(new_tokens) == expect

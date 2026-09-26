@@ -180,3 +180,26 @@ class Token:
             py_tokenize.UNCLOSED_STRING_SINGLE,
             py_tokenize.UNCLOSED_STRING_TRIPLE,
         )
+
+    def replace_string_by_next(self, other):
+        """This is to be used when you have two consecutive tokens
+        and you wish to effectively remove the first token, replacing
+        it by the second one.
+
+        Because of the way the untokenizing uses the line attribute
+        of a token, a simple suppression of a given token might not
+        make it necessarily disappear when untokenizing is done.
+        This takes care of it.
+
+        Visual example::
+
+            this_token other third  -->
+            other            third
+
+        This returns the first and second tokens appropriately modified,
+        ie: return (first, other)
+        """
+        first_len = len(self.string)
+        self.string = other.string
+        other.string = " " * first_len
+        return self, other
