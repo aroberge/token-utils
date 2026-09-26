@@ -203,3 +203,8 @@ class Token:
         self.string = other.string
         other.string = " " * first_len
         return self, other
+
+
+def make_fake_token(string="$", start=(0, 0), end=(0, 0), line=""):
+    fake = (py_tokenize.FAKE_TOKEN, string, start, end, line)
+    return Token(fake)

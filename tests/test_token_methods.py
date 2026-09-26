@@ -167,3 +167,13 @@ def test_replace_string_by_next():
             continue
         new_tokens.append(token)
     assert untokenize(new_tokens) == expect
+
+
+def test_make_fake():
+    from token_utils import make_fake_token
+
+    fake = make_fake_token()
+    source = "a = b"
+    tokens = tokenize(source)
+    tokens.insert(0, fake)
+    assert untokenize(tokens) == "$a = b"

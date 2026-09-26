@@ -79,6 +79,7 @@ NT_OFFSET = 256
 BAD_DEDENT = -1
 UNCLOSED_STRING_SINGLE = -2
 UNCLOSED_STRING_TRIPLE = -3
+FAKE_TOKEN = -4  # not an error as such ...
 
 
 tok_name = {
