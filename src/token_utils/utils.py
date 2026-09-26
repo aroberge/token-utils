@@ -8,13 +8,13 @@ A collection of various functions to find different tokens.
 from token_utils.tokenizing import get_significant_tokens, tokenize, untokenize
 
 
-# TODO: add unit test for this
 def find_substring_index(main, substring):
     """Somewhat similar to the find() method for strings,
     this function determines if the tokens for substring appear
     as a subsequence of the tokens for main. If so, the index
     of the first token in returned, otherwise -1 is returned.
     """
+    # used once in friendly-traceback; not sure it is worth keeping!
     main_tokens = [
         tok.string for tok in get_significant_tokens(main) if tok.string.strip()
     ]
@@ -106,6 +106,8 @@ def dedent(tokens, nb):
     to a line of code with the first nb characters removed.
     """
     # currently used in ideas
+    # a bit dangerous as there is no check to see if the character removed
+    # are not significant.
     line = untokenize(tokens)
     line = line[nb:]
     return tokenize(line)

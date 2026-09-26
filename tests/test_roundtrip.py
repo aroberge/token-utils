@@ -140,3 +140,22 @@ def test_py_tokenize():
     with open(py_tokenize.__file__, "r") as f:
         source = f.read()
     assert untokenize(tokenize(source)) == source
+
+
+def test_unterminated_string():
+    source = "name = 'Bob "
+    assert untokenize(tokenize(source)) == source
+
+
+unclosed_triple_quoted_string = """
+a = b  # see next line
+    '''  this is meant to be a long
+comment string but it never terminated.
+"""
+
+
+def test_unterminated_triple_quoted_string():
+    assert (
+        untokenize(tokenize(unclosed_triple_quoted_string))
+        == unclosed_triple_quoted_string
+    )
