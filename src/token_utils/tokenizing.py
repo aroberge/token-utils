@@ -118,6 +118,9 @@ def get_stripped_lines(source, remove_comments=True):
     indentation as well as comments.
 
     Set ``remove_comments`` to ``False`` to keep comments as tokens.
+
+    Note that, regardless of the ``remove_comment`` value,
+    untokenizing will reinsert the comments!
     """
     lines = []
     current_row = -1
@@ -162,6 +165,7 @@ def strip_comments(source):
     # tab characters converted into spaces, and lost continuation characters, etc.
     # So, simply removing the comments token is not enough.
     tokens = []
+
     for token in generate_tokens(source):
         if token.is_comment():
             token.string = " " * len(token.string)
@@ -199,6 +203,11 @@ def untokenize(tokens):
 
     It is often more effective to "mutate" a token string to insert new
     content.
+
+    Finally, while token_utils only deals with sources as string,
+    and doesn't do encoding, this function will drop tokens
+    identified as being of type ``ENCODING``, which would mean that they
+    came from another source.
     """
     words = []
     previous_line = ""
@@ -225,6 +234,7 @@ def untokenize(tokens):
         if token.start_row > last_row:
             last_column = 0
         if token.start_col > last_column:
+            # Insert the content that was skipped between tokens
             words.append(token.line[last_column : token.start_col])
 
         words.append(token.string)

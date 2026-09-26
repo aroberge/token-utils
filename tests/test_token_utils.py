@@ -61,7 +61,25 @@ def test_find_substring_index():
     assert find_substring_index(source3, source2) == 3
 
 
+with_comments = """
+def test():   # a good function
+    a = b     # fantastic mathematical operation
+    return 3
+
+# another comment to end things
+"""
+
+without_comments = """
+def test():
+    a = b
+    return 3
+
+
+"""
+
+
 def test_strip_commments():
     statement = "if True: # a comment"
     stripped = strip_comments(statement)
     assert stripped == "if True:"
+    assert without_comments == strip_comments(with_comments)

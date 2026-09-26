@@ -86,6 +86,13 @@ By contrast with Python's tokens, we have the following:
 Comparing tokenizing/untokenizing results
 ------------------------------------------
 
+.. important::
+
+    For now (?), token-utils only works with normal string sources.
+    Binary strings which need to be decoded, perhaps using a specific
+    codec, are not currently handled. If you need this, please file
+    an issue, including as much information as you can.
+
 Let's compare the result of first tokenizing followed by untokenizing
 some "problematic" source code, to illustrate the differences between
 Python and token-utils. We will proceed from the least problematic cases
@@ -339,11 +346,11 @@ Finally, we try with token-utils::
     >>> untokenize(tokenize(source)) == source
     True
 
-  This time, rather than using ``tokenize`` which produces a list
-  of tokens, we use ``generate_tokens``. Note that we have
-  a special type of token, ``UNCLOSED_STRING_SINGLE`` rather than a
-  generic ``ERRORTOKEN``. Also, we print the ``repr`` of tokens:
-  with token-utils, the ``__str__`` value is its string attribute only.
+This time, rather than using ``tokenize`` which produces a list
+of tokens, we use ``generate_tokens``. Note that we have
+a special type of token, ``UNCLOSED_STRING_SINGLE`` rather than a
+generic ``ERRORTOKEN``. Also, we print the ``repr`` of tokens:
+with token-utils, the ``__str__`` value is its string attribute only.
 
 The dreaded EOF ...
 ~~~~~~~~~~~~~~~~~~~~
