@@ -117,6 +117,11 @@ class Token:
             return False
         return other.is_immediately_before(self)
 
+    def is_in(self, sequence_of_strings):
+        """Returns True if the token string is found in the sequence
+        of strings."""
+        return self.string in sequence_of_strings
+
     def is_indentation(self):
         """Returns True if the token indicates a change in indentation,
         (``INDENT``, ``DEDENT``, ``BAD_DEDENT``).

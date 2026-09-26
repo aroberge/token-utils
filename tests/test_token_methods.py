@@ -58,6 +58,15 @@ def test_is_float():
     assert not tokens[4].is_float()
 
 
+def test_is_in():
+    tokens = tokenize("2+4-5")
+    for token in tokens:
+        if not token.string.strip():
+            continue
+        assert token.is_in(["2", "+", "4", "-", "5"])
+        assert not token.is_in(["1", "3", "*", "/"])
+
+
 def test_is_identifier():
     tokens = tokenize("def test")
     assert tokens[0] == "def"
