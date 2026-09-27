@@ -177,8 +177,8 @@ class Token:
     def is_unclosed_string(self):
         """Returns True if the token is an unclosed string"""
         return self.type in (
-            py_tokenize.UNCLOSED_STRING_SINGLE,
-            py_tokenize.UNCLOSED_STRING_TRIPLE,
+            py_tokenize.UNCL_SINGLE,
+            py_tokenize.UNCL_TRIPLE,
         )
 
     def replace_string_by_next(self, other):

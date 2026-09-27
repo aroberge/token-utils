@@ -35,7 +35,6 @@ import functools
 from io import TextIOWrapper
 import itertools as _itertools
 import re
-import sys
 from token_utils.py_token import *
 
 cookie_re = re.compile(r"^[ \t\f]*#.*?coding[:=][ \t]*([-\w.]+)", re.ASCII)
@@ -373,9 +372,7 @@ def _tokenize(readline, encoding):
                 end = len(contline.split("\n")[-1])
                 print("ERROR: Unterminated triple quoted string.")
                 unterminated_triple = True
-                yield TokenInfo(
-                    UNCLOSED_STRING_TRIPLE, contstr, strstart, (lnum, end), contline
-                )
+                yield TokenInfo(UNCL_TRIPLE, contstr, strstart, (lnum, end), contline)
                 break
             endmatch = endprog.match(line)
             if endmatch:
@@ -390,7 +387,7 @@ def _tokenize(readline, encoding):
                 if current_str.strip():
                     if current_str in ("'", '"'):
                         yield TokenInfo(
-                            UNCLOSED_STRING_SINGLE,
+                            UNCL_SINGLE,
                             current_str,
                             strstart,
                             (lnum, len(line)),
@@ -462,9 +459,7 @@ def _tokenize(readline, encoding):
                 end = len(contline.split("\n")[-1])
                 print("ERROR: Unterminated triple quoted string.")
                 unterminated_triple = True
-                yield TokenInfo(
-                    UNCLOSED_STRING_TRIPLE, contstr, strstart, (lnum, end), contline
-                )
+                yield TokenInfo(UNCL_TRIPLE, contstr, strstart, (lnum, end), contline)
                 break
             continued = 0
 
@@ -553,7 +548,7 @@ def _tokenize(readline, encoding):
                 if current_char.strip():
                     if current_char in ("'", '"'):
                         yield TokenInfo(
-                            UNCLOSED_STRING_SINGLE,
+                            UNCL_SINGLE,
                             line[pos],
                             (lnum, pos),
                             (lnum, pos + 1),

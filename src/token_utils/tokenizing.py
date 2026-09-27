@@ -82,6 +82,9 @@ def get_significant_tokens(source):
     """Gets a list of tokens from a source (str), removing
     any token that signal a change in indentation.
     """
+    # This is useful when we want to analyze the content of a
+    # line and want to identify a first 'significant' token
+    # as it will be the first of the line!
     tokens = []
     for token in generate_tokens(source):
         if token.is_indentation():
@@ -114,8 +117,9 @@ def get_lines(source):
 def get_stripped_lines(source):
     """Transforms a source (string) into a list of of list of Tokens,
     with each (inner) list containing all the tokens found on a given
-    line of code, removing any token related to change in
-    indentation as well as comments.
+    line of code except that any token related to change in
+    indentation will have been removed. Thus, for a given
+    (inner) list of tokens, list[0] will be a non-space token.
     """
     lines = []
     current_row = -1
