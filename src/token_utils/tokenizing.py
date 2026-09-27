@@ -23,19 +23,22 @@ def fix_empty_line(source, prev_token, last_token):
 
     we correct the last token content if needed.
     """
-    if prev_token is None:  # should not happen
+    if prev_token is None:
+        print("WARNING: fix_empty_line was called with prev_token==None.")
+        print("This should never happen. Please file an issue and include")
+        print("the source that produced this result.")
         return last_token
+
     if prev_token.line.endswith((" ", "\t")):  # fix not needed
         return last_token
 
-    nb = 0
+    new_chars = []
     for char in reversed(source):
         if char in (" ", "\t"):
-            nb += 1
+            new_chars.insert(0, char)
         else:
             break
-    last_token.string = source[-nb:]
-    assert nb > 0
+    last_token.string = "".join(new_chars)
     return last_token
 
 
@@ -47,20 +50,24 @@ def generate_tokens(source):
     # So, we keep watch for the last token (ENDMARKER) and
     # apply a fix if needed.
     prev_token = None
-    fix_needed = source.endswith((" ", "\t"))
+    perhaps_fix_needed = source.endswith((" ", "\t"))
     try:
         for tok in py_tokenize.generate_tokens(_StringIO(source).readline):
             token = Token(tok)
-            if token.type != py_tokenize.ENDMARKER or not fix_needed:
+            if token.type != py_tokenize.ENDMARKER or not perhaps_fix_needed:
                 yield token
             else:
-                yield fix_empty_line(source, prev_token, token)
+                if not source.strip():  # We were passed a useless string!
+                    token.string = source
+                    yield token
+                else:
+                    yield fix_empty_line(source, prev_token, token)
             prev_token = token
     except Exception as exc:
         print(
             "WARNING: the following unexpected error was raised in ",
-            f"{__name__}.generate_tokens\n",
-            "Please report this as an issue.",
+            "token_utils' generate_tokens().\n",
+            "Please report this as an issue, including the source that produced this.",
         )
         print(exc, repr(exc))
 
@@ -71,20 +78,13 @@ def tokenize(source, warning=True):
     return list(generate_tokens(source))
 
 
-def get_significant_tokens(source, remove_comments=True):
-    """Gets a list of tokens from a source (str), ignoring comments
-    as well as any token that signal a change in indentation.
-
-    Set ``remove_comments`` to ``False`` to keep comments.
-
-    Note that, regardless of the ``remove_comment`` value,
-    untokenizing will reinsert the comments!
+def get_significant_tokens(source):
+    """Gets a list of tokens from a source (str), removing
+    any token that signal a change in indentation.
     """
     tokens = []
     for token in generate_tokens(source):
         if token.is_indentation():
-            continue
-        if token.is_comment() and remove_comments:
             continue
         tokens.append(token)
 
@@ -111,34 +111,23 @@ def get_lines(source):
     return lines
 
 
-def get_stripped_lines(source, remove_comments=True):
+def get_stripped_lines(source):
     """Transforms a source (string) into a list of of list of Tokens,
     with each (inner) list containing all the tokens found on a given
     line of code, removing any token related to change in
     indentation as well as comments.
-
-    Set ``remove_comments`` to ``False`` to keep comments as tokens.
-
-    Note that, regardless of the ``remove_comment`` value,
-    untokenizing will reinsert the comments!
     """
     lines = []
     current_row = -1
     new_line = []
-    prev_token = ""
     for token in generate_tokens(source):
         if token.start_row != current_row:
             current_row = token.start_row
             if new_line:
                 lines.append(new_line)
-            else:
-                new_line = [prev_token]
-                lines.append(new_line)
             new_line = []
         if not token.is_indentation():
-            if not (token.is_comment() and remove_comments):
-                new_line.append(token)
-        prev_token = token
+            new_line.append(token)
     if new_line:
         lines.append(new_line)
     return lines
@@ -159,24 +148,20 @@ def untokenize_lines_of_tokens(lines):
 
 def strip_comments(source):
     """Removes the comments in a source"""
-    # Our untokenizing function uses not only the string attribute
-    # of each token but also their line attribute in recreating the
-    # source; this is because the string attribute might have some
-    # tab characters converted into spaces, and lost continuation characters, etc.
-    # So, simply removing the comments token is not enough.
+    # The untokenizing function uses not only the string attribute
+    # but also the start_col, end_col, and line attributes
+    # to see if any character included in the line attribute
+    # between the end_col of a token preceeding the start_col
+    # of another must be included. Thus, we must not simply remove
+    # tokens from a stream unless they contain only spaces,
+    # otherwise we might not get the desired result.
     tokens = []
 
     for token in generate_tokens(source):
         if token.is_comment():
-            token.string = " " * len(token.string)
+            token.string = ""  # does not remove any space preceeding it.
         tokens.append(token)
-    new_source = untokenize(tokens)  # this now includes some extra spaces
-    # at the end of lines which we need to remove
-    new_lines = []
-    lines = new_source.split("\n")
-    for line in lines:
-        new_lines.append(line.rstrip())
-    return "\n".join(new_lines)
+    return untokenize(tokens)
 
 
 def untokenize(tokens):
