@@ -168,6 +168,7 @@ def strip_comments(source):
         if token.is_comment():
             token.string = ""  # does not remove any space preceeding it.
         tokens.append(token)
+
     mid_removal = untokenize(tokens)
     # now we remove the extra spaces.
     lines = mid_removal.split("\n")
@@ -205,6 +206,11 @@ def untokenize(tokens):
     identified as being of type ``ENCODING``, which would mean that they
     came from another source.
     """
+    # Main changes from original:
+    # 1. We accumulate substrings in a list, rather than concatenating them
+    #    as we go along
+    # 2. We allow the inclusion of pure strings as token, but without
+    #    taking their length into consideration.
     words = []
     previous_line = ""
     last_row = 0
