@@ -1,0 +1,26 @@
+"""Token constants with additions to Python's stdlib token.py"""
+
+from token import *
+from token import EXACT_TOKEN_TYPES
+
+__all__ = ["tok_name", "ISTERMINAL", "ISNONTERMINAL", "ISEOF", "EXACT_TOKEN_TYPES"]
+
+# Special negative values for token_utils
+
+for value, name in tok_name.items():
+    if -4 <= value <= -1:
+        print("ERROR: conflicting values between Python's token constants")
+        print("and token_utils. Please file an issue.")
+
+BAD_DEDENT = -1
+UNCL_SINGLE = -2
+UNCL_TRIPLE = -3
+FAKE_TOKEN = -4
+
+
+tok_name = {
+    value: name
+    for name, value in globals().items()
+    if isinstance(value, int) and not name.startswith("_")
+}
+__all__.extend(tok_name.values())

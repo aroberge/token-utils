@@ -7,25 +7,6 @@ own version.
 
 Anything in this module should NOT be called directly;
 rather, function from token_utils should be used.
-
-tokenize(readline) is a generator that breaks a stream of bytes into
-Python tokens.  It decodes the bytes according to PEP-0263 for
-determining source file encoding.
-
-It accepts a readline-like method which is called repeatedly to get the
-next line of input (or b"" for EOF).  It generates 5-tuples with these
-members:
-
-    the token type (see token.py)
-    the token (a string)
-    the starting (row, column) indices of the token (a 2-tuple of ints)
-    the ending (row, column) indices of the token (a 2-tuple of ints)
-    the original line (string)
-
-It is designed to match the working of the Python tokenizer exactly, except
-that it produces COMMENT tokens for comments and gives type OP for all
-operators.  Additionally, all token lists start with an ENCODING token
-which tells you which encoding was used to decode the bytes stream.
 """
 
 from builtins import open as _builtin_open
@@ -35,21 +16,13 @@ import functools
 from io import TextIOWrapper
 import itertools as _itertools
 import re
-from token_utils.py_token import *
+from token_utils.token_plus import *
 
 cookie_re = re.compile(r"^[ \t\f]*#.*?coding[:=][ \t]*([-\w.]+)", re.ASCII)
 blank_re = re.compile(rb"^[ \t\f]*(?:[#\r\n]|$)", re.ASCII)
 
-import token
-
-__all__ = token.__all__ + [
-    "tokenize",
-    "generate_tokens",
-    "detect_encoding",
-    "untokenize",
-    "TokenInfo",
-]
-del token
+# prevent accidently importing * from here as names might conflict with our own
+__all__ = []
 
 
 class TokenInfo(collections.namedtuple("TokenInfo", "type string start end line")):
