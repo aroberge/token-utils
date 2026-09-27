@@ -3,42 +3,26 @@
 This has been adapted from Python 3.11 tokenize.py
 It has been mostly copied almost exactly except that anything
 about "untokenizing" has been removed as we rely on our
-own version.
+own version. We've also removed anything related to encoding as
+it is  not needed.
 
-Anything in this module should NOT be called directly;
-rather, function from token_utils should be used.
+Anything in this module should NOT be called directly from
+your code.
 """
 
-from builtins import open as _builtin_open
-from codecs import lookup, BOM_UTF8
 import collections
 import functools
-from io import TextIOWrapper
 import itertools as _itertools
 import re
 from token_utils.token_plus import *
 
-cookie_re = re.compile(r"^[ \t\f]*#.*?coding[:=][ \t]*([-\w.]+)", re.ASCII)
+# prevent accidently importing * from here as names might conflict with our own
+from token_utils.token_plus import __all__
+
 blank_re = re.compile(rb"^[ \t\f]*(?:[#\r\n]|$)", re.ASCII)
 
-# prevent accidently importing * from here as names might conflict with our own
-__all__ = []
 
-
-class TokenInfo(collections.namedtuple("TokenInfo", "type string start end line")):
-    def __repr__(self):
-        annotated_type = "%d (%s)" % (self.type, tok_name[self.type])
-        return (
-            "TokenInfo(type=%s, string=%r, start=%r, end=%r, line=%r)"
-            % self._replace(type=annotated_type)
-        )
-
-    @property
-    def exact_type(self):
-        if self.type == OP and self.string in EXACT_TOKEN_TYPES:
-            return EXACT_TOKEN_TYPES[self.string]
-        else:
-            return self.type
+class TokenInfo(collections.namedtuple("TokenInfo", "type string start end line")): ...
 
 
 def group(*choices):
@@ -158,171 +142,31 @@ del t, u
 tabsize = 8
 
 
-# class TokenError(Exception):
-#     pass
+def generate_tokens(readline):
+    """Tokenize a source reading Python code as unicode strings.
 
+    It accepts a readline-like method which is called repeatedly to get the
+    next line of input (or "" for EOF).  It generates 5-tuples with these
+    members:
 
-def _get_normal_name(orig_enc):
-    """Imitates get_normal_name in tokenizer.c."""
-    # Only care about the first 12 characters.
-    enc = orig_enc[:12].lower().replace("_", "-")
-    if enc == "utf-8" or enc.startswith("utf-8-"):
-        return "utf-8"
-    if enc in ("latin-1", "iso-8859-1", "iso-latin-1") or enc.startswith(
-        ("latin-1-", "iso-8859-1-", "iso-latin-1-")
-    ):
-        return "iso-8859-1"
-    return orig_enc
+        the token type (see token.py)
+        the token (a string)
+        the starting (row, column) indices of the token (a 2-tuple of ints)
+        the ending (row, column) indices of the token (a 2-tuple of ints)
+        the original line (string)
 
-
-def detect_encoding(readline):
+    It is designed to match the working of the Python tokenizer exactly, except
+    that it produces COMMENT tokens for comments and gives type OP for all
+    operators.
     """
-    The detect_encoding() function is used to detect the encoding that should
-    be used to decode a Python source file.  It requires one argument, readline,
-    in the same way as the tokenize() generator.
-
-    It will call readline a maximum of twice, and return the encoding used
-    (as a string) and a list of any lines (left as bytes) it has read in.
-
-    It detects the encoding from the presence of a utf-8 bom or an encoding
-    cookie as specified in pep-0263.  If both a bom and a cookie are present,
-    but disagree, a SyntaxError will be raised.  If the encoding cookie is an
-    invalid charset, raise a SyntaxError.  Note that if a utf-8 bom is found,
-    'utf-8-sig' is returned.
-
-    If no encoding is specified, then the default of 'utf-8' will be returned.
-    """
-    try:
-        filename = readline.__self__.name
-    except AttributeError:
-        filename = None
-    bom_found = False
-    encoding = None
-    default = "utf-8"
-
-    def read_or_stop():
-        try:
-            return readline()
-        except StopIteration:
-            return b""
-
-    def find_cookie(line):
-        try:
-            # Decode as UTF-8. Either the line is an encoding declaration,
-            # in which case it should be pure ASCII, or it must be UTF-8
-            # per default encoding.
-            line_string = line.decode("utf-8")
-        except UnicodeDecodeError:
-            msg = "invalid or missing encoding declaration"
-            if filename is not None:
-                msg = "{} for {!r}".format(msg, filename)
-            raise SyntaxError(msg)
-
-        match = cookie_re.match(line_string)
-        if not match:
-            return None
-        encoding = _get_normal_name(match.group(1))
-        try:
-            codec = lookup(encoding)
-        except LookupError:
-            # This behaviour mimics the Python interpreter
-            if filename is None:
-                msg = "unknown encoding: " + encoding
-            else:
-                msg = "unknown encoding for {!r}: {}".format(filename, encoding)
-            raise SyntaxError(msg)
-
-        if bom_found:
-            if encoding != "utf-8":
-                # This behaviour mimics the Python interpreter
-                if filename is None:
-                    msg = "encoding problem: utf-8"
-                else:
-                    msg = "encoding problem for {!r}: utf-8".format(filename)
-                raise SyntaxError(msg)
-            encoding += "-sig"
-        return encoding
-
-    first = read_or_stop()
-    if first.startswith(BOM_UTF8):
-        bom_found = True
-        first = first[3:]
-        default = "utf-8-sig"
-    if not first:
-        return default, []
-
-    encoding = find_cookie(first)
-    if encoding:
-        return encoding, [first]
-    if not blank_re.match(first):
-        return default, [first]
-
-    second = read_or_stop()
-    if not second:
-        return default, [first]
-
-    encoding = find_cookie(second)
-    if encoding:
-        return encoding, [first, second]
-
-    return default, [first, second]
-
-
-def open(filename):
-    """Open a file in read only mode using the encoding detected by
-    detect_encoding().
-    """
-    buffer = _builtin_open(filename, "rb")
-    try:
-        encoding, lines = detect_encoding(buffer.readline)
-        buffer.seek(0)
-        text = TextIOWrapper(buffer, encoding, line_buffering=True)
-        text.mode = "r"
-        return text
-    except:
-        buffer.close()
-        raise
-
-
-def tokenize(readline):
-    """
-    The tokenize() generator requires one argument, readline, which
-    must be a callable object which provides the same interface as the
-    readline() method of built-in file objects.  Each call to the function
-    should return one line of input as bytes.  Alternatively, readline
-    can be a callable function terminating with StopIteration:
-        readline = open(myfile, 'rb').__next__  # Example of alternate readline
-
-    The generator produces 5-tuples with these members: the token type; the
-    token string; a 2-tuple (srow, scol) of ints specifying the row and
-    column where the token begins in the source; a 2-tuple (erow, ecol) of
-    ints specifying the row and column where the token ends in the source;
-    and the line on which the token was found.  The line passed is the
-    physical line.
-
-    The first token sequence will always be an ENCODING token
-    which tells you which encoding was used to decode the bytes stream.
-    """
-    encoding, consumed = detect_encoding(readline)
-    empty = _itertools.repeat(b"")
-    rl_gen = _itertools.chain(consumed, iter(readline, b""), empty)
-    return _tokenize(rl_gen.__next__, encoding)
-
-
-def _tokenize(readline, encoding):
     lnum = parenlev = continued = 0
     numchars = "0123456789"
     contstr, needcont = "", 0
     contline = None
     indents = [0]
 
-    if encoding is not None:
-        if encoding == "utf-8-sig":
-            # BOM will already have been stripped.
-            encoding = "utf-8"
-        yield TokenInfo(ENCODING, encoding, (0, 0), (0, 0), "")
-    last_line = b""
-    line = b""
+    last_line = ""
+    line = ""
     unterminated_triple = False
     while True:  # loop over lines in stream
         try:
@@ -333,10 +177,8 @@ def _tokenize(readline, encoding):
             last_line = line
             line = readline()
         except StopIteration:
-            line = b""
+            line = ""
 
-        if encoding is not None:
-            line = line.decode(encoding)
         lnum += 1
         pos, max = 0, len(line)
 
@@ -549,12 +391,3 @@ def _tokenize(readline, encoding):
                 last_line,
             )
         yield TokenInfo(ENDMARKER, "", (lnum, 0), (lnum, 0), "")
-
-
-def generate_tokens(readline):
-    """Tokenize a source reading Python code as unicode strings.
-
-    This has the same API as tokenize(), except that it expects the *readline*
-    callable to return str objects instead of bytes.
-    """
-    return _tokenize(readline, None)

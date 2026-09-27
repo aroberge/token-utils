@@ -340,7 +340,7 @@ Finally, we try with token-utils::
     ...    print(repr(token))
     ...
     type=5 (INDENT)  string=' '  start=(1, 0)  end=(1, 1)  line=" ' "
-    type=-2 (UNCLOSED_STRING_SINGLE)  string="'"  start=(1, 1)  end=(1, 2)  line=" ' "
+    type=-2 (UNCL_SINGLE)  string="'"  start=(1, 1)  end=(1, 2)  line=" ' "
     type=4 (NEWLINE)  string=''  start=(1, 3)  end=(1, 4)  line=" ' "
     type=0 (ENDMARKER)  string=''  start=(2, 0)  end=(2, 0)  line=''
     >>> untokenize(tokenize(source)) == source
@@ -348,7 +348,7 @@ Finally, we try with token-utils::
 
 This time, rather than using ``tokenize`` which produces a list
 of tokens, we use ``generate_tokens``. Note that we have
-a special type of token, ``UNCLOSED_STRING_SINGLE`` rather than a
+a special type of token, ``UNCL_SINGLE`` rather than a
 generic ``ERRORTOKEN``. Also, we print the ``repr`` of tokens:
 with token-utils, the ``__str__`` value is its string attribute only.
 
@@ -385,13 +385,13 @@ So, this doesn't work. What about with token_utils?
     ...
     type=5 (INDENT)  string=' '  start=(1, 0)  end=(1, 1)  line=" ''' this is the end"
     ERROR: Unterminated triple quoted string.
-    type=-3 (UNCLOSED_STRING_TRIPLE)  string="''' this is the end"  start=(1, 1)  end=(2, 20)  line=" ''' this is the end"
+    type=-3 (UNCL_TRIPLE)  string="''' this is the end"  start=(1, 1)  end=(2, 20)  line=" ''' this is the end"
 
 For now, we get an additional error message interfering with the
 printout of tokens. This will likely be turned into ``Warning`` which
 might be silenced by default.
 
-We also notice yet another type of token: ``UNCLOSED_STRING_TRIPLE``.
+We also notice yet another type of token: ``UNCL_TRIPLE``.
 Finally, can we do the round trip as we said we could?
 
 .. code-block::

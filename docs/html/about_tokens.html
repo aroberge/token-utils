@@ -11,7 +11,7 @@
       <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=9edc463e" />
       <link rel="stylesheet" type="text/css" href="_static/custom.css?v=c7e4a82f" />
 
-  
+
       <script src="_static/jquery.js?v=5d32c60e"></script>
       <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
       <script src="_static/documentation_options.js?v=6ffd866b"></script>
@@ -21,17 +21,17 @@
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
     <link rel="next" title="API" href="api.html" />
-    <link rel="prev" title="token-utils" href="index.html" /> 
+    <link rel="prev" title="token-utils" href="index.html" />
 </head>
 
-<body class="wy-body-for-nav"> 
+<body class="wy-body-for-nav">
   <div class="wy-grid-for-nav">
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
         <div class="wy-side-nav-search" >
 
-          
-          
+
+
           <a href="index.html" class="icon icon-home">
             token-utils
           </a>
@@ -90,7 +90,7 @@
 </div>
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
-             
+
   <section id="about-tokens-python-vs-token-utils">
 <h1>About tokens: Python vs token-utils<a class="headerlink" href="#about-tokens-python-vs-token-utils" title="Link to this heading"></a></h1>
 <div class="admonition-summary admonition">
@@ -415,7 +415,7 @@ the untokenize/tokenize round trip with no problem.</p>
 <span class="gp">... </span>   <span class="nb">print</span><span class="p">(</span><span class="nb">repr</span><span class="p">(</span><span class="n">token</span><span class="p">))</span>
 <span class="gp">...</span>
 <span class="go">type=5 (INDENT)  string=' '  start=(1, 0)  end=(1, 1)  line=" ' "</span>
-<span class="go">type=-2 (UNCLOSED_STRING_SINGLE)  string="'"  start=(1, 1)  end=(1, 2)  line=" ' "</span>
+<span class="go">type=-2 (UNCL_SINGLE)  string="'"  start=(1, 1)  end=(1, 2)  line=" ' "</span>
 <span class="go">type=4 (NEWLINE)  string=''  start=(1, 3)  end=(1, 4)  line=" ' "</span>
 <span class="go">type=0 (ENDMARKER)  string=''  start=(2, 0)  end=(2, 0)  line=''</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">untokenize</span><span class="p">(</span><span class="n">tokenize</span><span class="p">(</span><span class="n">source</span><span class="p">))</span> <span class="o">==</span> <span class="n">source</span>
@@ -424,7 +424,7 @@ the untokenize/tokenize round trip with no problem.</p>
 </div>
 <p>This time, rather than using <code class="docutils literal notranslate"><span class="pre">tokenize</span></code> which produces a list
 of tokens, we use <code class="docutils literal notranslate"><span class="pre">generate_tokens</span></code>. Note that we have
-a special type of token, <code class="docutils literal notranslate"><span class="pre">UNCLOSED_STRING_SINGLE</span></code> rather than a
+a special type of token, <code class="docutils literal notranslate"><span class="pre">UNCL_SINGLE</span></code> rather than a
 generic <code class="docutils literal notranslate"><span class="pre">ERRORTOKEN</span></code>. Also, we print the <code class="docutils literal notranslate"><span class="pre">repr</span></code> of tokens:
 with token-utils, the <code class="docutils literal notranslate"><span class="pre">__str__</span></code> value is its string attribute only.</p>
 </section>
@@ -457,13 +457,13 @@ Let’s try with Python 3.11:</p>
 <span class="gp">...</span>
 <span class="go">type=5 (INDENT)  string=' '  start=(1, 0)  end=(1, 1)  line=" ''' this is the end"</span>
 <span class="go">ERROR: Unterminated triple quoted string.</span>
-<span class="go">type=-3 (UNCLOSED_STRING_TRIPLE)  string="''' this is the end"  start=(1, 1)  end=(2, 20)  line=" ''' this is the end"</span>
+<span class="go">type=-3 (UNCL_TRIPLE)  string="''' this is the end"  start=(1, 1)  end=(2, 20)  line=" ''' this is the end"</span>
 </pre></div>
 </div>
 <p>For now, we get an additional error message interfering with the
 printout of tokens. This will likely be turned into <code class="docutils literal notranslate"><span class="pre">Warning</span></code> which
 might be silenced by default.</p>
-<p>We also notice yet another type of token: <code class="docutils literal notranslate"><span class="pre">UNCLOSED_STRING_TRIPLE</span></code>.
+<p>We also notice yet another type of token: <code class="docutils literal notranslate"><span class="pre">UNCL_TRIPLE</span></code>.
 Finally, can we do the round trip as we said we could?</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">untokenize</span><span class="p">(</span><span class="n">generate_tokens</span><span class="p">(</span><span class="n">source</span><span class="p">))</span> <span class="o">==</span> <span class="n">source</span>
 <span class="go">ERROR: Unterminated triple quoted string.</span>
@@ -491,7 +491,7 @@ Finally, can we do the round trip as we said we could?</p>
   Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
     <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
     provided by <a href="https://readthedocs.org">Read the Docs</a>.
-   
+
 
 </footer>
         </div>
@@ -502,7 +502,7 @@ Finally, can we do the round trip as we said we could?</p>
       jQuery(function () {
           SphinxRtdTheme.Navigation.enable(true);
       });
-  </script> 
+  </script>
 
 </body>
 </html>
