@@ -65,8 +65,8 @@ def test_find_substring_index():
 # would be left behind, so we put the comments
 # right next to a non-space token for testing
 with_comments = """
-def test():# a good function
-    a = b# fantastic mathematical operation
+def test():  # a good function
+    a = b  # fantastic mathematical operation
     return 3
 
 # another comment to end things
@@ -84,5 +84,5 @@ def test():
 def test_strip_commments():
     statement = "if True: # a comment"
     stripped = strip_comments(statement)
-    assert stripped == "if True: "
+    assert stripped == "if True:"
     assert without_comments == strip_comments(with_comments)

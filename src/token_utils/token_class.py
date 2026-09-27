@@ -144,6 +144,10 @@ class Token:
         """Returns ``True`` if the token is a type NAME"""
         return self.type == py_tokenize.NAME
 
+    def is_newline(self):
+        """Returns True if the token type is either ``NEWLINE`` or ``NL``."""
+        return self.type in (py_tokenize.NEWLINE, py_tokenize.NL)
+
     def is_number(self):
         """Returns True if the token represents a number."""
         return self.type == py_tokenize.NUMBER

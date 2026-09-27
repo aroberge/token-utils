@@ -151,7 +151,10 @@ def untokenize_lines_of_tokens(lines):
 
 
 def strip_comments(source):
-    """Removes the comments in a source"""
+    """Removes the comments in a source.
+    It also removes any space at the end of each line
+    (before the '\n' if present).
+    """
     # The untokenizing function uses not only the string attribute
     # but also the start_col, end_col, and line attributes
     # to see if any character included in the line attribute
@@ -165,7 +168,11 @@ def strip_comments(source):
         if token.is_comment():
             token.string = ""  # does not remove any space preceeding it.
         tokens.append(token)
-    return untokenize(tokens)
+    mid_removal = untokenize(tokens)
+    # now we remove the extra spaces.
+    lines = mid_removal.split("\n")
+    new_lines = [line.rstrip(" ") for line in lines]
+    return "\n".join(new_lines)
 
 
 def untokenize(tokens):
