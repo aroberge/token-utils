@@ -157,3 +157,14 @@ def test_make_fake():
     tokens = tokenize(source)
     tokens.insert(0, fake)
     assert untokenize(tokens) == "$a = b"
+
+
+def test_is_identical():
+    from token_utils import make_fake_token
+
+    tok1 = make_fake_token()
+    tok2 = make_fake_token()
+    tok3 = make_fake_token(string="|")
+
+    assert tok1.is_identical(tok2)
+    assert not tok1.is_identical(tok3)

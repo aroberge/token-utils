@@ -14,12 +14,19 @@ import collections
 import functools
 import itertools as _itertools
 import re
+import warnings
 from token_utils.token_plus import *
 
 # prevent accidently importing * from here as names might conflict with our own
 from token_utils.token_plus import __all__
 
 blank_re = re.compile(rb"^[ \t\f]*(?:[#\r\n]|$)", re.ASCII)
+
+
+class TokenUtilsEOFWarning(UserWarning):
+    """Raised when and EOF condition is reached."""
+
+    pass
 
 
 class TokenInfo(collections.namedtuple("TokenInfo", "type string start end line")): ...
@@ -185,7 +192,10 @@ def generate_tokens(readline):
         if contstr:  # continued string
             if not line:
                 end = len(contline.split("\n")[-1])
-                print("ERROR: Unterminated triple quoted string.")
+                warnings.warn(
+                    "Unterminated triple quoted string.",
+                    TokenUtilsEOFWarning,
+                )
                 unterminated_triple = True
                 yield TokenInfo(UNCL_TRIPLE, contstr, strstart, (lnum, end), contline)
                 break
@@ -272,7 +282,10 @@ def generate_tokens(readline):
         else:  # continued statement
             if not line:
                 end = len(contline.split("\n")[-1])
-                print("ERROR: Unterminated triple quoted string.")
+                warnings.warn(
+                    "Unterminated triple quoted string.",
+                    TokenUtilsEOFWarning,
+                )
                 unterminated_triple = True
                 yield TokenInfo(UNCL_TRIPLE, contstr, strstart, (lnum, end), contline)
                 break

@@ -92,6 +92,16 @@ class Token:
         """Returns True if the token represents a float."""
         return self.is_number() and isinstance(ast.literal_eval(self.string), float)
 
+    def is_identical(self, other):
+        """Returs True if the other token is identical"""
+        return (
+            self.type == other.type
+            and self.string == other.string
+            and self.start == other.start
+            and self.end == other.end
+            and self.line == other.line
+        )
+
     def is_identifier(self):
         """Returns ``True`` if the token represents a valid Python identifier
         excluding Python keywords.

@@ -6,10 +6,17 @@ A collection of various functions
 """
 
 import warnings
-from itertools import chain
+from collections import deque
+from itertools import chain, islice
 
 from token_utils.tokenizing import tokenize, untokenize
 from token_utils.token_class import make_fake_token
+
+
+class TokenUtilsDeprecationWarning(DeprecationWarning):
+    """Raised when deprecated function is called."""
+
+    pass
 
 
 def pairwise(iterable, prev=True):
@@ -33,6 +40,16 @@ def pairwise(iterable, prev=True):
         a = b
 
 
+def sliding_window(iterable, n):
+    "Collect data into overlapping fixed-length chunks or blocks."
+    # sliding_window('ABCDEFG', 3) → ABC BCD CDE DEF EFG
+    iterator = iter(iterable)
+    window = deque(islice(iterator, n - 1), maxlen=n)
+    for x in iterator:
+        window.append(x)
+        yield tuple(window)
+
+
 def get_first(tokens, exclude_comment=True):
     """DEPRECATED
 
@@ -46,7 +63,7 @@ def get_first(tokens, exclude_comment=True):
     """
     warnings.warn(
         "This will soon be removed. Replace by getting a list of significant tokens",
-        DeprecationWarning,
+        TokenUtilsDeprecationWarning,
     )
     for token in tokens:
         if token.is_space() or (exclude_comment and token.is_comment()):
@@ -67,7 +84,7 @@ def get_first_index(tokens, exclude_comment=True):
     """
     warnings.warn(
         "This will soon be removed. Replace by getting a list of significant tokens",
-        DeprecationWarning,
+        TokenUtilsDeprecationWarning,
     )
     for index, token in enumerate(tokens):
         if token.is_space() or (exclude_comment and token.is_comment()):
@@ -90,7 +107,7 @@ def get_last(tokens, exclude_comment=True):
     """
     warnings.warn(
         "This will soon be removed. Replace by getting a list of significant tokens",
-        DeprecationWarning,
+        TokenUtilsDeprecationWarning,
     )
     return get_first(reversed(tokens), exclude_comment=exclude_comment)
 
@@ -107,7 +124,7 @@ def get_last_index(tokens, exclude_comment=True):
     """
     warnings.warn(
         "This will soon be removed. Replace by getting a list of significant tokens",
-        DeprecationWarning,
+        TokenUtilsDeprecationWarning,
     )
     return (
         len(tokens)
@@ -128,7 +145,7 @@ def get_number(tokens, exclude_comment=True):
     """
     warnings.warn(
         "This will soon be removed. Replace by getting a list of significant tokens",
-        DeprecationWarning,
+        TokenUtilsDeprecationWarning,
     )
     nb = len(tokens)
     for token in tokens:
@@ -161,7 +178,7 @@ def indent(tokens, nb, tab=False):
     """
     warnings.warn(
         "This will soon be removed. Replace by getting a list of significant tokens",
-        DeprecationWarning,
+        TokenUtilsDeprecationWarning,
     )
     line = untokenize(tokens)
     if tab:
@@ -184,3 +201,4 @@ def _make_all():
 _make_all()
 _make_all()
 __all__.remove("__all__")
+__all__.remove("TokenUtilsDeprecationWarning")
