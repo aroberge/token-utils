@@ -93,7 +93,7 @@ def get_first(tokens, exclude_comment=True):
     Returns ``None`` if none is found.
     """
     warnings.warn(
-        "This will soon be removed. Replace by getting a list of significant tokens",
+        "get_first() will soon be removed. Replace by getting a list of significant tokens",
         TokenUtilsDeprecationWarning,
     )
     for token in tokens:
@@ -114,7 +114,7 @@ def get_first_index(tokens, exclude_comment=True):
     Returns ``None`` if none is found.
     """
     warnings.warn(
-        "This will soon be removed. Replace by getting a list of significant tokens",
+        "get_first_index() will soon be removed. Replace by getting a list of significant tokens",
         TokenUtilsDeprecationWarning,
     )
     for index, token in enumerate(tokens):
@@ -137,7 +137,7 @@ def get_last(tokens, exclude_comment=True):
     Returns ``None`` if none is found.
     """
     warnings.warn(
-        "This will soon be removed. Replace by getting a list of significant tokens",
+        "get_last() will soon be removed. Replace by getting a list of significant tokens",
         TokenUtilsDeprecationWarning,
     )
     return get_first(reversed(tokens), exclude_comment=exclude_comment)
@@ -154,7 +154,7 @@ def get_last_index(tokens, exclude_comment=True):
     Returns ``None`` if none is found.
     """
     warnings.warn(
-        "This will soon be removed. Replace by getting a list of significant tokens",
+        "get_first_index() will soon be removed. Replace by getting a list of significant tokens",
         TokenUtilsDeprecationWarning,
     )
     return (
@@ -175,7 +175,7 @@ def get_number(tokens, exclude_comment=True):
     If you wish to include them, set ``exclude_comment`` to ``False``.
     """
     warnings.warn(
-        "This will soon be removed. Replace by getting a list of significant tokens",
+        "get_number() will soon be removed. Replace by getting a list of significant tokens",
         TokenUtilsDeprecationWarning,
     )
     nb = len(tokens)
@@ -208,7 +208,7 @@ def indent(tokens, nb, tab=False):
     instead of spaces.
     """
     warnings.warn(
-        "This will soon be removed. Replace by getting a list of significant tokens",
+        "indent() will soon be removed.",
         TokenUtilsDeprecationWarning,
     )
     line = untokenize(tokens)
