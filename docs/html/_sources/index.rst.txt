@@ -28,37 +28,22 @@ is always guaranteed::
 
 To get an idea of the simplicity of using token-utils, consider
 `this example from Python's standard library <https://docs.python.org/3/library/tokenize.html#examples>`_
-which substitute Decimals for floats in a string of statements::
+which substitute Decimals for floats in a string of statements,
+where we changed the name of the function for greater clarity:
 
-    from tokenize import tokenize, untokenize, NUMBER, STRING, NAME, OP
-    from io import BytesIO
-
-    def decistmt(s):
-        result = []
-        g = tokenize(BytesIO(s.encode('utf-8')).readline)  # tokenize the string
-        for toknum, tokval, _, _, _ in g:
-            if toknum == NUMBER and '.' in tokval:  # replace NUMBER tokens
-                result.extend([
-                    (NAME, 'Decimal'),
-                    (OP, '('),
-                    (STRING, repr(tokval)),
-                    (OP, ')')
-                ])
-            else:
-                result.append((toknum, tokval))
-        return untokenize(result).decode('utf-8')
+.. literalinclude:: ../../docs_examples/decimal_py.py
 
 
-Here's how you could achieve the same result with token-utils::
+.. sidebar:: About the examples
 
-    from token_utils import tokenize, untokenize
+    The files with a name as a top comment
+    are found in the ``/docs_examples``
+    directory of the repository.
 
-    def decistmt(source):
-        tokens = tokenize(source)
-        for token in tokens:
-            if token.is_float():
-                token.string = f"Decimal('{token.string}')"
-        return untokenize(tokens)
+
+Here's how you could achieve the same result with token-utils:
+
+.. literalinclude:: ../../docs_examples/decimal_tok.py
 
 
 Quick links to topics
@@ -73,6 +58,7 @@ Quick links to topics
    :maxdepth: 2
 
     About tokens: Python vs token-utils <about_tokens>
+    About untokenizing <untokenizing>
     API <api>
 
 

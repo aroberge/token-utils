@@ -9,6 +9,7 @@
   <title>token-utils &mdash; token-utils 0.2.4 documentation</title>
       <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=03e43079" />
       <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=9edc463e" />
+      <link rel="stylesheet" type="text/css" href="_static/sphinx-new-tab-link.css?v=d87cb1ac" />
       <link rel="stylesheet" type="text/css" href="_static/custom.css?v=c7e4a82f" />
 
   
@@ -44,6 +45,7 @@
         </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
               <ul>
 <li class="toctree-l1"><a class="reference internal" href="about_tokens.html"> About tokens: Python vs token-utils</a></li>
+<li class="toctree-l1"><a class="reference internal" href="untokenizing.html"> About untokenizing</a></li>
 <li class="toctree-l1"><a class="reference internal" href="api.html"> API</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Appendix</span></p>
@@ -79,7 +81,7 @@
              
   <section id="token-utils">
 <h1>token-utils<a class="headerlink" href="#token-utils" title="Link to this heading"></a></h1>
-<p><a class="reference external" href="https://github.com/aroberge/token-utils">Code on Github</a></p>
+<p><a class="reference external" href="https://github.com/aroberge/token-utils" rel="noreferrer" target="_blank">Code on Github</a></p>
 <section id="installation">
 <h2>Installation<a class="headerlink" href="#installation" title="Link to this heading"></a></h2>
 <div class="highlight-none notranslate"><div class="highlight"><pre><span></span>pip install token-utils
@@ -89,7 +91,7 @@
 <section id="purpose">
 <h2>Purpose<a class="headerlink" href="#purpose" title="Link to this heading"></a></h2>
 <p>The purpose of token-utils is to simplify manipulations of tokens normally
-obtaind from Python’s <a class="reference external" href="https://docs.python.org/3/library/tokenize.html">tokenize module</a>.
+obtaind from Python’s <a class="reference external" href="https://docs.python.org/3/library/tokenize.html" rel="noreferrer" target="_blank">tokenize module</a>.
 One of token-utils’ features is that, unlike Python’s version, the following
 is always guaranteed:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">token_utils</span><span class="w"> </span><span class="kn">import</span> <span class="n">tokenize</span><span class="p">,</span> <span class="n">untokenize</span>
@@ -100,31 +102,43 @@ is always guaranteed:</p>
 </pre></div>
 </div>
 <p>To get an idea of the simplicity of using token-utils, consider
-<a class="reference external" href="https://docs.python.org/3/library/tokenize.html#examples">this example from Python’s standard library</a>
-which substitute Decimals for floats in a string of statements:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">tokenize</span><span class="w"> </span><span class="kn">import</span> <span class="n">tokenize</span><span class="p">,</span> <span class="n">untokenize</span><span class="p">,</span> <span class="n">NUMBER</span><span class="p">,</span> <span class="n">STRING</span><span class="p">,</span> <span class="n">NAME</span><span class="p">,</span> <span class="n">OP</span>
+<a class="reference external" href="https://docs.python.org/3/library/tokenize.html#examples" rel="noreferrer" target="_blank">this example from Python’s standard library</a>
+which substitute Decimals for floats in a string of statements,
+where we changed the name of the function for greater clarity:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># decimal_py.py</span>
+<span class="c1">#</span>
+<span class="c1"># Example taken from Python's tokenize module documentation</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">tokenize</span><span class="w"> </span><span class="kn">import</span> <span class="n">tokenize</span><span class="p">,</span> <span class="n">untokenize</span><span class="p">,</span> <span class="n">NUMBER</span><span class="p">,</span> <span class="n">STRING</span><span class="p">,</span> <span class="n">NAME</span><span class="p">,</span> <span class="n">OP</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">io</span><span class="w"> </span><span class="kn">import</span> <span class="n">BytesIO</span>
 
-<span class="k">def</span><span class="w"> </span><span class="nf">decistmt</span><span class="p">(</span><span class="n">s</span><span class="p">):</span>
+
+<span class="k">def</span><span class="w"> </span><span class="nf">float_to_decimal</span><span class="p">(</span><span class="n">s</span><span class="p">):</span>  <span class="c1"># changed name from Python's example</span>
     <span class="n">result</span> <span class="o">=</span> <span class="p">[]</span>
-    <span class="n">g</span> <span class="o">=</span> <span class="n">tokenize</span><span class="p">(</span><span class="n">BytesIO</span><span class="p">(</span><span class="n">s</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="s1">'utf-8'</span><span class="p">))</span><span class="o">.</span><span class="n">readline</span><span class="p">)</span>  <span class="c1"># tokenize the string</span>
+    <span class="n">g</span> <span class="o">=</span> <span class="n">tokenize</span><span class="p">(</span><span class="n">BytesIO</span><span class="p">(</span><span class="n">s</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="s2">"utf-8"</span><span class="p">))</span><span class="o">.</span><span class="n">readline</span><span class="p">)</span>  <span class="c1"># tokenize the string</span>
     <span class="k">for</span> <span class="n">toknum</span><span class="p">,</span> <span class="n">tokval</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">_</span> <span class="ow">in</span> <span class="n">g</span><span class="p">:</span>
-        <span class="k">if</span> <span class="n">toknum</span> <span class="o">==</span> <span class="n">NUMBER</span> <span class="ow">and</span> <span class="s1">'.'</span> <span class="ow">in</span> <span class="n">tokval</span><span class="p">:</span>  <span class="c1"># replace NUMBER tokens</span>
-            <span class="n">result</span><span class="o">.</span><span class="n">extend</span><span class="p">([</span>
-                <span class="p">(</span><span class="n">NAME</span><span class="p">,</span> <span class="s1">'Decimal'</span><span class="p">),</span>
-                <span class="p">(</span><span class="n">OP</span><span class="p">,</span> <span class="s1">'('</span><span class="p">),</span>
-                <span class="p">(</span><span class="n">STRING</span><span class="p">,</span> <span class="nb">repr</span><span class="p">(</span><span class="n">tokval</span><span class="p">)),</span>
-                <span class="p">(</span><span class="n">OP</span><span class="p">,</span> <span class="s1">')'</span><span class="p">)</span>
-            <span class="p">])</span>
+        <span class="k">if</span> <span class="n">toknum</span> <span class="o">==</span> <span class="n">NUMBER</span> <span class="ow">and</span> <span class="s2">"."</span> <span class="ow">in</span> <span class="n">tokval</span><span class="p">:</span>  <span class="c1"># replace NUMBER tokens</span>
+            <span class="n">result</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span>
+                <span class="p">[(</span><span class="n">NAME</span><span class="p">,</span> <span class="s2">"Decimal"</span><span class="p">),</span> <span class="p">(</span><span class="n">OP</span><span class="p">,</span> <span class="s2">"("</span><span class="p">),</span> <span class="p">(</span><span class="n">STRING</span><span class="p">,</span> <span class="nb">repr</span><span class="p">(</span><span class="n">tokval</span><span class="p">)),</span> <span class="p">(</span><span class="n">OP</span><span class="p">,</span> <span class="s2">")"</span><span class="p">)]</span>
+            <span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="n">result</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">toknum</span><span class="p">,</span> <span class="n">tokval</span><span class="p">))</span>
-    <span class="k">return</span> <span class="n">untokenize</span><span class="p">(</span><span class="n">result</span><span class="p">)</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="s1">'utf-8'</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">untokenize</span><span class="p">(</span><span class="n">result</span><span class="p">)</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="s2">"utf-8"</span><span class="p">)</span>
 </pre></div>
 </div>
+<aside class="sidebar">
+<p class="sidebar-title">About the examples</p>
+<p>The files with a name as a top comment
+are found in the <code class="docutils literal notranslate"><span class="pre">/docs_examples</span></code>
+directory of the repository.</p>
+</aside>
 <p>Here’s how you could achieve the same result with token-utils:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">token_utils</span><span class="w"> </span><span class="kn">import</span> <span class="n">tokenize</span><span class="p">,</span> <span class="n">untokenize</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># decimal_tok.py</span>
 
-<span class="k">def</span><span class="w"> </span><span class="nf">decistmt</span><span class="p">(</span><span class="n">source</span><span class="p">):</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">token_utils</span><span class="w"> </span><span class="kn">import</span> <span class="n">tokenize</span><span class="p">,</span> <span class="n">untokenize</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">float_to_decimal</span><span class="p">(</span><span class="n">source</span><span class="p">):</span>
     <span class="n">tokens</span> <span class="o">=</span> <span class="n">tokenize</span><span class="p">(</span><span class="n">source</span><span class="p">)</span>
     <span class="k">for</span> <span class="n">token</span> <span class="ow">in</span> <span class="n">tokens</span><span class="p">:</span>
         <span class="k">if</span> <span class="n">token</span><span class="o">.</span><span class="n">is_float</span><span class="p">():</span>
@@ -147,8 +161,13 @@ which substitute Decimals for floats in a string of statements:</p>
 <li class="toctree-l2"><a class="reference internal" href="about_tokens.html#comparing-tokenizing-untokenizing-results">Comparing tokenizing/untokenizing results</a></li>
 </ul>
 </li>
+<li class="toctree-l1"><a class="reference internal" href="untokenizing.html"> About untokenizing</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="untokenizing.html#understanding-the-untokenizing-algorithm">Understanding the untokenizing algorithm</a></li>
+<li class="toctree-l2"><a class="reference internal" href="untokenizing.html#inserting-tokens">Inserting tokens?</a></li>
+</ul>
+</li>
 <li class="toctree-l1"><a class="reference internal" href="api.html"> API</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="api.html#module-token_utils">token_utils.py API extracted by Sphinx</a></li>
+<li class="toctree-l2"><a class="reference internal" href="api.html#module-token_utils.token_class">API extracted by Sphinx</a></li>
 </ul>
 </li>
 </ul>

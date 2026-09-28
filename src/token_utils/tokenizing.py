@@ -170,9 +170,9 @@ def strip_comments(source):
         tokens.append(token)
 
     mid_removal = untokenize(tokens)
-    # now we remove the extra spaces.
+    # now we remove the extra spaces before the commment
     lines = mid_removal.split("\n")
-    new_lines = [line.rstrip(" ") for line in lines]
+    new_lines = [line.rstrip() for line in lines]
     return "\n".join(new_lines)
 
 
@@ -211,6 +211,7 @@ def untokenize(tokens):
     #    as we go along
     # 2. We allow the inclusion of pure strings as token, but without
     #    taking their length into consideration.
+    # Begin code (for extraction by Sphinx)
     words = []
     previous_line = ""
     last_row = 0
@@ -248,6 +249,7 @@ def untokenize(tokens):
             last_non_whitespace_token_type = token.type
 
     return "".join(words)
+    # End code (for extraction by Sphinx)
 
 
 def print_tokens(source):

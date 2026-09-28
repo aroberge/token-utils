@@ -1,0 +1,348 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="./">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>About untokenizing &mdash; token-utils 0.2.4 documentation</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=03e43079" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=9edc463e" />
+      <link rel="stylesheet" type="text/css" href="_static/sphinx-new-tab-link.css?v=d87cb1ac" />
+      <link rel="stylesheet" type="text/css" href="_static/custom.css?v=c7e4a82f" />
+
+  
+      <script src="_static/jquery.js?v=5d32c60e"></script>
+      <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="_static/documentation_options.js?v=6ffd866b"></script>
+      <script src="_static/doctools.js?v=9bcbadda"></script>
+      <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="API" href="api.html" />
+    <link rel="prev" title="About tokens: Python vs token-utils" href="about_tokens.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            token-utils
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="about_tokens.html"> About tokens: Python vs token-utils</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#"> About untokenizing</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#understanding-the-untokenizing-algorithm">Understanding the untokenizing algorithm</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#inserting-tokens">Inserting tokens?</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="api.html"> API</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Appendix</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="history.html">Origin and history of token-utils</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">token-utils</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content style-external-links">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">About untokenizing</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/untokenizing.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul><div class="rst-breadcrumbs-buttons" role="navigation" aria-label="Sequential page navigation">
+        <a href="about_tokens.html" class="btn btn-neutral float-left" title="About tokens: Python vs token-utils" accesskey="p"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="api.html" class="btn btn-neutral float-right" title="API" accesskey="n">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+  </div>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="about-untokenizing">
+<h1>About untokenizing<a class="headerlink" href="#about-untokenizing" title="Link to this heading"></a></h1>
+<div class="admonition important">
+<p class="admonition-title">Important</p>
+<p><strong>Summary of this section</strong></p>
+<p>In order to modify some source code, there are two
+ways to proceed:</p>
+<ol class="arabic simple">
+<li><p>If possible, simply mutate the string of one or more tokens.</p></li>
+<li><p>When needed, simply insert a normal string in the token stream.</p></li>
+</ol>
+<p>Do not attempt to remove tokens nor to insert extra tokens.</p>
+</div>
+<section id="understanding-the-untokenizing-algorithm">
+<h2>Understanding the untokenizing algorithm<a class="headerlink" href="#understanding-the-untokenizing-algorithm" title="Link to this heading"></a></h2>
+<p>In the previous section, we’ve seen how we could perform
+perfect tokenize/untokenize round trips. However, if you attempt
+to modify a list of tokens prior to recover a string version
+using <code class="docutils literal notranslate"><span class="pre">untokenize</span></code>, you might get some surprising result if
+you try to use the same approach as that used for Python’s
+tokenize examples.</p>
+<p>To understand what is going on, I will use a simple example
+where I will only keep two tokens:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">source</span> <span class="o">=</span> <span class="s2">"one two three"</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">new_tokens</span> <span class="o">=</span> <span class="p">[]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">for</span> <span class="n">token</span> <span class="ow">in</span> <span class="n">generate_tokens</span><span class="p">(</span><span class="n">source</span><span class="p">):</span>
+<span class="gp">... </span>    <span class="k">if</span> <span class="n">token</span><span class="o">.</span><span class="n">is_in</span><span class="p">([</span><span class="s2">"one"</span><span class="p">,</span> <span class="s2">"three"</span><span class="p">]):</span>
+<span class="gp">... </span>        <span class="n">new_tokens</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">token</span><span class="p">)</span>
+<span class="gp">...</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">for</span> <span class="n">token</span> <span class="ow">in</span> <span class="n">new_tokens</span><span class="p">:</span>
+<span class="gp">... </span>    <span class="nb">print</span><span class="p">(</span><span class="nb">repr</span><span class="p">(</span><span class="n">token</span><span class="p">))</span>
+<span class="gp">...</span>
+<span class="go">type=1 (NAME)  string='one'  start=(1, 0)  end=(1, 3)  line='one two three'</span>
+<span class="go">type=1 (NAME)  string='three'  start=(1, 8)  end=(1, 13)  line='one two three'</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">untokenize</span><span class="p">(</span><span class="n">new_tokens</span><span class="p">)</span>
+<span class="go">'one two three'</span>
+</pre></div>
+</div>
+<p>So, we have only two tokens and yet the whole line gets reconstructed.</p>
+<p>Note that tokens are on the same row/line (1); the first <strong>ends at column 3</strong>
+and the second <strong>begins at column 8</strong>. For both tokens, the
+<strong>line attribute</strong> contains the entire content of the original line.</p>
+<aside class="sidebar">
+<p class="sidebar-title">Original version</p>
+<p><a class="reference external" href="https://github.com/myint/untokenize" rel="noreferrer" target="_blank">The original version</a>
+created in 2013, is unmaintained and apparently
+can no longer be installed from Pypi as it is uses
+an old <code class="docutils literal notranslate"><span class="pre">setup.py</span></code> version.</p>
+</aside>
+<p>Below is the slightly modified <code class="docutils literal notranslate"><span class="pre">untokenize</span></code> used in
+token-utils,
+based on the clever algorithm designed by Steven Mynt,
+which guarantees to recover every character
+initially present in the source, thus enabling a perfect
+tokenize/untokenize round trip.</p>
+<p>Other than adapting to use with token-utils tokens rather
+that those coming from Python’s <code class="docutils literal notranslate"><span class="pre">tokenize</span></code> module,
+the only addition we made was to allow the insertion of
+simple strings (instead of tokens) as a way to insert
+content into an original source.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="linenos"> 1</span>    <span class="n">words</span> <span class="o">=</span> <span class="p">[]</span>
+<span class="linenos"> 2</span>    <span class="n">previous_line</span> <span class="o">=</span> <span class="s2">""</span>
+<span class="linenos"> 3</span>    <span class="n">last_row</span> <span class="o">=</span> <span class="mi">0</span>
+<span class="linenos"> 4</span>    <span class="n">last_column</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span>
+<span class="linenos"> 5</span>    <span class="n">last_non_whitespace_token_type</span> <span class="o">=</span> <span class="kc">None</span>
+<span class="linenos"> 6</span>
+<span class="linenos"> 7</span>    <span class="k">for</span> <span class="n">token</span> <span class="ow">in</span> <span class="n">tokens</span><span class="p">:</span>
+<span class="hll"><span class="linenos"> 8</span>        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">token</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+</span><span class="hll"><span class="linenos"> 9</span>            <span class="n">words</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">token</span><span class="p">)</span>
+</span><span class="hll"><span class="linenos">10</span>            <span class="k">continue</span>
+</span><span class="linenos">11</span>        <span class="k">if</span> <span class="n">token</span><span class="o">.</span><span class="n">type</span> <span class="o">==</span> <span class="n">py_tokenize</span><span class="o">.</span><span class="n">ENCODING</span><span class="p">:</span>
+<span class="linenos">12</span>            <span class="k">continue</span>
+<span class="linenos">13</span>
+<span class="linenos">14</span>        <span class="c1"># Preserve escaped newlines.</span>
+<span class="linenos">15</span>        <span class="k">if</span> <span class="p">(</span>
+<span class="linenos">16</span>            <span class="n">last_non_whitespace_token_type</span> <span class="o">!=</span> <span class="n">py_tokenize</span><span class="o">.</span><span class="n">COMMENT</span>
+<span class="linenos">17</span>            <span class="ow">and</span> <span class="n">token</span><span class="o">.</span><span class="n">start_row</span> <span class="o">&gt;</span> <span class="n">last_row</span>
+<span class="linenos">18</span>            <span class="ow">and</span> <span class="n">previous_line</span><span class="o">.</span><span class="n">endswith</span><span class="p">((</span><span class="s2">"</span><span class="se">\\\n</span><span class="s2">"</span><span class="p">,</span> <span class="s2">"</span><span class="se">\\\r\n</span><span class="s2">"</span><span class="p">,</span> <span class="s2">"</span><span class="se">\\\r</span><span class="s2">"</span><span class="p">))</span>
+<span class="linenos">19</span>        <span class="p">):</span>
+<span class="linenos">20</span>            <span class="n">words</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">previous_line</span><span class="p">[</span><span class="nb">len</span><span class="p">(</span><span class="n">previous_line</span><span class="o">.</span><span class="n">rstrip</span><span class="p">(</span><span class="s2">" </span><span class="se">\t\n\r\\</span><span class="s2">"</span><span class="p">))</span> <span class="p">:])</span>
+<span class="linenos">21</span>
+<span class="linenos">22</span>        <span class="c1"># Preserve spacing.</span>
+<span class="linenos">23</span>        <span class="k">if</span> <span class="n">token</span><span class="o">.</span><span class="n">start_row</span> <span class="o">&gt;</span> <span class="n">last_row</span><span class="p">:</span>
+<span class="linenos">24</span>            <span class="n">last_column</span> <span class="o">=</span> <span class="mi">0</span>
+<span class="hll"><span class="linenos">25</span>        <span class="k">if</span> <span class="n">token</span><span class="o">.</span><span class="n">start_col</span> <span class="o">&gt;</span> <span class="n">last_column</span><span class="p">:</span>
+</span><span class="hll"><span class="linenos">26</span>            <span class="c1"># Insert the content that was skipped between tokens</span>
+</span><span class="hll"><span class="linenos">27</span>            <span class="n">words</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">token</span><span class="o">.</span><span class="n">line</span><span class="p">[</span><span class="n">last_column</span> <span class="p">:</span> <span class="n">token</span><span class="o">.</span><span class="n">start_col</span><span class="p">])</span>
+</span><span class="linenos">28</span>
+<span class="linenos">29</span>        <span class="n">words</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">token</span><span class="o">.</span><span class="n">string</span><span class="p">)</span>
+<span class="linenos">30</span>
+<span class="linenos">31</span>        <span class="n">previous_line</span> <span class="o">=</span> <span class="n">token</span><span class="o">.</span><span class="n">line</span>
+<span class="hll"><span class="linenos">32</span>        <span class="n">last_row</span> <span class="o">=</span> <span class="n">token</span><span class="o">.</span><span class="n">end_row</span>
+</span><span class="linenos">33</span>        <span class="n">last_column</span> <span class="o">=</span> <span class="n">token</span><span class="o">.</span><span class="n">end_col</span>
+<span class="linenos">34</span>        <span class="k">if</span> <span class="ow">not</span> <span class="n">token</span><span class="o">.</span><span class="n">is_space</span><span class="p">():</span>
+<span class="linenos">35</span>            <span class="n">last_non_whitespace_token_type</span> <span class="o">=</span> <span class="n">token</span><span class="o">.</span><span class="n">type</span>
+<span class="linenos">36</span>
+<span class="linenos">37</span>    <span class="k">return</span> <span class="s2">""</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">words</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Let’s focus on the following for the example we just saw.</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>one two three    &lt;-- line
+( ).....(   )
+  3     8
+
+...
+if token.start_col &gt; last_column:
+    # Insert the content that was skipped between tokens
+    words.append(token.line[last_column : token.start_col])
+...
+
+if 8 &gt; 3:
+    words.append(line[3:8])
+</pre></div>
+</div>
+<p>Now we see why <code class="docutils literal notranslate"><span class="pre">two</span></code> was included in the untokenized output
+even though we removed the token having it as a string.</p>
+<p>Also note:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">...</span>
+<span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">token</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+    <span class="n">words</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">token</span><span class="p">)</span>
+    <span class="k">continue</span>
+</pre></div>
+</div>
+<p>So, in order to modify the source code, there are two
+ways to proceed:</p>
+<ol class="arabic simple">
+<li><p>If possible, simply mutate the string of one or more tokens.</p></li>
+<li><p>When needed, simply insert a normal string in the token stream.</p></li>
+</ol>
+<p>Let’s use the first method to show how to remove comments.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">token_utils</span><span class="w"> </span><span class="kn">import</span> <span class="n">generate_tokens</span><span class="p">,</span> <span class="n">untokenize</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">new_tokens</span> <span class="o">=</span> <span class="p">[]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">source</span> <span class="o">=</span> <span class="s2">"""import math  # an important module</span>
+<span class="gp">... </span><span class="s2">print(math.pi)  # a famous constant</span>
+<span class="gp">... </span><span class="s2">"""</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">source</span><span class="p">)</span>
+<span class="go">import math  # an important module</span>
+<span class="go">print(math.pi)  # a famous constant</span>
+
+<span class="gp">&gt;&gt;&gt; </span><span class="k">for</span> <span class="n">token</span> <span class="ow">in</span> <span class="n">generate_tokens</span><span class="p">(</span><span class="n">source</span><span class="p">):</span>
+<span class="gp">... </span>    <span class="k">if</span> <span class="n">token</span><span class="o">.</span><span class="n">is_comment</span><span class="p">():</span>
+<span class="gp">... </span>        <span class="n">token</span><span class="o">.</span><span class="n">string</span> <span class="o">=</span> <span class="s2">""</span>
+<span class="gp">... </span>    <span class="n">new_tokens</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">token</span><span class="p">)</span>
+<span class="gp">...</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">untokenize</span><span class="p">(</span><span class="n">new_tokens</span><span class="p">))</span>
+<span class="go">import math</span>
+<span class="go">print(math.pi)</span>
+</pre></div>
+</div>
+<p>As for adding string content: remember our <code class="docutils literal notranslate"><span class="pre">float_to_decimal()</span></code> function?
+In order to use decimals properly, we need to do the appropriaate import first.
+Here’s a modified version:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># decimal_tok2.py</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">token_utils</span><span class="w"> </span><span class="kn">import</span> <span class="n">generate_tokens</span><span class="p">,</span> <span class="n">untokenize</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">float_to_decimal</span><span class="p">(</span><span class="n">source</span><span class="p">):</span>
+    <span class="n">new_tokens</span> <span class="o">=</span> <span class="p">[</span><span class="s2">"from decimal import Decimal</span><span class="se">\n\n</span><span class="s2">"</span><span class="p">]</span>
+    <span class="k">for</span> <span class="n">token</span> <span class="ow">in</span> <span class="n">generate_tokens</span><span class="p">(</span><span class="n">source</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">token</span><span class="o">.</span><span class="n">is_float</span><span class="p">():</span>
+            <span class="n">token</span><span class="o">.</span><span class="n">string</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">"Decimal('</span><span class="si">{</span><span class="n">token</span><span class="o">.</span><span class="n">string</span><span class="si">}</span><span class="s2">')"</span>
+        <span class="k">elif</span> <span class="n">token</span><span class="o">.</span><span class="n">is_complex</span><span class="p">():</span>
+            <span class="n">token</span><span class="o">.</span><span class="n">string</span> <span class="o">=</span> <span class="s2">"0.0"</span>
+        <span class="n">new_tokens</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">token</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">untokenize</span><span class="p">(</span><span class="n">new_tokens</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Let’s use it:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">decimal_tok2</span><span class="w"> </span><span class="kn">import</span> <span class="n">float_to_decimal</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">float_to_decimal</span><span class="p">(</span><span class="s2">"a = 1.0 + 3.0j"</span><span class="p">))</span>
+<span class="go">from decimal import Decimal</span>
+
+<span class="go">a = Decimal('1.0') + 0.0</span>
+<span class="gp">&gt;&gt;&gt;</span>
+</pre></div>
+</div>
+</section>
+<section id="inserting-tokens">
+<h2>Inserting tokens?<a class="headerlink" href="#inserting-tokens" title="Link to this heading"></a></h2>
+<p>What if we were to insert tokens like the example in the Python documentation.</p>
+<p>We can create additional tokens with token-utils in a fairly simple way:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">token_utils</span><span class="w"> </span><span class="kn">import</span> <span class="n">make_fake_token</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">help</span><span class="p">(</span><span class="n">make_fake_token</span><span class="p">)</span>
+<span class="go">Help on function make_fake_token in module token_utils.token_class:</span>
+
+<span class="go">make_fake_token(type=-4, string='$', start=(0, 0), end=(0, 0), line='')</span>
+<span class="go">    Useful when we need to process a list of tokens with</span>
+<span class="go">    multiple consecutive at a time, and we need to lengthen</span>
+<span class="go">    the list for doing so.</span>
+
+<span class="go">    Do not use as token to be inserted in a list of tokens</span>
+<span class="go">    to be untokenize as it will almost certainly not lead to</span>
+<span class="go">    the desired result. If needed for modifying a list of token</span>
+<span class="go">    prior to untokenizing, simply insert regular strings instead</span>
+<span class="go">    of fake tokens.</span>
+
+<span class="gp">&gt;&gt;&gt; </span><span class="n">fake</span> <span class="o">=</span> <span class="n">make_fake_token</span><span class="p">(</span><span class="n">string</span><span class="o">=</span><span class="s2">" | "</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">tokens</span> <span class="o">=</span> <span class="p">[]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">for</span> <span class="n">token</span> <span class="ow">in</span> <span class="n">generate_tokens</span><span class="p">(</span><span class="n">source</span><span class="p">):</span>
+<span class="gp">... </span>   <span class="n">tokens</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">token</span><span class="p">)</span>
+<span class="gp">... </span>   <span class="k">if</span> <span class="n">token</span><span class="o">.</span><span class="n">is_name</span><span class="p">():</span>   <span class="c1"># or .is_identifier() which is sligtly different</span>
+<span class="gp">... </span>       <span class="n">tokens</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">fake</span><span class="p">)</span>
+<span class="gp">...</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">for</span> <span class="n">token</span> <span class="ow">in</span> <span class="n">tokens</span><span class="p">:</span>
+<span class="gp">... </span>   <span class="nb">print</span><span class="p">(</span><span class="nb">repr</span><span class="p">(</span><span class="n">token</span><span class="p">))</span>
+<span class="gp">...</span>
+<span class="go">type=1 (NAME)  string='one'  start=(1, 0)  end=(1, 3)  line='one two three'</span>
+<span class="go">type=-4 (FAKE_TOKEN)  string=' | '  start=(0, 0)  end=(0, 0)  line=''</span>
+<span class="go">type=1 (NAME)  string='two'  start=(1, 4)  end=(1, 7)  line='one two three'</span>
+<span class="go">type=-4 (FAKE_TOKEN)  string=' | '  start=(0, 0)  end=(0, 0)  line=''</span>
+<span class="go">type=1 (NAME)  string='three'  start=(1, 8)  end=(1, 13)  line='one two three'</span>
+<span class="go">type=-4 (FAKE_TOKEN)  string=' | '  start=(0, 0)  end=(0, 0)  line=''</span>
+<span class="go">type=4 (NEWLINE)  string=''  start=(1, 13)  end=(1, 14)  line='one two three'</span>
+<span class="go">type=0 (ENDMARKER)  string=''  start=(2, 0)  end=(2, 0)  line=''</span>
+</pre></div>
+</div>
+<p>At first glance, this should look right: we have an alternance of <code class="docutils literal notranslate"><span class="pre">NAME</span></code>
+tokens and <code class="docutils literal notranslate"><span class="pre">FAKE_TOKEN</span></code> as we wanted. Let’s produce a
+string by untokenizing this.</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">untokenize</span><span class="p">(</span><span class="n">tokens</span><span class="p">)</span>
+<span class="go">'one | one two | one two three | one two three'</span>
+</pre></div>
+</div>
+<p>If you go through the algorithm of the <code class="docutils literal notranslate"><span class="pre">untokenize</span></code> function, you will understand
+why the weird-looking result is produced, and why this is definitely not recommended.</p>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="about_tokens.html" class="btn btn-neutral float-left" title="About tokens: Python vs token-utils" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="api.html" class="btn btn-neutral float-right" title="API" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2026, André Roberge.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

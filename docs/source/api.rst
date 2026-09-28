@@ -1,9 +1,12 @@
 API
 ====
 
-token_utils.py API extracted by Sphinx
+This should work .
+
+
+API extracted by Sphinx
 --------------------------------------
 
-.. automodule:: token_utils
+.. automodule:: token_utils.token_class
    :members:
    :special-members:

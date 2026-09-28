@@ -1,5 +1,5 @@
-from ast import literal_eval as py_literal_eval
-from keyword import iskeyword as py_iskeyword
+import ast
+import keyword
 
 from token_utils import py_tokenize
 
@@ -80,7 +80,7 @@ class Token:
 
     def is_complex(self):
         """Returns True if the token represents a complex number.cavie"""
-        return self.is_number() and isinstance(py_literal_eval(self.string), complex)
+        return self.is_number() and isinstance(ast.literal_eval(self.string), complex)
 
     def is_f_string(self):
         """Return True if the token is an f-string"""
@@ -90,7 +90,7 @@ class Token:
 
     def is_float(self):
         """Returns True if the token represents a float."""
-        return self.is_number() and isinstance(py_literal_eval(self.string), float)
+        return self.is_number() and isinstance(ast.literal_eval(self.string), float)
 
     def is_identifier(self):
         """Returns ``True`` if the token represents a valid Python identifier
@@ -134,11 +134,11 @@ class Token:
 
     def is_integer(self):
         """Returns True if the token represents an integer"""
-        return self.is_number() and isinstance(py_literal_eval(self.string), int)
+        return self.is_number() and isinstance(ast.literal_eval(self.string), int)
 
     def is_keyword(self):
         """Returns True if the token represents a Python keyword."""
-        return py_iskeyword(self.string)
+        return keyword.iskeyword(self.string)
 
     def is_name(self):
         """Returns ``True`` if the token is a type NAME"""
@@ -185,30 +185,19 @@ class Token:
             py_tokenize.UNCL_TRIPLE,
         )
 
-    def replace_string_by_next(self, other):
-        """This is to be used when you have two consecutive tokens
-        and you wish to effectively remove the first token, replacing
-        it by the second one.
 
-        Because of the way the untokenizing uses the line attribute
-        of a token, a simple suppression of a given token might not
-        make it necessarily disappear when untokenizing is done.
-        This takes care of it.
+def make_fake_token(
+    type=py_tokenize.FAKE_TOKEN, string="$", start=(0, 0), end=(0, 0), line=""
+):
+    """Useful when we need to process a list of tokens with
+    multiple consecutive at a time, and we need to lengthen
+    the list for doing so.
 
-        Visual example::
-
-            this_token other third  -->
-            other            third
-
-        This returns the first and second tokens appropriately modified,
-        ie: return (first, other)
-        """
-        first_len = len(self.string)
-        self.string = other.string
-        other.string = " " * first_len
-        return self, other
-
-
-def make_fake_token(string="$", start=(0, 0), end=(0, 0), line=""):
-    fake = (py_tokenize.FAKE_TOKEN, string, start, end, line)
+    Do not use as token to be inserted in a list of tokens
+    to be untokenize as it will almost certainly not lead to
+    the desired result. If needed for modifying a list of token
+    prior to untokenizing, simply insert regular strings instead
+    of fake tokens.
+    """
+    fake = (type, string, start, end, line)
     return Token(fake)
