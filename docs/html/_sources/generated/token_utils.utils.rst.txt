@@ -1,0 +1,20 @@
+token\_utils.utils
+==================
+
+.. automodule:: token_utils.utils
+
+   
+   .. rubric:: Functions
+
+   .. autosummary::
+   
+      dedent
+      get_first
+      get_first_index
+      get_last
+      get_last_index
+      get_number
+      indent
+      pairwise
+      sliding_window
+   

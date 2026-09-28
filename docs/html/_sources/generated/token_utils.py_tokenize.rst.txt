@@ -1,0 +1,21 @@
+token\_utils.py\_tokenize
+=========================
+
+.. automodule:: token_utils.py_tokenize
+
+   
+   .. rubric:: Functions
+
+   .. autosummary::
+   
+      any
+      generate_tokens
+      group
+      maybe
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+   
+      TokenInfo
+   

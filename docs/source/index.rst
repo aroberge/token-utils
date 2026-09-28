@@ -68,6 +68,13 @@ Quick links to topics
     Origin and history of token-utils <history>
 
 
+. autosummary::
+   :toctree: generated
+   :recursive:
+
+   token_utils
+
+
 
 To do
 -----

@@ -1,0 +1,18 @@
+token\_utils.token\_class
+=========================
+
+.. automodule:: token_utils.token_class
+
+   
+   .. rubric:: Functions
+
+   .. autosummary::
+   
+      make_fake_token
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+   
+      Token
+   
