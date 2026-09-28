@@ -1,5 +1,7 @@
 from token_utils import (
+    generate_tokens,
     tokenize,
+    make_fake_token,
     get_lines,
     get_first,
     get_last,
@@ -7,8 +9,8 @@ from token_utils import (
     get_last_index,
     indent,
     dedent,
+    pairwise,
     untokenize,
-    find_substring_index,
     strip_comments,
 )
 
@@ -21,6 +23,27 @@ if True:
 tokens1 = tokenize(source1)
 tokens2 = tokenize(source2)
 lines3 = get_lines(source3)
+
+
+def test_pairwise():
+    # test with lists
+    tokens = [make_fake_token(string=str(i)) for i in range(5)]
+    new_tokens = []
+    for _, token in pairwise(tokens):
+        new_tokens.append(str(token))
+    assert new_tokens == ["0", "1", "2", "3", "4"]
+
+    new_tokens = []
+    for token, _ in pairwise(tokens, prev=False):  # noqa
+        new_tokens.append(str(token))
+    assert new_tokens == ["0", "1", "2", "3", "4"]
+
+    # test with generator
+    new_tokens = []
+    for _, token in pairwise(generate_tokens("0 1 2 3 4")):
+        if token.is_integer():
+            new_tokens.append(str(token))
+    assert new_tokens == ["0", "1", "2", "3", "4"]
 
 
 def test_first():
@@ -54,11 +77,6 @@ def test_indent():
     new_line_a = untokenize(new_tokens)
     new_line_b = untokenize(lines3[2])
     assert new_line_a == new_line_b
-
-
-def test_find_substring_index():
-    assert find_substring_index(source2, source3) == -1
-    assert find_substring_index(source3, source2) == 3
 
 
 # spaces between the last token and the comment

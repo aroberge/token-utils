@@ -2,39 +2,41 @@
 utils.py
 ------------------
 
-A collection of various functions to find different tokens.
+A collection of various functions
 """
 
-from token_utils.tokenizing import get_significant_tokens, tokenize, untokenize
+import warnings
+from itertools import chain
+
+from token_utils.tokenizing import tokenize, untokenize
+from token_utils.token_class import make_fake_token
 
 
-def find_substring_index(main, substring):
-    """Somewhat similar to the find() method for strings,
-    this function determines if the tokens for substring appear
-    as a subsequence of the tokens for main. If so, the index
-    of the first token in returned, otherwise -1 is returned.
+def pairwise(iterable, prev=True):
+    """Similar to itertools.pairwise (Python 3.10+). However, it adds a fake
+    token at the start if ``prev==True`` (the default) or otherwise at the end.
+
+    Given a list of token represented ty lower case letters, and a fake token by F,
+    the default corresponds to something like::
+
+    pairwise('abcde') → Fa ab bc cd de
     """
-    # used once in friendly-traceback; not sure it is worth keeping!
-    main_tokens = [
-        tok.string for tok in get_significant_tokens(main) if tok.string.strip()
-    ]
-    sub_tokens = [
-        tok.string for tok in get_significant_tokens(substring) if tok.string.strip()
-    ]
-    for index, token in enumerate(main_tokens):
-        if (
-            token == sub_tokens[0]
-            and main_tokens[index : index + len(sub_tokens)] == sub_tokens
-        ):
-            return index
-    return -1
+    iterator = iter(iterable)
+    if prev:
+        updated_iterator = chain([make_fake_token()], iterator)
+    else:
+        updated_iterator = chain(iterator, [make_fake_token()])
+    a = next(updated_iterator, None)
+
+    for b in updated_iterator:
+        yield a, b
+        a = b
 
 
-# this can be eliminated by using significant tokens and [0]
-# However, it is currently used in ideas, so we need to change the
-# code there first.
 def get_first(tokens, exclude_comment=True):
-    """Given a list of tokens, find the first token which is not a space token
+    """DEPRECATED
+
+    Given a list of tokens, find the first token which is not a space token
     (such as a ``NEWLINE``, ``INDENT``, ``DEDENT``, etc.) and,
     by default, also not a ``COMMMENT``.
 
@@ -42,6 +44,10 @@ def get_first(tokens, exclude_comment=True):
 
     Returns ``None`` if none is found.
     """
+    warnings.warn(
+        "This will soon be removed. Replace by getting a list of significant tokens",
+        DeprecationWarning,
+    )
     for token in tokens:
         if token.is_space() or (exclude_comment and token.is_comment()):
             continue
@@ -49,17 +55,20 @@ def get_first(tokens, exclude_comment=True):
     return None
 
 
-# this can be eliminated by using significant tokens and [0]
-# However, it is currently used in ideas, so we need to change the
-# code there first.
 def get_first_index(tokens, exclude_comment=True):
-    """Given a list of tokens, find the index of the first token which is
+    """DEPRECATED
+
+    Given a list of tokens, find the index of the first token which is
     not a space token (such as a ``NEWLINE``, ``INDENT``, ``DEDENT``, etc.) nor
     a ``COMMMENT``. If it is desired to include COMMENT, set ``exclude_comment``
     to ``True``.
 
     Returns ``None`` if none is found.
     """
+    warnings.warn(
+        "This will soon be removed. Replace by getting a list of significant tokens",
+        DeprecationWarning,
+    )
     for index, token in enumerate(tokens):
         if token.is_space() or (exclude_comment and token.is_comment()):
             continue
@@ -67,11 +76,10 @@ def get_first_index(tokens, exclude_comment=True):
     return None
 
 
-# this can be eliminated by using significant tokens and [-1]
-# However, it is currently used in ideas, so we need to change the
-# code there first.
 def get_last(tokens, exclude_comment=True):
-    """Given a list of tokens, find the last token which is not a space token
+    """DEPRECATED
+
+    Given a list of tokens, find the last token which is not a space token
     (such as a ``NEWLINE``, ``INDENT``, ``DEDENT``, etc.) and, by default,
     also not a ``COMMMENT``.
 
@@ -80,20 +88,27 @@ def get_last(tokens, exclude_comment=True):
 
     Returns ``None`` if none is found.
     """
+    warnings.warn(
+        "This will soon be removed. Replace by getting a list of significant tokens",
+        DeprecationWarning,
+    )
     return get_first(reversed(tokens), exclude_comment=exclude_comment)
 
 
-# this can be eliminated by using significant tokens and [0]
-# However, it is currently used in ideas, so we need to change the
-# code there first.
 def get_last_index(tokens, exclude_comment=True):
-    """Given a list of tokens, find the index of the last token which is
+    """DEPRECATED
+
+    Given a list of tokens, find the index of the last token which is
     not a space token (such as a ``NEWLINE``, ``INDENT``, ``DEDENT``, etc.) nor
     a ``COMMMENT``. If it is desired to include COMMENT, set ``exclude_comment``
     to True.
 
     Returns ``None`` if none is found.
     """
+    warnings.warn(
+        "This will soon be removed. Replace by getting a list of significant tokens",
+        DeprecationWarning,
+    )
     return (
         len(tokens)
         - 1
@@ -101,18 +116,20 @@ def get_last_index(tokens, exclude_comment=True):
     )
 
 
-# this can be eliminated by using significant tokens and len()
-# However, it is currently used in ideas, so we need to change the
-# code there first.
-# UNTESTED ...
 def get_number(tokens, exclude_comment=True):
-    """Given a list of tokens, gives a count of the number of
+    """DEPRECATED
+
+    Given a list of tokens, gives a count of the number of
     tokens which are not space tokens (such as ``NEWLINE``, ``INDENT``,
     ``DEDENT``, etc.)
 
     By default, ``COMMMENT`` tokens are not included in the count.
     If you wish to include them, set ``exclude_comment`` to ``False``.
     """
+    warnings.warn(
+        "This will soon be removed. Replace by getting a list of significant tokens",
+        DeprecationWarning,
+    )
     nb = len(tokens)
     for token in tokens:
         if token.is_space():
@@ -142,6 +159,10 @@ def indent(tokens, nb, tab=False):
     If ``tab`` is specified to be ``True``, ``nb`` tab characters are inserted
     instead of spaces.
     """
+    warnings.warn(
+        "This will soon be removed. Replace by getting a list of significant tokens",
+        DeprecationWarning,
+    )
     line = untokenize(tokens)
     if tab:
         line = "\t" * nb + line
@@ -156,7 +177,7 @@ _names = dir()
 
 def _make_all():
     for name in _names:
-        if not name.startswith("_") and not name.startswith("py"):
+        if not name.startswith("_"):
             __all__.append(name)
 
 
