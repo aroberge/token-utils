@@ -19,15 +19,18 @@ class TokenUtilsDeprecationWarning(DeprecationWarning):
     pass
 
 
-def pairwise(iterable, prev=True):
+def pairwise(iterable, prev=0):
     """Similar to itertools.pairwise (Python 3.10+). However, it adds a fake
-    token at the start if ``prev==True`` (the default) or otherwise at the end.
+    token at the end if ``prev==0`` (the default) or at the beginning
+    if ``prev==1``. Any other value will result in a ``ValueError``
 
-    Given a list of token represented ty lower case letters, and a fake token by F,
+    Given a list of tokens represented by lower case letters, and a fake token by F,
     the default corresponds to something like::
 
     pairwise('abcde') → Fa ab bc cd de
     """
+    if prev not in [0, 1]:
+        raise ValueError("'prev' must be either 0 (the default) or 1.")
     iterator = iter(iterable)
     if prev:
         updated_iterator = chain([make_fake_token()], iterator)
@@ -40,12 +43,40 @@ def pairwise(iterable, prev=True):
         a = b
 
 
-def sliding_window(iterable, n):
-    "Collect data into overlapping fixed-length chunks or blocks."
-    # sliding_window('ABCDEFG', 3) → ABC BCD CDE DEF EFG
+def sliding_window(iterable, n, prev=0):
+    """Collect data into overlapping fixed-length chunks or blocks.
+
+    This is inspired by an itertools recipe. Given an iterator,
+    and a requested 'window' of size 'n', by default (prev=0),
+    it adds 'n-1' fake token at the end and iterates, emitting 'n'
+    items at a time until all the items have been served.
+
+    Given a list of tokens represented by lower case letters,
+    and F representing a fake token, we would have something like:
+
+    sliding_window('abcde', 3) → abc bcd cde deF eFF
+
+    With ``prev==1``, we would have 1 fake token prepended and
+    one appended; thus
+
+    sliding_window('abcde', 3, prev=1) → Fab abc bcd cde deF
+
+    We must have ``0 <= prev < n``, otherwise a ValueError is raised
+
+    We essentially have::
+
+        sliding_window(iterable, 2) == pairwise(iterator)
+    """
+    if not 0 <= prev < n:
+        raise ValueError(f"'prev' must be in the interval [0, {n}]")
+
     iterator = iter(iterable)
-    window = deque(islice(iterator, n - 1), maxlen=n)
-    for x in iterator:
+    fake = [make_fake_token(string=f"FAKE_{i}") for i in range(n - 1)]
+    iterator = iter(iterable)
+    updated_iterator = chain(fake[:prev], iterator, fake[prev : n - 1])
+
+    window = deque(islice(updated_iterator, n - 1), maxlen=n)
+    for x in updated_iterator:
         window.append(x)
         yield tuple(window)
 

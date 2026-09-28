@@ -10,6 +10,7 @@ from token_utils import (
     indent,
     dedent,
     pairwise,
+    sliding_window,
     untokenize,
     strip_comments,
 )
@@ -43,6 +44,26 @@ def test_pairwise():
     for _, token in pairwise(generate_tokens("0 1 2 3 4")):
         if token.is_integer():
             new_tokens.append(str(token))
+    assert new_tokens == ["0", "1", "2", "3", "4"]
+
+
+def test_sliding_window():
+    # tests with list
+    tokens = [make_fake_token(string=str(i)) for i in range(5)]
+
+    new_tokens = []
+    for token, _, _ in sliding_window(tokens, 3):
+        new_tokens.append(str(token))
+    assert new_tokens == ["0", "1", "2", "3", "4"]
+
+    new_tokens = []
+    for _, token, _ in sliding_window(tokens, 3, prev=1):
+        new_tokens.append(str(token))
+    assert new_tokens == ["0", "1", "2", "3", "4"]
+
+    new_tokens = []
+    for _, _, token in sliding_window(tokens, 3, prev=2):
+        new_tokens.append(str(token))
     assert new_tokens == ["0", "1", "2", "3", "4"]
 
 
