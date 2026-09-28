@@ -30,18 +30,18 @@ def test_pairwise():
     # test with lists
     tokens = [make_fake_token(string=str(i)) for i in range(5)]
     new_tokens = []
-    for _, token in pairwise(tokens):
+    for _, token in pairwise(tokens, prev=1):
         new_tokens.append(str(token))
     assert new_tokens == ["0", "1", "2", "3", "4"]
 
     new_tokens = []
-    for token, _ in pairwise(tokens, prev=False):  # noqa
+    for token, _ in pairwise(tokens):  # noqa
         new_tokens.append(str(token))
     assert new_tokens == ["0", "1", "2", "3", "4"]
 
     # test with generator
     new_tokens = []
-    for _, token in pairwise(generate_tokens("0 1 2 3 4")):
+    for _, token in pairwise(generate_tokens("0 1 2 3 4"), prev=1):
         if token.is_integer():
             new_tokens.append(str(token))
     assert new_tokens == ["0", "1", "2", "3", "4"]

@@ -195,6 +195,7 @@ def generate_tokens(readline):
                 warnings.warn(
                     "Unterminated triple quoted string.",
                     TokenUtilsEOFWarning,
+                    stacklevel=2
                 )
                 unterminated_triple = True
                 yield TokenInfo(UNCL_TRIPLE, contstr, strstart, (lnum, end), contline)
@@ -285,6 +286,7 @@ def generate_tokens(readline):
                 warnings.warn(
                     "Unterminated triple quoted string.",
                     TokenUtilsEOFWarning,
+                    stacklevel=2
                 )
                 unterminated_triple = True
                 yield TokenInfo(UNCL_TRIPLE, contstr, strstart, (lnum, end), contline)

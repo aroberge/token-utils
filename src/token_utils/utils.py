@@ -95,6 +95,7 @@ def get_first(tokens, exclude_comment=True):
     warnings.warn(
         "get_first() will soon be removed. Replace by getting a list of significant tokens",
         TokenUtilsDeprecationWarning,
+        stacklevel=2
     )
     for token in tokens:
         if token.is_space() or (exclude_comment and token.is_comment()):
@@ -116,6 +117,7 @@ def get_first_index(tokens, exclude_comment=True):
     warnings.warn(
         "get_first_index() will soon be removed. Replace by getting a list of significant tokens",
         TokenUtilsDeprecationWarning,
+        stacklevel=2
     )
     for index, token in enumerate(tokens):
         if token.is_space() or (exclude_comment and token.is_comment()):
@@ -139,6 +141,7 @@ def get_last(tokens, exclude_comment=True):
     warnings.warn(
         "get_last() will soon be removed. Replace by getting a list of significant tokens",
         TokenUtilsDeprecationWarning,
+        stacklevel=2
     )
     return get_first(reversed(tokens), exclude_comment=exclude_comment)
 
@@ -156,6 +159,7 @@ def get_last_index(tokens, exclude_comment=True):
     warnings.warn(
         "get_first_index() will soon be removed. Replace by getting a list of significant tokens",
         TokenUtilsDeprecationWarning,
+        stacklevel=2
     )
     return (
         len(tokens)
@@ -177,6 +181,7 @@ def get_number(tokens, exclude_comment=True):
     warnings.warn(
         "get_number() will soon be removed. Replace by getting a list of significant tokens",
         TokenUtilsDeprecationWarning,
+        stacklevel=2
     )
     nb = len(tokens)
     for token in tokens:
@@ -210,6 +215,7 @@ def indent(tokens, nb, tab=False):
     warnings.warn(
         "indent() will soon be removed.",
         TokenUtilsDeprecationWarning,
+        stacklevel=2
     )
     line = untokenize(tokens)
     if tab:
