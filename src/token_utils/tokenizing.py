@@ -118,19 +118,23 @@ def get_stripped_lines(source):
     """Transforms a source (string) into a list of of list of Tokens,
     with each (inner) list containing all the tokens found on a given
     line of code except that any token related to change in
-    indentation will have been removed. Thus, for a given
+    indentation and comments will have been removed. Thus, for a given
     (inner) list of tokens, list[0] will be a non-space token.
     """
     lines = []
     current_row = -1
     new_line = []
+    first_token = ""
     for token in generate_tokens(source):
         if token.start_row != current_row:
             current_row = token.start_row
             if new_line:
                 lines.append(new_line)
+            elif first_token:
+                lines.append([first_token])
             new_line = []
-        if not token.is_indentation():
+            first_token = token
+        if not (token.is_indentation() or token.is_comment()):
             new_line.append(token)
     if new_line:
         lines.append(new_line)
