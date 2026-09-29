@@ -3,11 +3,6 @@ from token_utils import (
     tokenize,
     make_fake_token,
     get_lines,
-    get_first,
-    get_last,
-    get_first_index,
-    get_last_index,
-    indent,
     dedent,
     pairwise,
     sliding_window,
@@ -23,6 +18,7 @@ if True:
 """
 tokens1 = tokenize(source1)
 tokens2 = tokenize(source2)
+lines2 = get_lines(source2)
 lines3 = get_lines(source3)
 
 
@@ -67,34 +63,13 @@ def test_sliding_window():
     assert new_tokens == ["0", "1", "2", "3", "4"]
 
 
-def test_first():
-    assert get_first(tokens1) == get_first(tokens2)
-    assert get_first(tokens1) == "a"
-    assert get_first(tokens2, exclude_comment=False) == "a"
-    assert get_first_index(tokens1) == 0
-
-    assert get_first(lines3[2]) == "a"
-    assert get_first_index(lines3[2]) == 1
-
-
-def test_last():
-    assert get_last(tokens1) == get_last(tokens2)
-    assert get_last(tokens1) == "b"
-    assert get_last(tokens2, exclude_comment=False) == "# comment"
-    assert get_last_index(tokens1) == 2
-
-    assert get_last(lines3[2]) == "b"
-    assert get_last_index(lines3[2]) == 3
-    assert get_last_index(lines3[2], exclude_comment=False) == 4
-
-
 def test_dedent():
     new_tokens = dedent(lines3[2], 4)
     assert new_tokens == tokens2
 
 
 def test_indent():
-    new_tokens = indent(tokens2, 4)
+    new_tokens = dedent(lines2[0], -4)
     new_line_a = untokenize(new_tokens)
     new_line_b = untokenize(lines3[2])
     assert new_line_a == new_line_b

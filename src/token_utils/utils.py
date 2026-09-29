@@ -13,12 +13,6 @@ from token_utils.tokenizing import tokenize, untokenize
 from token_utils.token_class import make_fake_token
 
 
-class TokenUtilsDeprecationWarning(DeprecationWarning):
-    """Raised when deprecated function is called."""
-
-    pass
-
-
 def pairwise(iterable, prev=0):
     """Similar to itertools.pairwise (Python 3.10+). However, it adds a fake
     token at the end if ``prev==0`` (the default) or at the beginning
@@ -81,144 +75,69 @@ def sliding_window(iterable, n, prev=0):
         yield tuple(window)
 
 
-def get_first(tokens, exclude_comment=True):
-    """DEPRECATED
+def get_number_significant_tokens(tokens):
+    """Given a list of tokens representing a single line,
+    gives a count of the number of tokens which are not space tokens
+    (such as ``NEWLINE``, ``INDENT``, ``DEDENT``, etc.) nor
+    comments.
 
-    Given a list of tokens, find the first token which is not a space token
-    (such as a ``NEWLINE``, ``INDENT``, ``DEDENT``, etc.) and,
-    by default, also not a ``COMMMENT``.
-
-    ``COMMMENT`` tokens can be included by setting ``exclude_comment`` to ``False``.
-
-    Returns ``None`` if none is found.
+    If the list of tokens includes tokens from more than a single
+    line, an exception is raised.
     """
-    warnings.warn(
-        "get_first() will soon be removed. Replace by getting a list of significant tokens",
-        TokenUtilsDeprecationWarning,
-        stacklevel=2
-    )
+    if len(tokens) == 0:
+        raise ValueError("At least one token must be included in the list.")
+    row = tokens[0].start_row
+    nb = 0
     for token in tokens:
-        if token.is_space() or (exclude_comment and token.is_comment()):
+        if token.start_row != row:
+            raise ValueError(
+                "The list of tokens includes tokens from more "
+                + "than one line of code."
+            )
+        if token.is_space() or token.is_comment():
             continue
-        return token
-    return None
-
-
-def get_first_index(tokens, exclude_comment=True):
-    """DEPRECATED
-
-    Given a list of tokens, find the index of the first token which is
-    not a space token (such as a ``NEWLINE``, ``INDENT``, ``DEDENT``, etc.) nor
-    a ``COMMMENT``. If it is desired to include COMMENT, set ``exclude_comment``
-    to ``True``.
-
-    Returns ``None`` if none is found.
-    """
-    warnings.warn(
-        "get_first_index() will soon be removed. Replace by getting a list of significant tokens",
-        TokenUtilsDeprecationWarning,
-        stacklevel=2
-    )
-    for index, token in enumerate(tokens):
-        if token.is_space() or (exclude_comment and token.is_comment()):
-            continue
-        return index
-    return None
-
-
-def get_last(tokens, exclude_comment=True):
-    """DEPRECATED
-
-    Given a list of tokens, find the last token which is not a space token
-    (such as a ``NEWLINE``, ``INDENT``, ``DEDENT``, etc.) and, by default,
-    also not a ``COMMMENT``.
-
-    ``COMMMENT`` tokens can be included by setting``exclude_comment``
-    to ``False``.
-
-    Returns ``None`` if none is found.
-    """
-    warnings.warn(
-        "get_last() will soon be removed. Replace by getting a list of significant tokens",
-        TokenUtilsDeprecationWarning,
-        stacklevel=2
-    )
-    return get_first(reversed(tokens), exclude_comment=exclude_comment)
-
-
-def get_last_index(tokens, exclude_comment=True):
-    """DEPRECATED
-
-    Given a list of tokens, find the index of the last token which is
-    not a space token (such as a ``NEWLINE``, ``INDENT``, ``DEDENT``, etc.) nor
-    a ``COMMMENT``. If it is desired to include COMMENT, set ``exclude_comment``
-    to True.
-
-    Returns ``None`` if none is found.
-    """
-    warnings.warn(
-        "get_first_index() will soon be removed. Replace by getting a list of significant tokens",
-        TokenUtilsDeprecationWarning,
-        stacklevel=2
-    )
-    return (
-        len(tokens)
-        - 1
-        - get_first_index(reversed(tokens), exclude_comment=exclude_comment)
-    )
-
-
-def get_number(tokens, exclude_comment=True):
-    """DEPRECATED
-
-    Given a list of tokens, gives a count of the number of
-    tokens which are not space tokens (such as ``NEWLINE``, ``INDENT``,
-    ``DEDENT``, etc.)
-
-    By default, ``COMMMENT`` tokens are not included in the count.
-    If you wish to include them, set ``exclude_comment`` to ``False``.
-    """
-    warnings.warn(
-        "get_number() will soon be removed. Replace by getting a list of significant tokens",
-        TokenUtilsDeprecationWarning,
-        stacklevel=2
-    )
-    nb = len(tokens)
-    for token in tokens:
-        if token.is_space():
-            nb -= 1
-        elif exclude_comment and token.is_comment():
-            nb -= 1
+        nb += 1
     return nb
 
 
 def dedent(tokens, nb):
-    """Given a list of tokens, produces an equivalent list corresponding
+    """Given a list of tokens representing a line,
+    produces an equivalent list corresponding
     to a line of code with the first nb characters removed.
+
+    If the list includes tokens from more than one line,
+    or no token at all, a ``ValueError`` is raised.
+
+    If an attempt to remove non-space characters is made,
+    a ``TypeError`` is raised.
+
+    If a negative value for nb is used, the line is indented
+    by spaces or tab characters instead, with the
+    first character determining if spaces or tab characters
+    must be used.
     """
-    # currently used in ideas
-    # a bit dangerous as there is no check to see if the character removed
-    # are not significant.
+    # The "indent" part is probably not needed...
+    if len(tokens) == 0:
+        raise ValueError("Empty list of tokens was passed to dedent().")
+    row = tokens[0].start_row
+    for token in tokens:
+        if token.start_row != row:
+            raise ValueError(
+                "Tokens in dedent() do not come from a single line of code."
+            )
     line = untokenize(tokens)
-    line = line[nb:]
-    return tokenize(line)
+    if nb >= 0:
+        begin = line[:nb]
+        end = line[nb:]
+        if begin.strip():
+            raise TypeError("Attempting to remove non-space character in dedent().")
+        return tokenize(end)
 
-
-# This can probably be eliminated; not used anywhere
-def indent(tokens, nb, tab=False):
-    """Given a list of tokens, produces an equivalent list corresponding
-    to a line of code with nb space characters inserted at the beginning.
-
-    If ``tab`` is specified to be ``True``, ``nb`` tab characters are inserted
-    instead of spaces.
-    """
-    warnings.warn(
-        "indent() will soon be removed.",
-        TokenUtilsDeprecationWarning,
-        stacklevel=2
-    )
-    line = untokenize(tokens)
-    if tab:
+    nb = -nb
+    if len(line) == 0:
+        return tokenize(" " * nb)
+    first_char = line[0]
+    if first_char == "\t":
         line = "\t" * nb + line
     else:
         line = " " * nb + line
@@ -238,4 +157,3 @@ def _make_all():
 _make_all()
 _make_all()
 __all__.remove("__all__")
-__all__.remove("TokenUtilsDeprecationWarning")

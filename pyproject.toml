@@ -36,3 +36,5 @@ Source = "https://github.com/aroberge/token-utils"
 [tool.hatch.version]
 path = "src/token_utils/__about__.py"
 
+[tool.pytest]
+addopts = ["-p", "no:warnings"]
