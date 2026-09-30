@@ -73,9 +73,17 @@ class Token:
         """Returns the length of the string attribute"""
         return len(self.string)
 
+    def is_open_bracket(self):
+        """Returns True if token is one of ([{"""
+        return self.string in "({[" and len(self.string) == 1
+
+    def is_close_bracket(self):
+        """Returns True if token is one of )}]"""
+        return self.string in ")]}" and len(self.string) == 1
+
     def is_bracket(self):
         """Returns True if the token is a bracket, i.e. one of (){}[]"""
-        return self.string in "(){}[]" and len(self.string) == 1
+        return self.is_close_bracket() or self.is_open_bracket()
 
     def is_comment(self):
         """Returns True if the token is a comment."""

@@ -22,6 +22,22 @@ def test_len():
     assert len(tokens[2]) == 8
 
 
+def test_is_open_bracket():
+    tokens = tokenize("{([")
+    for token in tokens:
+        if token.is_space():
+            continue
+        assert token.is_open_bracket()
+
+
+def test_is_close_bracket():
+    tokens = tokenize("]})")
+    for token in tokens:
+        if token.is_space():
+            continue
+        assert token.is_close_bracket()
+
+
 def test_is_bracket():
     tokens = tokenize("{}()[]")
     for token in tokens:
