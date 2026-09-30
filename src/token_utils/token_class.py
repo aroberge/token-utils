@@ -151,6 +151,17 @@ class Token:
 
         return keyword.iskeyword(self.string)
 
+    def is_matching_bracket(self, other):
+        """Returns True if it is a matching (closing/opening pair) bracket"""
+        return (
+            (self == "(" and other == ")")
+            or (self == ")" and other == "(")
+            or (self == "[" and other == "]")
+            or (self == "]" and other == "[")
+            or (self == "{" and other == "}")
+            or (self == "}" and other == "{")
+        )
+
     def is_name(self):
         """Returns ``True`` if the token is a type NAME"""
         return self.type == _py_tokenize.NAME

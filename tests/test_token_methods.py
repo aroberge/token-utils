@@ -2,7 +2,7 @@
 # case we make a typo when changing code. It happens...
 
 
-from token_utils import tokenize, untokenize
+from token_utils import tokenize, untokenize, make_fake_token
 
 
 def test_contains():
@@ -58,13 +58,13 @@ def test_is_float():
     assert not tokens[4].is_float()
 
 
-def test_is_in():
-    tokens = tokenize("2+4-5")
-    for token in tokens:
-        if not token.string.strip():
-            continue
-        assert token.is_in(["2", "+", "4", "-", "5"])
-        assert not token.is_in(["1", "3", "*", "/"])
+def test_is_identical():
+    tok1 = make_fake_token()
+    tok2 = make_fake_token()
+    tok3 = make_fake_token(string="|")
+
+    assert tok1.is_identical(tok2)
+    assert not tok1.is_identical(tok3)
 
 
 def test_is_identifier():
@@ -86,6 +86,15 @@ def test_immediately_before_and_after():
     assert not tokens[2].is_immediately_after(tokens[1])
 
 
+def test_is_in():
+    tokens = tokenize("2+4-5")
+    for token in tokens:
+        if not token.string.strip():
+            continue
+        assert token.is_in(["2", "+", "4", "-", "5"])
+        assert not token.is_in(["1", "3", "*", "/"])
+
+
 def test_is_integer():
     tokens = tokenize("1.0 + 2.0j - 1")
     assert tokens[0] == "1.0"
@@ -102,6 +111,14 @@ def test_is_keyword():
     assert tokens[0].is_keyword()
     assert tokens[1] == "test"
     assert not tokens[1].is_keyword()
+
+
+def test_is_matching_bracket():
+    tokens = [make_fake_token(string=br) for br in ["(", ")", "[", "]", "{", "}"]]
+    for i in range(0, 5, 2):
+        assert tokens[i].is_matching_bracket(tokens[i + 1])
+        assert tokens[i + 1].is_matching_bracket(tokens[i])
+        assert not tokens[i].is_matching_bracket(tokens[i])
 
 
 def test_is_name():
@@ -157,14 +174,3 @@ def test_make_fake():
     tokens = tokenize(source)
     tokens.insert(0, fake)
     assert untokenize(tokens) == "$a = b"
-
-
-def test_is_identical():
-    from token_utils import make_fake_token
-
-    tok1 = make_fake_token()
-    tok2 = make_fake_token()
-    tok3 = make_fake_token(string="|")
-
-    assert tok1.is_identical(tok2)
-    assert not tok1.is_identical(tok3)
