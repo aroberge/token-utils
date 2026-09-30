@@ -22,6 +22,22 @@ def test_len():
     assert len(tokens[2]) == 8
 
 
+def test_is_bracket():
+    tokens = tokenize("{}()[]")
+    for token in tokens:
+        if token.is_space():
+            continue
+        assert token.is_bracket()
+    fake_token = make_fake_token(string="()")
+    assert not fake_token.is_bracket()
+    tokens = tokenize("a b c 1 2 3")
+    for token in tokens:
+        if token.is_space():
+            continue
+        assert len(token.string) == 1
+        assert not token.is_bracket()
+
+
 def test_is_comment():
     tokens = tokenize("a # comment")
     assert not tokens[0].is_comment()
