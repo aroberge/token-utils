@@ -137,9 +137,9 @@ def test_problematic_newline():
 
 def test_py_tokenize():
     """Complex example!"""
-    from token_utils import py_tokenize
+    from token_utils import _py_tokenize
 
-    with open(py_tokenize.__file__, "r") as f:
+    with open(_py_tokenize.__file__, "r") as f:
         source = f.read()
     assert untokenize(tokenize(source)) == source
 

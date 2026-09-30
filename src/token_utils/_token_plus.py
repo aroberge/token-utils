@@ -7,7 +7,7 @@ __all__ = ["tok_name", "ISTERMINAL", "ISNONTERMINAL", "ISEOF", "EXACT_TOKEN_TYPE
 
 # Special negative values for token_utils
 
-for value, name in tok_name.items():
+for value, name in tok_name.items():  # tok_name imported from token
     if -4 <= value <= -1:
         print("ERROR: conflicting values between Python's token constants")
         print("and token_utils. Please file an issue.")

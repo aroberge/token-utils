@@ -1,7 +1,6 @@
 import ast
-import keyword
 
-from token_utils import py_tokenize
+from token_utils import _py_tokenize
 
 _token_format = "type={type}  string={string}  start={start}  end={end}  line={line}"
 
@@ -53,7 +52,7 @@ class Token:
         provided in this module.
         """
         return _token_format.format(
-            type="%s (%s)" % (self.type, py_tokenize.tok_name[self.type]),
+            type="%s (%s)" % (self.type, _py_tokenize.tok_name[self.type]),
             string=repr(self.string),
             start=str(self.start),
             end=str(self.end),
@@ -76,7 +75,7 @@ class Token:
 
     def is_comment(self):
         """Returns True if the token is a comment."""
-        return self.type == py_tokenize.COMMENT
+        return self.type == _py_tokenize.COMMENT
 
     def is_complex(self):
         """Returns True if the token represents a complex number.cavie"""
@@ -84,7 +83,7 @@ class Token:
 
     def is_f_string(self):
         """Return True if the token is an f-string"""
-        return self.type == py_tokenize.STRING and (
+        return self.type == _py_tokenize.STRING and (
             self.string.startswith("f") or self.string.startswith("F")
         )
 
@@ -137,9 +136,9 @@ class Token:
         (``INDENT``, ``DEDENT``, ``BAD_DEDENT``).
         """
         return self.type in (
-            py_tokenize.INDENT,
-            py_tokenize.DEDENT,
-            py_tokenize.BAD_DEDENT,
+            _py_tokenize.INDENT,
+            _py_tokenize.DEDENT,
+            _py_tokenize.BAD_DEDENT,
         )
 
     def is_integer(self):
@@ -148,23 +147,25 @@ class Token:
 
     def is_keyword(self):
         """Returns True if the token represents a Python keyword."""
+        import keyword
+
         return keyword.iskeyword(self.string)
 
     def is_name(self):
         """Returns ``True`` if the token is a type NAME"""
-        return self.type == py_tokenize.NAME
+        return self.type == _py_tokenize.NAME
 
     def is_newline(self):
         """Returns True if the token type is either ``NEWLINE`` or ``NL``."""
-        return self.type in (py_tokenize.NEWLINE, py_tokenize.NL)
+        return self.type in (_py_tokenize.NEWLINE, _py_tokenize.NL)
 
     def is_number(self):
         """Returns True if the token represents a number."""
-        return self.type == py_tokenize.NUMBER
+        return self.type == _py_tokenize.NUMBER
 
     def is_operator(self) -> bool:
         """Returns true if the token is of type OP"""
-        return self.type == py_tokenize.OP
+        return self.type == _py_tokenize.OP
 
     def is_space(self):
         """Returns True if the token indicates a change in indentation,
@@ -176,28 +177,28 @@ class Token:
         on a given line are not considered to be tokens themselves.
         """
         return self.type in (
-            py_tokenize.INDENT,
-            py_tokenize.DEDENT,
-            py_tokenize.BAD_DEDENT,
-            py_tokenize.NEWLINE,
-            py_tokenize.NL,
-            py_tokenize.ENDMARKER,
+            _py_tokenize.INDENT,
+            _py_tokenize.DEDENT,
+            _py_tokenize.BAD_DEDENT,
+            _py_tokenize.NEWLINE,
+            _py_tokenize.NL,
+            _py_tokenize.ENDMARKER,
         )
 
     def is_string(self):
         """Returns True if the token represents a string"""
-        return self.type == py_tokenize.STRING
+        return self.type == _py_tokenize.STRING
 
     def is_unclosed_string(self):
         """Returns True if the token is an unclosed string"""
         return self.type in (
-            py_tokenize.UNCL_SINGLE,
-            py_tokenize.UNCL_TRIPLE,
+            _py_tokenize.UNCL_SINGLE,
+            _py_tokenize.UNCL_TRIPLE,
         )
 
 
 def make_fake_token(
-    type=py_tokenize.FAKE_TOKEN, string="$", start=(0, 0), end=(0, 0), line=""
+    type=_py_tokenize.FAKE_TOKEN, string="$", start=(0, 0), end=(0, 0), line=""
 ):
     """Useful when we need to process a list of tokens with
     multiple consecutive at a time, and we need to lengthen

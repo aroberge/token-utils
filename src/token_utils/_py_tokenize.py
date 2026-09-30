@@ -4,7 +4,7 @@ This has been adapted from Python 3.11 tokenize.py
 It has been mostly copied almost exactly except that anything
 about "untokenizing" has been removed as we rely on our
 own version. We've also removed anything related to encoding as
-it is  not needed.
+it is not needed.
 
 Anything in this module should NOT be called directly from
 your code.
@@ -15,10 +15,10 @@ import functools
 import itertools as _itertools
 import re
 import warnings
-from token_utils.token_plus import *
+from token_utils._token_plus import *
 
 # prevent accidently importing * from here as names might conflict with our own
-from token_utils.token_plus import __all__
+from token_utils._token_plus import __all__
 
 blank_re = re.compile(rb"^[ \t\f]*(?:[#\r\n]|$)", re.ASCII)
 
@@ -195,7 +195,7 @@ def generate_tokens(readline):
                 warnings.warn(
                     "Unterminated triple quoted string.",
                     TokenUtilsEOFWarning,
-                    stacklevel=2
+                    stacklevel=2,
                 )
                 unterminated_triple = True
                 yield TokenInfo(UNCL_TRIPLE, contstr, strstart, (lnum, end), contline)
@@ -286,7 +286,7 @@ def generate_tokens(readline):
                 warnings.warn(
                     "Unterminated triple quoted string.",
                     TokenUtilsEOFWarning,
-                    stacklevel=2
+                    stacklevel=2,
                 )
                 unterminated_triple = True
                 yield TokenInfo(UNCL_TRIPLE, contstr, strstart, (lnum, end), contline)

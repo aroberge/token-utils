@@ -7,6 +7,6 @@ from token_utils.__about__ import version  # noqa
 def disable_warnings():
     """Disable all warnings arising from token_utils."""
     import warnings
-    from token_utils.py_tokenize import TokenUtilsEOFWarning
+    from token_utils._py_tokenize import TokenUtilsEOFWarning
 
     warnings.filterwarnings("ignore", category=TokenUtilsEOFWarning)

@@ -5,7 +5,7 @@ tokenizing.py
 All the functions dealing with tokenizing/untokenizing.
 """
 
-from token_utils import py_tokenize
+from token_utils import _py_tokenize
 
 from io import StringIO as _StringIO
 
@@ -52,9 +52,9 @@ def generate_tokens(source):
     prev_token = None
     perhaps_fix_needed = source.endswith((" ", "\t"))
     try:
-        for tok in py_tokenize.generate_tokens(_StringIO(source).readline):
+        for tok in _py_tokenize.generate_tokens(_StringIO(source).readline):
             token = _Token(tok)
-            if token.type != py_tokenize.ENDMARKER or not perhaps_fix_needed:
+            if token.type != _py_tokenize.ENDMARKER or not perhaps_fix_needed:
                 yield token
             else:
                 if not source.strip():  # We were passed a useless string!
@@ -200,12 +200,12 @@ def untokenize(tokens):
         if isinstance(token, str):
             words.append(token)
             continue
-        if token.type == py_tokenize.ENCODING:
+        if token.type == _py_tokenize.ENCODING:
             continue
 
         # Preserve escaped newlines.
         if (
-            last_non_whitespace_token_type != py_tokenize.COMMENT
+            last_non_whitespace_token_type != _py_tokenize.COMMENT
             and token.start_row > last_row
             and previous_line.endswith(("\\\n", "\\\r\n", "\\\r"))
         ):
@@ -252,7 +252,7 @@ _names = dir()
 
 def _make_all():
     for name in _names:
-        if not name.startswith("_") and not name.startswith("py"):
+        if not name.startswith("_"):
             __all__.append(name)
 
 
