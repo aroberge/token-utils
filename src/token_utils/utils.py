@@ -13,7 +13,7 @@ from token_utils.tokenizing import (
     tokenize as _tokenize,
     untokenize as _untokenize,
 )
-from token_utils.token_class import make_fake_token as _make_fake_token
+from token_utils.token_class import make_fake_token as _make_fake_token, Token
 
 
 def pairwise(iterable, prev=0):
@@ -180,6 +180,52 @@ def indent(tokens, n):
     return dedent(tokens, -n)
 
 
+class BracketStack:
+    """Helpful in keeping track of open and close brackets in a token sequence.
+
+    It is intended to be strict, and only accept Token instances, with open brackets
+    added before any close one can be added.
+    """
+
+    def __init__(self):
+        self.stack = []
+
+    def add(self, bracket):
+        """Adds a bracket to a stack.
+
+        If it is a closing bracket that matches the last added one,
+        that last opening one is returned.
+
+        If it is a close bracket not matching the last added one, or the
+        first one added, a TypeError is raised.
+
+        If an open bracket is added, False is returned.
+        """
+        assert isinstance(bracket, Token)
+        if self.stack:
+            if bracket.is_matching_bracket(self.stack[-1]):
+                return self.stack.pop()
+            elif not bracket.is_open_bracket():
+                raise TypeError(
+                    f"Close bracket does not match anything: {repr(bracket)}"
+                )
+            else:
+                self.stack.append(bracket)
+                return False
+
+        elif not bracket.is_open_bracket():
+            raise TypeError(
+                f"First bracket added cannot be a closing one: {repr(bracket)}"
+            )
+        else:
+            self.stack.append(bracket)
+            return False
+
+    def is_empty(self):
+        """Return True if the stack is empty, False if it contains brackets."""
+        return not bool(self.stack)
+
+
 __all__ = ["__all__"]
 _names = dir()
 
@@ -193,3 +239,4 @@ def _make_all():
 _make_all()
 _make_all()
 __all__.remove("__all__")
+__all__.remove("Token")

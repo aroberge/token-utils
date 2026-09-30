@@ -8,6 +8,7 @@ from token_utils import (
     sliding_window,
     untokenize,
     strip_comments,
+    BracketStack,
 )
 
 source1 = "a = b"
@@ -100,3 +101,19 @@ def test_strip_commments():
     stripped = strip_comments(statement)
     assert stripped == "if True:"
     assert without_comments == strip_comments(with_comments)
+
+
+def test_bracket_stack():
+    bracket_stack = BracketStack()
+    assert bracket_stack.is_empty()
+
+    tokens = tokenize(" a b c ({ d []})")
+    for token in tokens:
+        if token.is_bracket():
+            result = bracket_stack.add(token)
+            if token.is_open_bracket():
+                assert not bracket_stack.is_empty()
+                assert not result  # bracket appended
+            else:
+                assert result  # bracket popped
+    assert bracket_stack.is_empty()
