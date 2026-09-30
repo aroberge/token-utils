@@ -1,21 +1,12 @@
+.. sidebar::
 
-token-utils
-========================================================
-
-`Code on Github <https://github.com/aroberge/token-utils>`_
-
-Installation
-------------
-
-.. code-block:: none
-
-    pip install token-utils
+    `Code on Github <https://github.com/aroberge/token-utils>`_
 
 Purpose
 -------
 
 The purpose of token-utils is to simplify manipulations of tokens normally
-obtaind from Python's `tokenize module <https://docs.python.org/3/library/tokenize.html>`_.
+obtained from Python's `tokenize module <https://docs.python.org/3/library/tokenize.html>`_.
 One of token-utils' features is that, unlike Python's version, the following
 is always guaranteed::
 
@@ -25,6 +16,15 @@ is always guaranteed::
 
     assert source == untokenize(tokenize(source))
 
+Installation
+------------
+
+.. code-block:: none
+
+    pip install token-utils
+
+Example
+-------
 
 To get an idea of the simplicity of using token-utils, consider
 `this example from Python's standard library <https://docs.python.org/3/library/tokenize.html#examples>`_
@@ -49,37 +49,21 @@ Here's how you could achieve the same result with token-utils:
 Quick links to topics
 ---------------------
 
-.. sidebar:: Work in progress
-
-    Much more content will be added ... *soon*.
-
-
 .. toctree::
    :maxdepth: 2
 
     About tokens: Python vs token-utils <about_tokens>
     About untokenizing <untokenizing>
-    API <api>
+    Recipes, tips, and tricks <tips>
 
+.. toctree::
+    :caption: API
+
+    Token class <token_class>
+    Tokenizing related methods <tokenizing_methods>
+    Other functions <utils>
 
 .. toctree::
     :caption: Appendix
 
-    Origin and history of token-utils <history>
-
-
-. autosummary::
-   :toctree: generated
-   :recursive:
-
-   token_utils
-
-
-
-To do
------
-
-.. todolist::
-
-
-
+    To do <todo>

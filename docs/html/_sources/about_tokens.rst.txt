@@ -88,7 +88,7 @@ Comparing tokenizing/untokenizing results
 
 .. important::
 
-    For now (?), token-utils only works with normal string sources.
+    Currently, token-utils only works with normal string sources.
     Binary strings which need to be decoded, perhaps using a specific
     codec, are not currently handled. If you need this, please file
     an issue, including as much information as you can.

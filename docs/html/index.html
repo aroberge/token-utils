@@ -6,7 +6,7 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>token-utils &mdash; token-utils 0.2.4 documentation</title>
+  <title>Purpose &mdash; token-utils 0.2.5 documentation</title>
       <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=03e43079" />
       <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=9edc463e" />
       <link rel="stylesheet" type="text/css" href="_static/sphinx-new-tab-link.css?v=d87cb1ac" />
@@ -15,7 +15,7 @@
   
       <script src="_static/jquery.js?v=5d32c60e"></script>
       <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="_static/documentation_options.js?v=6ffd866b"></script>
+      <script src="_static/documentation_options.js?v=cb850272"></script>
       <script src="_static/doctools.js?v=9bcbadda"></script>
       <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="_static/js/theme.js"></script>
@@ -46,11 +46,17 @@
               <ul>
 <li class="toctree-l1"><a class="reference internal" href="about_tokens.html"> About tokens: Python vs token-utils</a></li>
 <li class="toctree-l1"><a class="reference internal" href="untokenizing.html"> About untokenizing</a></li>
-<li class="toctree-l1"><a class="reference internal" href="api.html"> API</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tips.html"> Recipes, tips, and tricks</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">API</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="token_class.html">Token class</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tokenizing_methods.html">Tokenizing related methods</a></li>
+<li class="toctree-l1"><a class="reference internal" href="utils.html">Other functions</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Appendix</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="history.html">Origin and history of token-utils</a></li>
+<li class="toctree-l1"><a class="reference internal" href="todo.html">To do</a></li>
 </ul>
 
         </div>
@@ -67,7 +73,7 @@
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
       <li><a href="#" class="icon icon-home" aria-label="Home"></a></li>
-      <li class="breadcrumb-item active">token-utils</li>
+      <li class="breadcrumb-item active">Purpose</li>
       <li class="wy-breadcrumbs-aside">
             <a href="_sources/index.rst.txt" rel="nofollow"> View page source</a>
       </li>
@@ -79,19 +85,13 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <section id="token-utils">
-<h1>token-utils<a class="headerlink" href="#token-utils" title="Link to this heading"></a></h1>
+  <aside class="sidebar">
 <p><a class="reference external" href="https://github.com/aroberge/token-utils" rel="noreferrer" target="_blank">Code on Github</a></p>
-<section id="installation">
-<h2>Installation<a class="headerlink" href="#installation" title="Link to this heading"></a></h2>
-<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>pip install token-utils
-</pre></div>
-</div>
-</section>
+</aside>
 <section id="purpose">
-<h2>Purpose<a class="headerlink" href="#purpose" title="Link to this heading"></a></h2>
+<h1>Purpose<a class="headerlink" href="#purpose" title="Link to this heading"></a></h1>
 <p>The purpose of token-utils is to simplify manipulations of tokens normally
-obtaind from Python’s <a class="reference external" href="https://docs.python.org/3/library/tokenize.html" rel="noreferrer" target="_blank">tokenize module</a>.
+obtained from Python’s <a class="reference external" href="https://docs.python.org/3/library/tokenize.html" rel="noreferrer" target="_blank">tokenize module</a>.
 One of token-utils’ features is that, unlike Python’s version, the following
 is always guaranteed:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">token_utils</span><span class="w"> </span><span class="kn">import</span> <span class="n">tokenize</span><span class="p">,</span> <span class="n">untokenize</span>
@@ -101,6 +101,15 @@ is always guaranteed:</p>
 <span class="k">assert</span> <span class="n">source</span> <span class="o">==</span> <span class="n">untokenize</span><span class="p">(</span><span class="n">tokenize</span><span class="p">(</span><span class="n">source</span><span class="p">))</span>
 </pre></div>
 </div>
+</section>
+<section id="installation">
+<h1>Installation<a class="headerlink" href="#installation" title="Link to this heading"></a></h1>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>pip install token-utils
+</pre></div>
+</div>
+</section>
+<section id="example">
+<h1>Example<a class="headerlink" href="#example" title="Link to this heading"></a></h1>
 <p>To get an idea of the simplicity of using token-utils, consider
 <a class="reference external" href="https://docs.python.org/3/library/tokenize.html#examples" rel="noreferrer" target="_blank">this example from Python’s standard library</a>
 which substitute Decimals for floats in a string of statements,
@@ -148,11 +157,7 @@ directory of the repository.</p>
 </div>
 </section>
 <section id="quick-links-to-topics">
-<h2>Quick links to topics<a class="headerlink" href="#quick-links-to-topics" title="Link to this heading"></a></h2>
-<aside class="sidebar">
-<p class="sidebar-title">Work in progress</p>
-<p>Much more content will be added … <em>soon</em>.</p>
-</aside>
+<h1>Quick links to topics<a class="headerlink" href="#quick-links-to-topics" title="Link to this heading"></a></h1>
 <div class="toctree-wrapper compound">
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="about_tokens.html"> About tokens: Python vs token-utils</a><ul>
@@ -166,8 +171,75 @@ directory of the repository.</p>
 <li class="toctree-l2"><a class="reference internal" href="untokenizing.html#inserting-tokens">Inserting tokens?</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="api.html"> API</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="api.html#module-token_utils.token_class">API extracted by Sphinx</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tips.html"> Recipes, tips, and tricks</a></li>
+</ul>
+</div>
+<div class="toctree-wrapper compound">
+<p class="caption" role="heading"><span class="caption-text">API</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="token_class.html">Token class</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="token_class.html#module-token_utils.token_class">API extracted by Sphinx</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="token_class.html#token_utils.token_class.Token"><code class="docutils literal notranslate"><span class="pre">Token</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="token_class.html#token_utils.token_class.Token.__contains__"><code class="docutils literal notranslate"><span class="pre">Token.__contains__()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="token_class.html#token_utils.token_class.Token.__eq__"><code class="docutils literal notranslate"><span class="pre">Token.__eq__()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="token_class.html#token_utils.token_class.Token.__hash__"><code class="docutils literal notranslate"><span class="pre">Token.__hash__</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="token_class.html#token_utils.token_class.Token.__init__"><code class="docutils literal notranslate"><span class="pre">Token.__init__()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="token_class.html#token_utils.token_class.Token.__len__"><code class="docutils literal notranslate"><span class="pre">Token.__len__()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="token_class.html#token_utils.token_class.Token.__repr__"><code class="docutils literal notranslate"><span class="pre">Token.__repr__()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="token_class.html#token_utils.token_class.Token.__str__"><code class="docutils literal notranslate"><span class="pre">Token.__str__()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="token_class.html#token_utils.token_class.Token.__weakref__"><code class="docutils literal notranslate"><span class="pre">Token.__weakref__</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="token_class.html#token_utils.token_class.Token.is_comment"><code class="docutils literal notranslate"><span class="pre">Token.is_comment()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="token_class.html#token_utils.token_class.Token.is_complex"><code class="docutils literal notranslate"><span class="pre">Token.is_complex()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="token_class.html#token_utils.token_class.Token.is_f_string"><code class="docutils literal notranslate"><span class="pre">Token.is_f_string()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="token_class.html#token_utils.token_class.Token.is_float"><code class="docutils literal notranslate"><span class="pre">Token.is_float()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="token_class.html#token_utils.token_class.Token.is_identical"><code class="docutils literal notranslate"><span class="pre">Token.is_identical()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="token_class.html#token_utils.token_class.Token.is_identifier"><code class="docutils literal notranslate"><span class="pre">Token.is_identifier()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="token_class.html#token_utils.token_class.Token.is_immediately_after"><code class="docutils literal notranslate"><span class="pre">Token.is_immediately_after()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="token_class.html#token_utils.token_class.Token.is_immediately_before"><code class="docutils literal notranslate"><span class="pre">Token.is_immediately_before()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="token_class.html#token_utils.token_class.Token.is_in"><code class="docutils literal notranslate"><span class="pre">Token.is_in()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="token_class.html#token_utils.token_class.Token.is_indentation"><code class="docutils literal notranslate"><span class="pre">Token.is_indentation()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="token_class.html#token_utils.token_class.Token.is_integer"><code class="docutils literal notranslate"><span class="pre">Token.is_integer()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="token_class.html#token_utils.token_class.Token.is_keyword"><code class="docutils literal notranslate"><span class="pre">Token.is_keyword()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="token_class.html#token_utils.token_class.Token.is_name"><code class="docutils literal notranslate"><span class="pre">Token.is_name()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="token_class.html#token_utils.token_class.Token.is_newline"><code class="docutils literal notranslate"><span class="pre">Token.is_newline()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="token_class.html#token_utils.token_class.Token.is_number"><code class="docutils literal notranslate"><span class="pre">Token.is_number()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="token_class.html#token_utils.token_class.Token.is_operator"><code class="docutils literal notranslate"><span class="pre">Token.is_operator()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="token_class.html#token_utils.token_class.Token.is_space"><code class="docutils literal notranslate"><span class="pre">Token.is_space()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="token_class.html#token_utils.token_class.Token.is_string"><code class="docutils literal notranslate"><span class="pre">Token.is_string()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="token_class.html#token_utils.token_class.Token.is_unclosed_string"><code class="docutils literal notranslate"><span class="pre">Token.is_unclosed_string()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="token_class.html#token_utils.token_class.make_fake_token"><code class="docutils literal notranslate"><span class="pre">make_fake_token()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="tokenizing_methods.html">Tokenizing related methods</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="tokenizing_methods.html#module-token_utils.tokenizing">API extracted by Sphinx</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="tokenizing_methods.html#tokenizing-py">tokenizing.py</a></li>
+<li class="toctree-l3"><a class="reference internal" href="tokenizing_methods.html#token_utils.tokenizing.generate_tokens"><code class="docutils literal notranslate"><span class="pre">generate_tokens()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="tokenizing_methods.html#token_utils.tokenizing.get_lines"><code class="docutils literal notranslate"><span class="pre">get_lines()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="tokenizing_methods.html#token_utils.tokenizing.get_significant_tokens"><code class="docutils literal notranslate"><span class="pre">get_significant_tokens()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="tokenizing_methods.html#token_utils.tokenizing.get_stripped_lines"><code class="docutils literal notranslate"><span class="pre">get_stripped_lines()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="tokenizing_methods.html#token_utils.tokenizing.print_tokens"><code class="docutils literal notranslate"><span class="pre">print_tokens()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="tokenizing_methods.html#token_utils.tokenizing.tokenize"><code class="docutils literal notranslate"><span class="pre">tokenize()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="tokenizing_methods.html#token_utils.tokenizing.untokenize"><code class="docutils literal notranslate"><span class="pre">untokenize()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="tokenizing_methods.html#token_utils.tokenizing.untokenize_lines_of_tokens"><code class="docutils literal notranslate"><span class="pre">untokenize_lines_of_tokens()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="utils.html">Other functions</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="utils.html#module-token_utils.utils">API extracted by Sphinx</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="utils.html#utils-py">utils.py</a></li>
+<li class="toctree-l3"><a class="reference internal" href="utils.html#token_utils.utils.dedent"><code class="docutils literal notranslate"><span class="pre">dedent()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="utils.html#token_utils.utils.get_number_significant_tokens"><code class="docutils literal notranslate"><span class="pre">get_number_significant_tokens()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="utils.html#token_utils.utils.indent"><code class="docutils literal notranslate"><span class="pre">indent()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="utils.html#token_utils.utils.pairwise"><code class="docutils literal notranslate"><span class="pre">pairwise()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="utils.html#token_utils.utils.sliding_window"><code class="docutils literal notranslate"><span class="pre">sliding_window()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="utils.html#token_utils.utils.strip_comments"><code class="docutils literal notranslate"><span class="pre">strip_comments()</span></code></a></li>
+</ul>
+</li>
 </ul>
 </li>
 </ul>
@@ -175,24 +247,9 @@ directory of the repository.</p>
 <div class="toctree-wrapper compound">
 <p class="caption" role="heading"><span class="caption-text">Appendix</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="history.html">Origin and history of token-utils</a></li>
+<li class="toctree-l1"><a class="reference internal" href="todo.html">To do</a></li>
 </ul>
 </div>
-<dl>
-<dt>. autosummary::</dt><dd><dl class="field-list simple">
-<dt class="field-odd">toctree<span class="colon">:</span></dt>
-<dd class="field-odd"><p>generated</p>
-</dd>
-<dt class="field-even">recursive<span class="colon">:</span></dt>
-<dd class="field-even"><p></p></dd>
-</dl>
-<p>token_utils</p>
-</dd>
-</dl>
-</section>
-<section id="to-do">
-<h2>To do<a class="headerlink" href="#to-do" title="Link to this heading"></a></h2>
-</section>
 </section>
 
 

@@ -9,10 +9,10 @@ from token_utils import py_tokenize
 
 from io import StringIO as _StringIO
 
-from token_utils.token_class import Token
+from token_utils.token_class import Token as _Token
 
 
-def fix_empty_line(source, prev_token, last_token):
+def _fix_empty_line(source, prev_token, last_token):
     """Our tokenizer is based on Python's 3.11 tokenizer
     which drops entirely a last line if it consists only of
     space characters and/or tab characters.
@@ -24,7 +24,7 @@ def fix_empty_line(source, prev_token, last_token):
     we correct the last token content if needed.
     """
     if prev_token is None:
-        print("WARNING: fix_empty_line was called with prev_token==None.")
+        print("WARNING: _fix_empty_line was called with prev_token==None.")
         print("This should never happen. Please file an issue and include")
         print("the source that produced this result.")
         return last_token
@@ -53,7 +53,7 @@ def generate_tokens(source):
     perhaps_fix_needed = source.endswith((" ", "\t"))
     try:
         for tok in py_tokenize.generate_tokens(_StringIO(source).readline):
-            token = Token(tok)
+            token = _Token(tok)
             if token.type != py_tokenize.ENDMARKER or not perhaps_fix_needed:
                 yield token
             else:
@@ -61,7 +61,7 @@ def generate_tokens(source):
                     token.string = source
                     yield token
                 else:
-                    yield fix_empty_line(source, prev_token, token)
+                    yield _fix_empty_line(source, prev_token, token)
             prev_token = token
     except Exception as exc:
         print(
@@ -154,32 +154,6 @@ def untokenize_lines_of_tokens(lines):
     return untokenize(tokens)
 
 
-def strip_comments(source):
-    """Removes the comments in a source.
-    It also removes any space at the end of each line
-    (before the '\n' if present).
-    """
-    # The untokenizing function uses not only the string attribute
-    # but also the start_col, end_col, and line attributes
-    # to see if any character included in the line attribute
-    # between the end_col of a token preceeding the start_col
-    # of another must be included. Thus, we must not simply remove
-    # tokens from a stream unless they contain only spaces,
-    # otherwise we might not get the desired result.
-    tokens = []
-
-    for token in generate_tokens(source):
-        if token.is_comment():
-            token.string = ""  # does not remove any space preceeding it.
-        tokens.append(token)
-
-    mid_removal = untokenize(tokens)
-    # now we remove the extra spaces before the commment
-    lines = mid_removal.split("\n")
-    new_lines = [line.rstrip() for line in lines]
-    return "\n".join(new_lines)
-
-
 def untokenize(tokens):
     """Return source code based on tokens.
 
@@ -263,7 +237,7 @@ def print_tokens(source):
 
     This is occasionally useful as a debugging tool.
     """
-    if isinstance(source[0], Token):
+    if isinstance(source[0], _Token):
         source = untokenize(source)
 
     for lines in get_lines(source):

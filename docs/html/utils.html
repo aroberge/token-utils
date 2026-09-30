@@ -1,0 +1,231 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="./">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Other functions &mdash; token-utils 0.2.5 documentation</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=03e43079" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=9edc463e" />
+      <link rel="stylesheet" type="text/css" href="_static/sphinx-new-tab-link.css?v=d87cb1ac" />
+      <link rel="stylesheet" type="text/css" href="_static/custom.css?v=c7e4a82f" />
+
+  
+      <script src="_static/jquery.js?v=5d32c60e"></script>
+      <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="_static/documentation_options.js?v=cb850272"></script>
+      <script src="_static/doctools.js?v=9bcbadda"></script>
+      <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="To do" href="todo.html" />
+    <link rel="prev" title="Tokenizing related methods" href="tokenizing_methods.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            token-utils
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="about_tokens.html"> About tokens: Python vs token-utils</a></li>
+<li class="toctree-l1"><a class="reference internal" href="untokenizing.html"> About untokenizing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tips.html"> Recipes, tips, and tricks</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">API</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="token_class.html">Token class</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tokenizing_methods.html">Tokenizing related methods</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Other functions</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#module-token_utils.utils">API extracted by Sphinx</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#utils-py">utils.py</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#token_utils.utils.dedent"><code class="docutils literal notranslate"><span class="pre">dedent()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#token_utils.utils.get_number_significant_tokens"><code class="docutils literal notranslate"><span class="pre">get_number_significant_tokens()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#token_utils.utils.indent"><code class="docutils literal notranslate"><span class="pre">indent()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#token_utils.utils.pairwise"><code class="docutils literal notranslate"><span class="pre">pairwise()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#token_utils.utils.sliding_window"><code class="docutils literal notranslate"><span class="pre">sliding_window()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#token_utils.utils.strip_comments"><code class="docutils literal notranslate"><span class="pre">strip_comments()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Appendix</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="todo.html">To do</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">token-utils</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content style-external-links">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">Other functions</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/utils.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul><div class="rst-breadcrumbs-buttons" role="navigation" aria-label="Sequential page navigation">
+        <a href="tokenizing_methods.html" class="btn btn-neutral float-left" title="Tokenizing related methods" accesskey="p"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="todo.html" class="btn btn-neutral float-right" title="To do" accesskey="n">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+  </div>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="other-functions">
+<h1>Other functions<a class="headerlink" href="#other-functions" title="Link to this heading"></a></h1>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>While this documentation is extracted from a submodule,
+as shown below, all information is available from
+the top level, i.e. you can (should) use:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">token_utils</span><span class="w"> </span><span class="kn">import</span> <span class="n">pairwise</span>
+</pre></div>
+</div>
+<p>since this will always be guaranteed to work, even
+if refactoring occurs.</p>
+</div>
+<section id="module-token_utils.utils">
+<span id="api-extracted-by-sphinx"></span><h2>API extracted by Sphinx<a class="headerlink" href="#module-token_utils.utils" title="Link to this heading"></a></h2>
+<section id="utils-py">
+<h3>utils.py<a class="headerlink" href="#utils-py" title="Link to this heading"></a></h3>
+<p>A collection of various functions</p>
+</section>
+<dl class="py function">
+<dt class="sig sig-object py" id="token_utils.utils.dedent">
+<span class="sig-prename descclassname"><span class="pre">token_utils.utils.</span></span><span class="sig-name descname"><span class="pre">dedent</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">tokens</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">nb</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/token_utils/utils.html#dedent"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#token_utils.utils.dedent" title="Link to this definition"></a></dt>
+<dd><p>Given a list of tokens representing a line,
+produces an equivalent list corresponding
+to a line of code with the first nb characters removed.</p>
+<p>If the list includes tokens from more than one line,
+or no token at all, a <code class="docutils literal notranslate"><span class="pre">ValueError</span></code> is raised.</p>
+<p>If an attempt to remove non-space characters is made,
+a <code class="docutils literal notranslate"><span class="pre">TypeError</span></code> is raised.</p>
+<p>If a negative value for nb is used, the line is indented
+by spaces or tab characters instead, with the
+first character determining if spaces or tab characters
+must be used.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="token_utils.utils.get_number_significant_tokens">
+<span class="sig-prename descclassname"><span class="pre">token_utils.utils.</span></span><span class="sig-name descname"><span class="pre">get_number_significant_tokens</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">tokens</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/token_utils/utils.html#get_number_significant_tokens"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#token_utils.utils.get_number_significant_tokens" title="Link to this definition"></a></dt>
+<dd><p>Given a list of tokens representing a single line,
+gives a count of the number of tokens which are not space tokens
+(such as <code class="docutils literal notranslate"><span class="pre">NEWLINE</span></code>, <code class="docutils literal notranslate"><span class="pre">INDENT</span></code>, <code class="docutils literal notranslate"><span class="pre">DEDENT</span></code>, etc.) nor
+comments.</p>
+<p>If the list of tokens includes tokens from more than a single
+line, an exception is raised.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="token_utils.utils.indent">
+<span class="sig-prename descclassname"><span class="pre">token_utils.utils.</span></span><span class="sig-name descname"><span class="pre">indent</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">tokens</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/token_utils/utils.html#indent"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#token_utils.utils.indent" title="Link to this definition"></a></dt>
+<dd><p>Calls dedent(tokens, -n) and adds the required number of spaces
+or tab characters as needed</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="token_utils.utils.pairwise">
+<span class="sig-prename descclassname"><span class="pre">token_utils.utils.</span></span><span class="sig-name descname"><span class="pre">pairwise</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">iterable</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">prev</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/token_utils/utils.html#pairwise"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#token_utils.utils.pairwise" title="Link to this definition"></a></dt>
+<dd><p>Similar to itertools.pairwise (Python 3.10+). However, it adds a fake
+token at the end if <code class="docutils literal notranslate"><span class="pre">prev==0</span></code> (the default) or at the beginning
+if <code class="docutils literal notranslate"><span class="pre">prev==1</span></code>. Any other value will result in a <code class="docutils literal notranslate"><span class="pre">ValueError</span></code></p>
+<p>Given a list of tokens represented by lower case letters, and a fake token by F,
+the default corresponds to something like:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>pairwise('abcde') → Fa ab bc cd de
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="token_utils.utils.sliding_window">
+<span class="sig-prename descclassname"><span class="pre">token_utils.utils.</span></span><span class="sig-name descname"><span class="pre">sliding_window</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">iterable</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">prev</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/token_utils/utils.html#sliding_window"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#token_utils.utils.sliding_window" title="Link to this definition"></a></dt>
+<dd><p>Collect data into overlapping fixed-length chunks or blocks.</p>
+<p>This is inspired by an itertools recipe. Given an iterator,
+and a requested ‘window’ of size ‘n’, by default (prev=0),
+it adds ‘n-1’ fake token at the end and iterates, emitting ‘n’
+items at a time until all the items have been served.</p>
+<p>Given a list of tokens represented by lower case letters,
+and F representing a fake token, we would have something like:</p>
+<p>sliding_window(‘abcde’, 3) → abc bcd cde deF eFF</p>
+<p>With <code class="docutils literal notranslate"><span class="pre">prev==1</span></code>, we would have 1 fake token prepended and
+one appended; thus</p>
+<p>sliding_window(‘abcde’, 3, prev=1) → Fab abc bcd cde deF</p>
+<p>We must have <code class="docutils literal notranslate"><span class="pre">0</span> <span class="pre">&lt;=</span> <span class="pre">prev</span> <span class="pre">&lt;</span> <span class="pre">n</span></code>, otherwise a ValueError is raised</p>
+<p>We essentially have:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">sliding_window</span><span class="p">(</span><span class="n">iterable</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span> <span class="o">==</span> <span class="n">pairwise</span><span class="p">(</span><span class="n">iterator</span><span class="p">)</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="token_utils.utils.strip_comments">
+<span class="sig-prename descclassname"><span class="pre">token_utils.utils.</span></span><span class="sig-name descname"><span class="pre">strip_comments</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">source</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/token_utils/utils.html#strip_comments"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#token_utils.utils.strip_comments" title="Link to this definition"></a></dt>
+<dd><p>Removes the comments in a source.</p>
+<p>It also removes any space at the end of each line
+(before the <code class="docutils literal notranslate"><span class="pre">\n</span></code> if present).</p>
+</dd></dl>
+
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="tokenizing_methods.html" class="btn btn-neutral float-left" title="Tokenizing related methods" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="todo.html" class="btn btn-neutral float-right" title="To do" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2026, André Roberge.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
