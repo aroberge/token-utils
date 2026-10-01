@@ -16,6 +16,7 @@ import itertools as _itertools
 import re
 import warnings
 from token_utils._token_plus import *
+from token_utils.custom_warnings import TokenUtilsEOFWarning
 
 # prevent accidently importing * from here as names might conflict with our own
 from token_utils._token_plus import __all__
@@ -23,13 +24,20 @@ from token_utils._token_plus import __all__
 blank_re = re.compile(rb"^[ \t\f]*(?:[#\r\n]|$)", re.ASCII)
 
 
-class TokenUtilsEOFWarning(UserWarning):
-    """Raised when and EOF condition is reached."""
+class TokenInfo(collections.namedtuple("TokenInfo", "type string start end line")):
+    def __repr__(self):  # not really needed for us.
+        annotated_type = "%d (%s)" % (self.type, tok_name[self.type])
+        return (
+            "TokenInfo(type=%s, string=%r, start=%r, end=%r, line=%r)"
+            % self._replace(type=annotated_type)
+        )
 
-    pass
-
-
-class TokenInfo(collections.namedtuple("TokenInfo", "type string start end line")): ...
+    @property
+    def exact_type(self):
+        if self.type == OP and self.string in EXACT_TOKEN_TYPES:
+            return EXACT_TOKEN_TYPES[self.string]
+        else:
+            return self.type
 
 
 def group(*choices):
@@ -195,7 +203,7 @@ def generate_tokens(readline):
                 warnings.warn(
                     "Unterminated triple quoted string.",
                     TokenUtilsEOFWarning,
-                    stacklevel=2,
+                    stacklevel=3,
                 )
                 unterminated_triple = True
                 yield TokenInfo(UNCL_TRIPLE, contstr, strstart, (lnum, end), contline)
@@ -288,7 +296,7 @@ def generate_tokens(readline):
                 warnings.warn(
                     "Unterminated triple quoted string.",
                     TokenUtilsEOFWarning,
-                    stacklevel=2,
+                    stacklevel=3,
                 )
                 unterminated_triple = True
                 yield TokenInfo(UNCL_TRIPLE, contstr, strstart, (lnum, end), contline)

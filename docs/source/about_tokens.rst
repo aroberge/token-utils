@@ -55,6 +55,19 @@ The main points to understand:
   information as we have seen in the previous example to which we will
   soon come back.
 
+
+.. important::
+
+    token_utils's tokenizer is based on Python's version 3.11.
+    As such, it has a limitation when it comes to parsing f-strings.
+
+    This was done because, starting with Python 3.12, the tokenizer
+    can raise an exception when it encounters expressions that are not valid Python syntax.
+
+    As token_utils is partly intended to experiments with alternative to Python's
+    syntax, we had to resort to using an older version, at the cost of not
+    supporting fancy f-strings.
+
 About token-utils tokens
 -------------------------
 
@@ -379,23 +392,24 @@ So, this doesn't work. What about with token_utils?
 .. code-block::
 
     >>> from token_utils import generate_tokens, untokenize
-    >>> source = " ''' this is the end"
+    >>> source = "  ''' this is the end."
     >>> for token in generate_tokens(source):
-    ...    print(repr(token))
+    ...     print(repr(token))
     ...
-    type=5 (INDENT)  string=' '  start=(1, 0)  end=(1, 1)  line=" ''' this is the end"
-    ERROR: Unterminated triple quoted string.
-    type=-3 (UNCL_TRIPLE)  string="''' this is the end"  start=(1, 1)  end=(2, 20)  line=" ''' this is the end"
+    type=5 (INDENT)  string='  '  start=(1, 0)  end=(1, 2)  line="  ''' this <...>  end."
 
-For now, we get an additional error message interfering with the
-printout of tokens. This will likely be turned into ``Warning`` which
-might be silenced by default.
+    TokenUtilsEOFWarning: Unterminated triple quoted string.
+    type=-3 (UNCL_TRIPLE)  string="''' this is the end."  start=(1, 2)  end=(2, 22)  line="  ''' this <...>  end."
+
+We notice a ``warning`` interfering with the
+printout of tokens. We will silence it next.
 
 We also notice yet another type of token: ``UNCL_TRIPLE``.
 Finally, can we do the round trip as we said we could?
 
 .. code-block::
 
+    >>> from token_utils import disable_warnings
+    >>> disable_warnings()
     >>> untokenize(generate_tokens(source)) == source
-    ERROR: Unterminated triple quoted string.
     True

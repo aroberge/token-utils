@@ -45,6 +45,18 @@ Here's how you could achieve the same result with token-utils:
 
 .. literalinclude:: ../../docs_examples/decimal_tok.py
 
+.. important::
+
+    token_utils's tokenizer is based on Python's version 3.11.
+    As such, it has a limitation when it comes to parsing f-strings.
+
+    This was done because, starting with Python 3.12, the tokenizer
+    can raise an exception when it encounters expressions that are not valid Python syntax.
+
+    As token_utils is partly intended to experiments with alternative to Python's
+    syntax, we had to resort to using an older version, at the cost of not
+    supporting fancy f-strings.
+
 
 Quick links to topics
 ---------------------

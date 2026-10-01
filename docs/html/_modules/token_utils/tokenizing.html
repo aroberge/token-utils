@@ -5,7 +5,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>token_utils.tokenizing &mdash; token-utils 0.2.5 documentation</title>
+  <title>token_utils.tokenizing &mdash; token-utils 0.3.0 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=03e43079" />
       <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=9edc463e" />
       <link rel="stylesheet" type="text/css" href="../../_static/sphinx-new-tab-link.css?v=d87cb1ac" />
@@ -14,7 +14,7 @@
   
       <script src="../../_static/jquery.js?v=5d32c60e"></script>
       <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../../_static/documentation_options.js?v=cb850272"></script>
+      <script src="../../_static/documentation_options.js?v=e259d695"></script>
       <script src="../../_static/doctools.js?v=9bcbadda"></script>
       <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../../_static/js/theme.js"></script>
@@ -89,7 +89,7 @@
 <span class="sd">All the functions dealing with tokenizing/untokenizing.</span>
 <span class="sd">"""</span>
 
-<span class="kn">from</span><span class="w"> </span><span class="nn">token_utils</span><span class="w"> </span><span class="kn">import</span> <span class="n">py_tokenize</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">token_utils</span><span class="w"> </span><span class="kn">import</span> <span class="n">_py_tokenize</span>
 
 <span class="kn">from</span><span class="w"> </span><span class="nn">io</span><span class="w"> </span><span class="kn">import</span> <span class="n">StringIO</span> <span class="k">as</span> <span class="n">_StringIO</span>
 
@@ -138,9 +138,9 @@
     <span class="n">prev_token</span> <span class="o">=</span> <span class="kc">None</span>
     <span class="n">perhaps_fix_needed</span> <span class="o">=</span> <span class="n">source</span><span class="o">.</span><span class="n">endswith</span><span class="p">((</span><span class="s2">" "</span><span class="p">,</span> <span class="s2">"</span><span class="se">\t</span><span class="s2">"</span><span class="p">))</span>
     <span class="k">try</span><span class="p">:</span>
-        <span class="k">for</span> <span class="n">tok</span> <span class="ow">in</span> <span class="n">py_tokenize</span><span class="o">.</span><span class="n">generate_tokens</span><span class="p">(</span><span class="n">_StringIO</span><span class="p">(</span><span class="n">source</span><span class="p">)</span><span class="o">.</span><span class="n">readline</span><span class="p">):</span>
+        <span class="k">for</span> <span class="n">tok</span> <span class="ow">in</span> <span class="n">_py_tokenize</span><span class="o">.</span><span class="n">generate_tokens</span><span class="p">(</span><span class="n">_StringIO</span><span class="p">(</span><span class="n">source</span><span class="p">)</span><span class="o">.</span><span class="n">readline</span><span class="p">):</span>
             <span class="n">token</span> <span class="o">=</span> <span class="n">_Token</span><span class="p">(</span><span class="n">tok</span><span class="p">)</span>
-            <span class="k">if</span> <span class="n">token</span><span class="o">.</span><span class="n">type</span> <span class="o">!=</span> <span class="n">py_tokenize</span><span class="o">.</span><span class="n">ENDMARKER</span> <span class="ow">or</span> <span class="ow">not</span> <span class="n">perhaps_fix_needed</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">token</span><span class="o">.</span><span class="n">type</span> <span class="o">!=</span> <span class="n">_py_tokenize</span><span class="o">.</span><span class="n">ENDMARKER</span> <span class="ow">or</span> <span class="ow">not</span> <span class="n">perhaps_fix_needed</span><span class="p">:</span>
                 <span class="k">yield</span> <span class="n">token</span>
             <span class="k">else</span><span class="p">:</span>
                 <span class="k">if</span> <span class="ow">not</span> <span class="n">source</span><span class="o">.</span><span class="n">strip</span><span class="p">():</span>  <span class="c1"># We were passed a useless string!</span>
@@ -304,12 +304,12 @@
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">token</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
             <span class="n">words</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">token</span><span class="p">)</span>
             <span class="k">continue</span>
-        <span class="k">if</span> <span class="n">token</span><span class="o">.</span><span class="n">type</span> <span class="o">==</span> <span class="n">py_tokenize</span><span class="o">.</span><span class="n">ENCODING</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">token</span><span class="o">.</span><span class="n">type</span> <span class="o">==</span> <span class="n">_py_tokenize</span><span class="o">.</span><span class="n">ENCODING</span><span class="p">:</span>
             <span class="k">continue</span>
 
         <span class="c1"># Preserve escaped newlines.</span>
         <span class="k">if</span> <span class="p">(</span>
-            <span class="n">last_non_whitespace_token_type</span> <span class="o">!=</span> <span class="n">py_tokenize</span><span class="o">.</span><span class="n">COMMENT</span>
+            <span class="n">last_non_whitespace_token_type</span> <span class="o">!=</span> <span class="n">_py_tokenize</span><span class="o">.</span><span class="n">COMMENT</span>
             <span class="ow">and</span> <span class="n">token</span><span class="o">.</span><span class="n">start_row</span> <span class="o">&gt;</span> <span class="n">last_row</span>
             <span class="ow">and</span> <span class="n">previous_line</span><span class="o">.</span><span class="n">endswith</span><span class="p">((</span><span class="s2">"</span><span class="se">\\\n</span><span class="s2">"</span><span class="p">,</span> <span class="s2">"</span><span class="se">\\\r\n</span><span class="s2">"</span><span class="p">,</span> <span class="s2">"</span><span class="se">\\\r</span><span class="s2">"</span><span class="p">))</span>
         <span class="p">):</span>
@@ -333,6 +333,76 @@
     <span class="k">return</span> <span class="s2">""</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">words</span><span class="p">)</span></div>
 
     <span class="c1"># End code (for extraction by Sphinx)</span>
+
+
+<div class="viewcode-block" id="stringify">
+<a class="viewcode-back" href="../../tokenizing_methods.html#token_utils.tokenizing.stringify">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">stringify</span><span class="p">(</span><span class="n">tokens</span><span class="p">,</span> <span class="n">remove_comments</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">"""Returns a string built from tokens.</span>
+
+<span class="sd">    It is somewhat similar to untokenize except that it doesn't add any</span>
+<span class="sd">    missing information from tokens that might have been removed,</span>
+<span class="sd">    inserting spaces instead. For example, removing "two"::</span>
+
+<span class="sd">        |one two three|  --&gt;</span>
+<span class="sd">        |one     three|</span>
+
+<span class="sd">    If no token has been removed from a tokenized list, and no</span>
+<span class="sd">    tab characters are used for indentation or spacing between tokens,</span>
+<span class="sd">    it should return the same content as untokenize.</span>
+
+<span class="sd">    It allows for easy removal of comments with ``remove_comments=True``.</span>
+<span class="sd">    As long as one does not care about tab characters, it is slightly more</span>
+<span class="sd">    efficient to use::</span>
+
+<span class="sd">        stringify(tokenize(source), remove_comments=True)</span>
+
+<span class="sd">    than::</span>
+
+<span class="sd">        ideas.utils.remove_comments(source)</span>
+<span class="sd">    """</span>
+    <span class="n">words</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">previous_line</span> <span class="o">=</span> <span class="s2">""</span>
+    <span class="n">last_row</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="n">last_column</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span>
+    <span class="n">last_non_whitespace_token_type</span> <span class="o">=</span> <span class="kc">None</span>
+
+    <span class="k">for</span> <span class="n">token</span> <span class="ow">in</span> <span class="n">tokens</span><span class="p">:</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">token</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+            <span class="n">words</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">token</span><span class="p">)</span>
+            <span class="k">continue</span>
+        <span class="k">if</span> <span class="n">token</span><span class="o">.</span><span class="n">type</span> <span class="o">==</span> <span class="n">_py_tokenize</span><span class="o">.</span><span class="n">ENCODING</span><span class="p">:</span>
+            <span class="k">continue</span>
+        <span class="k">if</span> <span class="n">remove_comments</span> <span class="ow">and</span> <span class="n">token</span><span class="o">.</span><span class="n">is_comment</span><span class="p">():</span>
+            <span class="k">continue</span>
+
+        <span class="c1"># Preserve escaped newlines.</span>
+        <span class="k">if</span> <span class="p">(</span>
+            <span class="ow">not</span> <span class="n">remove_comments</span>
+            <span class="ow">and</span> <span class="n">last_non_whitespace_token_type</span> <span class="o">!=</span> <span class="n">_py_tokenize</span><span class="o">.</span><span class="n">COMMENT</span>
+            <span class="ow">and</span> <span class="n">token</span><span class="o">.</span><span class="n">start_row</span> <span class="o">&gt;</span> <span class="n">last_row</span>
+            <span class="ow">and</span> <span class="n">previous_line</span><span class="o">.</span><span class="n">endswith</span><span class="p">((</span><span class="s2">"</span><span class="se">\\\n</span><span class="s2">"</span><span class="p">,</span> <span class="s2">"</span><span class="se">\\\r\n</span><span class="s2">"</span><span class="p">,</span> <span class="s2">"</span><span class="se">\\\r</span><span class="s2">"</span><span class="p">))</span>
+        <span class="p">):</span>
+            <span class="n">words</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">previous_line</span><span class="p">[</span><span class="nb">len</span><span class="p">(</span><span class="n">previous_line</span><span class="o">.</span><span class="n">rstrip</span><span class="p">(</span><span class="s2">" </span><span class="se">\t\n\r\\</span><span class="s2">"</span><span class="p">))</span> <span class="p">:])</span>
+
+        <span class="c1"># Preserve spacing.</span>
+        <span class="k">if</span> <span class="n">token</span><span class="o">.</span><span class="n">start_row</span> <span class="o">&gt;</span> <span class="n">last_row</span><span class="p">:</span>
+            <span class="n">last_column</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="k">if</span> <span class="n">token</span><span class="o">.</span><span class="n">start_col</span> <span class="o">&gt;</span> <span class="n">last_column</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">token</span><span class="o">.</span><span class="n">is_space</span><span class="p">():</span>
+            <span class="c1"># Insert spaces instead of the content that was skipped between tokens</span>
+            <span class="c1"># except at the end of line before a NL or NEWLINE token</span>
+            <span class="n">words</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">" "</span> <span class="o">*</span> <span class="p">(</span><span class="n">token</span><span class="o">.</span><span class="n">start_col</span> <span class="o">-</span> <span class="n">last_column</span><span class="p">))</span>
+
+        <span class="n">words</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">token</span><span class="o">.</span><span class="n">string</span><span class="p">)</span>
+
+        <span class="n">previous_line</span> <span class="o">=</span> <span class="n">token</span><span class="o">.</span><span class="n">line</span>
+        <span class="n">last_row</span> <span class="o">=</span> <span class="n">token</span><span class="o">.</span><span class="n">end_row</span>
+        <span class="n">last_column</span> <span class="o">=</span> <span class="n">token</span><span class="o">.</span><span class="n">end_col</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">token</span><span class="o">.</span><span class="n">is_space</span><span class="p">():</span>
+            <span class="n">last_non_whitespace_token_type</span> <span class="o">=</span> <span class="n">token</span><span class="o">.</span><span class="n">type</span>
+
+    <span class="k">return</span> <span class="s2">""</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">words</span><span class="p">)</span></div>
+
 
 
 <div class="viewcode-block" id="print_tokens">
@@ -360,7 +430,7 @@
 
 <span class="k">def</span><span class="w"> </span><span class="nf">_make_all</span><span class="p">():</span>
     <span class="k">for</span> <span class="n">name</span> <span class="ow">in</span> <span class="n">_names</span><span class="p">:</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="n">name</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">"_"</span><span class="p">)</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">name</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">"py"</span><span class="p">):</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">name</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">"_"</span><span class="p">):</span>
             <span class="n">__all__</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">name</span><span class="p">)</span>
 
 

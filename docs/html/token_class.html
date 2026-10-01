@@ -6,7 +6,7 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Token class &mdash; token-utils 0.2.5 documentation</title>
+  <title>Token class &mdash; token-utils 0.3.0 documentation</title>
       <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=03e43079" />
       <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=9edc463e" />
       <link rel="stylesheet" type="text/css" href="_static/sphinx-new-tab-link.css?v=d87cb1ac" />
@@ -15,7 +15,7 @@
   
       <script src="_static/jquery.js?v=5d32c60e"></script>
       <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="_static/documentation_options.js?v=cb850272"></script>
+      <script src="_static/documentation_options.js?v=e259d695"></script>
       <script src="_static/doctools.js?v=9bcbadda"></script>
       <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="_static/js/theme.js"></script>
@@ -62,6 +62,8 @@
 <li class="toctree-l4"><a class="reference internal" href="#token_utils.token_class.Token.__repr__"><code class="docutils literal notranslate"><span class="pre">Token.__repr__()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#token_utils.token_class.Token.__str__"><code class="docutils literal notranslate"><span class="pre">Token.__str__()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#token_utils.token_class.Token.__weakref__"><code class="docutils literal notranslate"><span class="pre">Token.__weakref__</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#token_utils.token_class.Token.is_bracket"><code class="docutils literal notranslate"><span class="pre">Token.is_bracket()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#token_utils.token_class.Token.is_close_bracket"><code class="docutils literal notranslate"><span class="pre">Token.is_close_bracket()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#token_utils.token_class.Token.is_comment"><code class="docutils literal notranslate"><span class="pre">Token.is_comment()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#token_utils.token_class.Token.is_complex"><code class="docutils literal notranslate"><span class="pre">Token.is_complex()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#token_utils.token_class.Token.is_f_string"><code class="docutils literal notranslate"><span class="pre">Token.is_f_string()</span></code></a></li>
@@ -74,9 +76,11 @@
 <li class="toctree-l4"><a class="reference internal" href="#token_utils.token_class.Token.is_indentation"><code class="docutils literal notranslate"><span class="pre">Token.is_indentation()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#token_utils.token_class.Token.is_integer"><code class="docutils literal notranslate"><span class="pre">Token.is_integer()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#token_utils.token_class.Token.is_keyword"><code class="docutils literal notranslate"><span class="pre">Token.is_keyword()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#token_utils.token_class.Token.is_matching_bracket"><code class="docutils literal notranslate"><span class="pre">Token.is_matching_bracket()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#token_utils.token_class.Token.is_name"><code class="docutils literal notranslate"><span class="pre">Token.is_name()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#token_utils.token_class.Token.is_newline"><code class="docutils literal notranslate"><span class="pre">Token.is_newline()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#token_utils.token_class.Token.is_number"><code class="docutils literal notranslate"><span class="pre">Token.is_number()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#token_utils.token_class.Token.is_open_bracket"><code class="docutils literal notranslate"><span class="pre">Token.is_open_bracket()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#token_utils.token_class.Token.is_operator"><code class="docutils literal notranslate"><span class="pre">Token.is_operator()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#token_utils.token_class.Token.is_space"><code class="docutils literal notranslate"><span class="pre">Token.is_space()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#token_utils.token_class.Token.is_string"><code class="docutils literal notranslate"><span class="pre">Token.is_string()</span></code></a></li>
@@ -207,6 +211,18 @@ provided in this module.</p>
 </dd></dl>
 
 <dl class="py method">
+<dt class="sig sig-object py" id="token_utils.token_class.Token.is_bracket">
+<span class="sig-name descname"><span class="pre">is_bracket</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/token_utils/token_class.html#Token.is_bracket"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#token_utils.token_class.Token.is_bracket" title="Link to this definition"></a></dt>
+<dd><p>Returns True if the token is a bracket, i.e. one of (){}[]</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="token_utils.token_class.Token.is_close_bracket">
+<span class="sig-name descname"><span class="pre">is_close_bracket</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/token_utils/token_class.html#Token.is_close_bracket"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#token_utils.token_class.Token.is_close_bracket" title="Link to this definition"></a></dt>
+<dd><p>Returns True if token is one of )}]</p>
+</dd></dl>
+
+<dl class="py method">
 <dt class="sig sig-object py" id="token_utils.token_class.Token.is_comment">
 <span class="sig-name descname"><span class="pre">is_comment</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/token_utils/token_class.html#Token.is_comment"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#token_utils.token_class.Token.is_comment" title="Link to this definition"></a></dt>
 <dd><p>Returns True if the token is a comment.</p>
@@ -286,6 +302,12 @@ of strings.</p>
 </dd></dl>
 
 <dl class="py method">
+<dt class="sig sig-object py" id="token_utils.token_class.Token.is_matching_bracket">
+<span class="sig-name descname"><span class="pre">is_matching_bracket</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">other</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/token_utils/token_class.html#Token.is_matching_bracket"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#token_utils.token_class.Token.is_matching_bracket" title="Link to this definition"></a></dt>
+<dd><p>Returns True if it is a matching (closing/opening pair) bracket</p>
+</dd></dl>
+
+<dl class="py method">
 <dt class="sig sig-object py" id="token_utils.token_class.Token.is_name">
 <span class="sig-name descname"><span class="pre">is_name</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/token_utils/token_class.html#Token.is_name"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#token_utils.token_class.Token.is_name" title="Link to this definition"></a></dt>
 <dd><p>Returns <code class="docutils literal notranslate"><span class="pre">True</span></code> if the token is a type NAME</p>
@@ -301,6 +323,12 @@ of strings.</p>
 <dt class="sig sig-object py" id="token_utils.token_class.Token.is_number">
 <span class="sig-name descname"><span class="pre">is_number</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/token_utils/token_class.html#Token.is_number"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#token_utils.token_class.Token.is_number" title="Link to this definition"></a></dt>
 <dd><p>Returns True if the token represents a number.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="token_utils.token_class.Token.is_open_bracket">
+<span class="sig-name descname"><span class="pre">is_open_bracket</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/token_utils/token_class.html#Token.is_open_bracket"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#token_utils.token_class.Token.is_open_bracket" title="Link to this definition"></a></dt>
+<dd><p>Returns True if token is one of ([{</p>
 </dd></dl>
 
 <dl class="py method">

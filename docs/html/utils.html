@@ -6,7 +6,7 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Other functions &mdash; token-utils 0.2.5 documentation</title>
+  <title>Other functions &mdash; token-utils 0.3.0 documentation</title>
       <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=03e43079" />
       <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=9edc463e" />
       <link rel="stylesheet" type="text/css" href="_static/sphinx-new-tab-link.css?v=d87cb1ac" />
@@ -15,7 +15,7 @@
   
       <script src="_static/jquery.js?v=5d32c60e"></script>
       <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="_static/documentation_options.js?v=cb850272"></script>
+      <script src="_static/documentation_options.js?v=e259d695"></script>
       <script src="_static/doctools.js?v=9bcbadda"></script>
       <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="_static/js/theme.js"></script>
@@ -56,6 +56,37 @@
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Other functions</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#module-token_utils.utils">API extracted by Sphinx</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#utils-py">utils.py</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#token_utils.utils.BracketStack"><code class="docutils literal notranslate"><span class="pre">BracketStack</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#token_utils.utils.BracketStack.add"><code class="docutils literal notranslate"><span class="pre">BracketStack.add()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#token_utils.utils.BracketStack.is_empty"><code class="docutils literal notranslate"><span class="pre">BracketStack.is_empty()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#token_utils.utils.Token"><code class="docutils literal notranslate"><span class="pre">Token</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#token_utils.utils.Token.is_bracket"><code class="docutils literal notranslate"><span class="pre">Token.is_bracket()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#token_utils.utils.Token.is_close_bracket"><code class="docutils literal notranslate"><span class="pre">Token.is_close_bracket()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#token_utils.utils.Token.is_comment"><code class="docutils literal notranslate"><span class="pre">Token.is_comment()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#token_utils.utils.Token.is_complex"><code class="docutils literal notranslate"><span class="pre">Token.is_complex()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#token_utils.utils.Token.is_f_string"><code class="docutils literal notranslate"><span class="pre">Token.is_f_string()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#token_utils.utils.Token.is_float"><code class="docutils literal notranslate"><span class="pre">Token.is_float()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#token_utils.utils.Token.is_identical"><code class="docutils literal notranslate"><span class="pre">Token.is_identical()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#token_utils.utils.Token.is_identifier"><code class="docutils literal notranslate"><span class="pre">Token.is_identifier()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#token_utils.utils.Token.is_immediately_after"><code class="docutils literal notranslate"><span class="pre">Token.is_immediately_after()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#token_utils.utils.Token.is_immediately_before"><code class="docutils literal notranslate"><span class="pre">Token.is_immediately_before()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#token_utils.utils.Token.is_in"><code class="docutils literal notranslate"><span class="pre">Token.is_in()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#token_utils.utils.Token.is_indentation"><code class="docutils literal notranslate"><span class="pre">Token.is_indentation()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#token_utils.utils.Token.is_integer"><code class="docutils literal notranslate"><span class="pre">Token.is_integer()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#token_utils.utils.Token.is_keyword"><code class="docutils literal notranslate"><span class="pre">Token.is_keyword()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#token_utils.utils.Token.is_matching_bracket"><code class="docutils literal notranslate"><span class="pre">Token.is_matching_bracket()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#token_utils.utils.Token.is_name"><code class="docutils literal notranslate"><span class="pre">Token.is_name()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#token_utils.utils.Token.is_newline"><code class="docutils literal notranslate"><span class="pre">Token.is_newline()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#token_utils.utils.Token.is_number"><code class="docutils literal notranslate"><span class="pre">Token.is_number()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#token_utils.utils.Token.is_open_bracket"><code class="docutils literal notranslate"><span class="pre">Token.is_open_bracket()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#token_utils.utils.Token.is_operator"><code class="docutils literal notranslate"><span class="pre">Token.is_operator()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#token_utils.utils.Token.is_space"><code class="docutils literal notranslate"><span class="pre">Token.is_space()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#token_utils.utils.Token.is_string"><code class="docutils literal notranslate"><span class="pre">Token.is_string()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#token_utils.utils.Token.is_unclosed_string"><code class="docutils literal notranslate"><span class="pre">Token.is_unclosed_string()</span></code></a></li>
+</ul>
+</li>
 <li class="toctree-l3"><a class="reference internal" href="#token_utils.utils.dedent"><code class="docutils literal notranslate"><span class="pre">dedent()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#token_utils.utils.get_number_significant_tokens"><code class="docutils literal notranslate"><span class="pre">get_number_significant_tokens()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#token_utils.utils.indent"><code class="docutils literal notranslate"><span class="pre">indent()</span></code></a></li>
@@ -118,6 +149,199 @@ if refactoring occurs.</p>
 <h3>utils.py<a class="headerlink" href="#utils-py" title="Link to this heading"></a></h3>
 <p>A collection of various functions</p>
 </section>
+<dl class="py class">
+<dt class="sig sig-object py" id="token_utils.utils.BracketStack">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">token_utils.utils.</span></span><span class="sig-name descname"><span class="pre">BracketStack</span></span><a class="reference internal" href="_modules/token_utils/utils.html#BracketStack"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#token_utils.utils.BracketStack" title="Link to this definition"></a></dt>
+<dd><p>Helpful in keeping track of open and close brackets in a token sequence.</p>
+<p>It is intended to be strict, and only accept Token instances, with open brackets
+added before any close one can be added.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="token_utils.utils.BracketStack.add">
+<span class="sig-name descname"><span class="pre">add</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">bracket</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/token_utils/utils.html#BracketStack.add"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#token_utils.utils.BracketStack.add" title="Link to this definition"></a></dt>
+<dd><p>Adds a bracket to a stack.</p>
+<p>If it is a closing bracket that matches the last added one,
+that last opening one is returned.</p>
+<p>If it is a close bracket not matching the last added one, or the
+first one added, a TypeError is raised.</p>
+<p>If an open bracket is added, False is returned.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="token_utils.utils.BracketStack.is_empty">
+<span class="sig-name descname"><span class="pre">is_empty</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/token_utils/utils.html#BracketStack.is_empty"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#token_utils.utils.BracketStack.is_empty" title="Link to this definition"></a></dt>
+<dd><p>Return True if the stack is empty, False if it contains brackets.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="token_utils.utils.Token">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">token_utils.utils.</span></span><span class="sig-name descname"><span class="pre">Token</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">token</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/token_utils/token_class.html#Token"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#token_utils.utils.Token" title="Link to this definition"></a></dt>
+<dd><p>Token as generated from Python’s tokenize.generate_tokens written here in
+a more convenient form, and with some custom methods.</p>
+<p>The various parameters are:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="nb">type</span><span class="p">:</span> <span class="n">token</span> <span class="nb">type</span>
+<span class="n">string</span><span class="p">:</span> <span class="n">the</span> <span class="n">token</span> <span class="n">written</span> <span class="k">as</span> <span class="n">a</span> <span class="n">string</span>
+<span class="n">start</span> <span class="o">=</span> <span class="p">(</span><span class="n">start_row</span><span class="p">,</span> <span class="n">start_col</span><span class="p">)</span>
+<span class="n">end</span> <span class="o">=</span> <span class="p">(</span><span class="n">end_row</span><span class="p">,</span> <span class="n">end_col</span><span class="p">)</span>
+<span class="n">line</span><span class="p">:</span> <span class="n">entire</span> <span class="n">line</span> <span class="n">of</span> <span class="n">code</span> <span class="n">where</span> <span class="n">the</span> <span class="n">token</span> <span class="ow">is</span> <span class="n">found</span><span class="o">.</span>
+</pre></div>
+</div>
+<p>Token instances are mutable objects. Therefore, given a list of tokens,
+we can change the value of any token’s attribute, untokenize the list and
+automatically obtain a transformed source.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="token_utils.utils.Token.is_bracket">
+<span class="sig-name descname"><span class="pre">is_bracket</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/token_utils/token_class.html#Token.is_bracket"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#token_utils.utils.Token.is_bracket" title="Link to this definition"></a></dt>
+<dd><p>Returns True if the token is a bracket, i.e. one of (){}[]</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="token_utils.utils.Token.is_close_bracket">
+<span class="sig-name descname"><span class="pre">is_close_bracket</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/token_utils/token_class.html#Token.is_close_bracket"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#token_utils.utils.Token.is_close_bracket" title="Link to this definition"></a></dt>
+<dd><p>Returns True if token is one of )}]</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="token_utils.utils.Token.is_comment">
+<span class="sig-name descname"><span class="pre">is_comment</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/token_utils/token_class.html#Token.is_comment"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#token_utils.utils.Token.is_comment" title="Link to this definition"></a></dt>
+<dd><p>Returns True if the token is a comment.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="token_utils.utils.Token.is_complex">
+<span class="sig-name descname"><span class="pre">is_complex</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/token_utils/token_class.html#Token.is_complex"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#token_utils.utils.Token.is_complex" title="Link to this definition"></a></dt>
+<dd><p>Returns True if the token represents a complex number.cavie</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="token_utils.utils.Token.is_f_string">
+<span class="sig-name descname"><span class="pre">is_f_string</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/token_utils/token_class.html#Token.is_f_string"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#token_utils.utils.Token.is_f_string" title="Link to this definition"></a></dt>
+<dd><p>Return True if the token is an f-string</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="token_utils.utils.Token.is_float">
+<span class="sig-name descname"><span class="pre">is_float</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/token_utils/token_class.html#Token.is_float"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#token_utils.utils.Token.is_float" title="Link to this definition"></a></dt>
+<dd><p>Returns True if the token represents a float.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="token_utils.utils.Token.is_identical">
+<span class="sig-name descname"><span class="pre">is_identical</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">other</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/token_utils/token_class.html#Token.is_identical"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#token_utils.utils.Token.is_identical" title="Link to this definition"></a></dt>
+<dd><p>Returs True if the other token is identical</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="token_utils.utils.Token.is_identifier">
+<span class="sig-name descname"><span class="pre">is_identifier</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/token_utils/token_class.html#Token.is_identifier"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#token_utils.utils.Token.is_identifier" title="Link to this definition"></a></dt>
+<dd><p>Returns <code class="docutils literal notranslate"><span class="pre">True</span></code> if the token represents a valid Python identifier
+excluding Python keywords.</p>
+<p>Note: this is different from Python’s string method <code class="docutils literal notranslate"><span class="pre">isidentifier</span></code>
+which also returns <code class="docutils literal notranslate"><span class="pre">True</span></code> if the string is a keyword.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="token_utils.utils.Token.is_immediately_after">
+<span class="sig-name descname"><span class="pre">is_immediately_after</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">other</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/token_utils/token_class.html#Token.is_immediately_after"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#token_utils.utils.Token.is_immediately_after" title="Link to this definition"></a></dt>
+<dd><p>Returns True if the current token is immediately after other,
+without any intervening space in between the two tokens.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="token_utils.utils.Token.is_immediately_before">
+<span class="sig-name descname"><span class="pre">is_immediately_before</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">other</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/token_utils/token_class.html#Token.is_immediately_before"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#token_utils.utils.Token.is_immediately_before" title="Link to this definition"></a></dt>
+<dd><p>Returns True if the current token is immediately before other,
+without any intervening space in between the two tokens.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="token_utils.utils.Token.is_in">
+<span class="sig-name descname"><span class="pre">is_in</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">sequence_of_strings</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/token_utils/token_class.html#Token.is_in"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#token_utils.utils.Token.is_in" title="Link to this definition"></a></dt>
+<dd><p>Returns True if the token string is found in the sequence
+of strings.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="token_utils.utils.Token.is_indentation">
+<span class="sig-name descname"><span class="pre">is_indentation</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/token_utils/token_class.html#Token.is_indentation"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#token_utils.utils.Token.is_indentation" title="Link to this definition"></a></dt>
+<dd><p>Returns True if the token indicates a change in indentation,
+(<code class="docutils literal notranslate"><span class="pre">INDENT</span></code>, <code class="docutils literal notranslate"><span class="pre">DEDENT</span></code>, <code class="docutils literal notranslate"><span class="pre">BAD_DEDENT</span></code>).</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="token_utils.utils.Token.is_integer">
+<span class="sig-name descname"><span class="pre">is_integer</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/token_utils/token_class.html#Token.is_integer"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#token_utils.utils.Token.is_integer" title="Link to this definition"></a></dt>
+<dd><p>Returns True if the token represents an integer</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="token_utils.utils.Token.is_keyword">
+<span class="sig-name descname"><span class="pre">is_keyword</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/token_utils/token_class.html#Token.is_keyword"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#token_utils.utils.Token.is_keyword" title="Link to this definition"></a></dt>
+<dd><p>Returns True if the token represents a Python keyword.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="token_utils.utils.Token.is_matching_bracket">
+<span class="sig-name descname"><span class="pre">is_matching_bracket</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">other</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/token_utils/token_class.html#Token.is_matching_bracket"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#token_utils.utils.Token.is_matching_bracket" title="Link to this definition"></a></dt>
+<dd><p>Returns True if it is a matching (closing/opening pair) bracket</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="token_utils.utils.Token.is_name">
+<span class="sig-name descname"><span class="pre">is_name</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/token_utils/token_class.html#Token.is_name"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#token_utils.utils.Token.is_name" title="Link to this definition"></a></dt>
+<dd><p>Returns <code class="docutils literal notranslate"><span class="pre">True</span></code> if the token is a type NAME</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="token_utils.utils.Token.is_newline">
+<span class="sig-name descname"><span class="pre">is_newline</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/token_utils/token_class.html#Token.is_newline"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#token_utils.utils.Token.is_newline" title="Link to this definition"></a></dt>
+<dd><p>Returns True if the token type is either <code class="docutils literal notranslate"><span class="pre">NEWLINE</span></code> or <code class="docutils literal notranslate"><span class="pre">NL</span></code>.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="token_utils.utils.Token.is_number">
+<span class="sig-name descname"><span class="pre">is_number</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/token_utils/token_class.html#Token.is_number"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#token_utils.utils.Token.is_number" title="Link to this definition"></a></dt>
+<dd><p>Returns True if the token represents a number.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="token_utils.utils.Token.is_open_bracket">
+<span class="sig-name descname"><span class="pre">is_open_bracket</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/token_utils/token_class.html#Token.is_open_bracket"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#token_utils.utils.Token.is_open_bracket" title="Link to this definition"></a></dt>
+<dd><p>Returns True if token is one of ([{</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="token_utils.utils.Token.is_operator">
+<span class="sig-name descname"><span class="pre">is_operator</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span></span></span><a class="reference internal" href="_modules/token_utils/token_class.html#Token.is_operator"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#token_utils.utils.Token.is_operator" title="Link to this definition"></a></dt>
+<dd><p>Returns true if the token is of type OP</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="token_utils.utils.Token.is_space">
+<span class="sig-name descname"><span class="pre">is_space</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/token_utils/token_class.html#Token.is_space"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#token_utils.utils.Token.is_space" title="Link to this definition"></a></dt>
+<dd><p>Returns True if the token indicates a change in indentation,
+the end of a line, or the end of the source
+(<code class="docutils literal notranslate"><span class="pre">INDENT</span></code>, <code class="docutils literal notranslate"><span class="pre">DEDENT</span></code>, <code class="docutils literal notranslate"><span class="pre">BAD_DEDENT</span></code>, <code class="docutils literal notranslate"><span class="pre">NEWLINE</span></code>,
+<code class="docutils literal notranslate"><span class="pre">NL</span></code>, and <code class="docutils literal notranslate"><span class="pre">ENDMARKER</span></code>).</p>
+<p>Note that spaces, including tab characters <code class="docutils literal notranslate"><span class="pre">\t</span></code>, between tokens
+on a given line are not considered to be tokens themselves.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="token_utils.utils.Token.is_string">
+<span class="sig-name descname"><span class="pre">is_string</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/token_utils/token_class.html#Token.is_string"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#token_utils.utils.Token.is_string" title="Link to this definition"></a></dt>
+<dd><p>Returns True if the token represents a string</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="token_utils.utils.Token.is_unclosed_string">
+<span class="sig-name descname"><span class="pre">is_unclosed_string</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/token_utils/token_class.html#Token.is_unclosed_string"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#token_utils.utils.Token.is_unclosed_string" title="Link to this definition"></a></dt>
+<dd><p>Returns True if the token is an unclosed string</p>
+</dd></dl>
+
+</dd></dl>
+
 <dl class="py function">
 <dt class="sig sig-object py" id="token_utils.utils.dedent">
 <span class="sig-prename descclassname"><span class="pre">token_utils.utils.</span></span><span class="sig-name descname"><span class="pre">dedent</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">tokens</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">nb</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/token_utils/utils.html#dedent"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#token_utils.utils.dedent" title="Link to this definition"></a></dt>
