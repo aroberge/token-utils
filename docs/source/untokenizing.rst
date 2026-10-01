@@ -5,15 +5,26 @@ About untokenizing
 
     **Summary of this section**
 
-    In order to modify some source code, there are two
-    ways to proceed:
+    In order to modify some source code, there are three recommended
+    ways to proceed.
+
+    If you want to preserve all tab character information,
+    use ``untokenize()`` as follows:
 
     1. If possible, simply mutate the string of one or more tokens.
     2. When needed, simply insert a normal string in the token stream.
 
-    Do not attempt to remove tokens nor to insert extra tokens.
+    Do not attempt to **remove** tokens nor to **insert extra tokens** when
+    using ``untokenize()``.
 
+    If you don't care about having tab characters converted to simple
+    spaces:
 
+    3. Use ``stringify()`` (added in version 0.3.0) instead of ``untokenize()``.
+
+    As is the case for ``untokenize()``, do not attempt
+    to **insert extra tokens** when using ``stringify()``.
+    If needed, simply insert normal strings.
 
 Understanding the untokenizing algorithm
 ----------------------------------------
@@ -106,7 +117,7 @@ Also note:
         continue
 
 So, in order to modify the source code, there are two
-ways to proceed:
+ways to proceed when using ``untokenize()`` to recover modified source:
 
 1. If possible, simply mutate the string of one or more tokens.
 2. When needed, simply insert a normal string in the token stream.
@@ -132,6 +143,8 @@ Let's use the first method to show how to remove comments.
     >>> print(untokenize(new_tokens))
     import math
     print(math.pi)
+
+Note that this ends up leaving some extra spaces at the end of each line.
 
 As for adding string content: remember our ``float_to_decimal()`` function?
 In order to use decimals properly, we need to do the appropriaate import first.
@@ -199,3 +212,30 @@ string by untokenizing this.
 
 If you go through the algorithm of the ``untokenize`` function, you will understand
 why the weird-looking result is produced, and why this is definitely not recommended.
+
+About stringify()
+-----------------
+
+``stringify()`` is nearly identical to ``untokenize()``. However, instead of having::
+
+    ...
+    if token.start_col > last_column:
+        # Insert the content that was skipped between tokens
+        words.append(token.line[last_column : token.start_col])
+    ...
+
+it has::
+
+    ...
+    if token.start_col > last_column and not token.is_space():
+        # Insert spaces instead of the content that was skipped between tokens
+        # except at the end of line before a NL or NEWLINE token
+        words.append(" " * (token.start_col - last_column))
+    ...
+
+Thus, as long as one does not care about tab characters being converted into single space
+characters, one can **remove** tokens safely, and their content will not be
+reinserted by ``stringify()``.
+
+``stringify()`` also has an extra parameter, ``remove_comments=False``. If sets to ``True``,
+it returns a source with end of line comments removed.

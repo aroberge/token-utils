@@ -1,2 +1,2 @@
-version = "0.2.5"
+version = "0.3.0"
 name = "token_utils"
