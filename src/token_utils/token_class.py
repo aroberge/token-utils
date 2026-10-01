@@ -51,12 +51,15 @@ class Token:
         never need to do other than indirectly by using the functions
         provided in this module.
         """
+        line = self.line
+        if len(line) > 20:
+            line = line[:10] + " <...> " + line[-5:]
         return _token_format.format(
             type="%s (%s)" % (self.type, _py_tokenize.tok_name[self.type]),
             string=repr(self.string),
             start=str(self.start),
             end=str(self.end),
-            line=repr(self.line),
+            line=repr(line),
         )
 
     def __str__(self):
