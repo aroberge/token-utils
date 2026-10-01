@@ -282,6 +282,8 @@ def generate_tokens(readline):
 
         else:  # continued statement
             if not line:
+                if contline is None:  # happens for source = "({["
+                    break
                 end = len(contline.split("\n")[-1])
                 warnings.warn(
                     "Unterminated triple quoted string.",
