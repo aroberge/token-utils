@@ -230,6 +230,46 @@ def untokenize(tokens):
     # End code (for extraction by Sphinx)
 
 
+def stringify(tokens, remove_comments=False):
+    """Returns a string built from tokens.
+
+    It is somewhat similar to untokenize except that it doesn't add any
+    missing information from tokens that might have been removed,
+    nor does it care about continuation characters.
+
+    If not token has been removed from a tokenized list, and no
+    continuation character is present, and no tab characters are used for
+    indentation, it should return the same content as untokenize.
+    """
+    words = []
+    previous_line = ""
+    last_row = 0
+    last_column = -1
+    last_non_whitespace_token_type = None
+
+    for token in tokens:
+        if isinstance(token, str):
+            words.append(token)
+            continue
+        if token.type == _py_tokenize.ENCODING:
+            continue
+        if remove_comments and token.is_comment():
+            continue
+
+        # Preserve spacing.
+        if token.start_row > last_row:
+            last_column = 0
+        if token.start_col > last_column:
+            # Insert spaces instead of the content that was skipped between tokens
+            words.append(" " * (token.start_col - last_column))
+
+        words.append(token.string)
+        last_row = token.end_row
+        last_column = token.end_col
+
+    return "".join(words)
+
+
 def print_tokens(source):
     """Prints tokens found in source, excluding spaces and comments.
 
