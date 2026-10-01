@@ -235,11 +235,24 @@ def stringify(tokens, remove_comments=False):
 
     It is somewhat similar to untokenize except that it doesn't add any
     missing information from tokens that might have been removed,
-    nor does it care about continuation characters.
+    inserting spaces instead. For example, removing "two"::
 
-    If not token has been removed from a tokenized list, and no
-    continuation character is present, and no tab characters are used for
-    indentation, it should return the same content as untokenize.
+        |one two three|  -->
+        |one     three|
+
+    If no token has been removed from a tokenized list, and no
+    tab characters are used for indentation or spacing between tokens,
+    it should return the same content as untokenize.
+
+    It allows for easy removal of comments with ``remove_comments=True``.
+    As long as one does not care about tab characters, it is slightly more
+    efficient to use::
+
+        stringify(tokenize(source), remove_comments=True)
+
+    than::
+
+        ideas.utils.remove_comments(source)
     """
     words = []
     previous_line = ""
@@ -256,16 +269,30 @@ def stringify(tokens, remove_comments=False):
         if remove_comments and token.is_comment():
             continue
 
+        # Preserve escaped newlines.
+        if (
+            not remove_comments
+            and last_non_whitespace_token_type != _py_tokenize.COMMENT
+            and token.start_row > last_row
+            and previous_line.endswith(("\\\n", "\\\r\n", "\\\r"))
+        ):
+            words.append(previous_line[len(previous_line.rstrip(" \t\n\r\\")) :])
+
         # Preserve spacing.
         if token.start_row > last_row:
             last_column = 0
-        if token.start_col > last_column:
+        if token.start_col > last_column and not token.is_space():
             # Insert spaces instead of the content that was skipped between tokens
+            # except at the end of line before a NL or NEWLINE token
             words.append(" " * (token.start_col - last_column))
 
         words.append(token.string)
+
+        previous_line = token.line
         last_row = token.end_row
         last_column = token.end_col
+        if not token.is_space():
+            last_non_whitespace_token_type = token.type
 
     return "".join(words)
 

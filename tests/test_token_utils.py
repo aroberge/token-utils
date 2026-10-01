@@ -9,6 +9,7 @@ from token_utils import (
     untokenize,
     strip_comments,
     BracketStack,
+    stringify,  # for testing commment removal
 )
 
 source1 = "a = b"
@@ -101,6 +102,9 @@ def test_strip_commments():
     stripped = strip_comments(statement)
     assert stripped == "if True:"
     assert without_comments == strip_comments(with_comments)
+    # other method -- not reliable when tab characters are present
+    assert stringify(tokenize(statement), remove_comments=True) == stripped
+    assert without_comments == stringify(tokenize(with_comments), remove_comments=True)
 
 
 def test_bracket_stack():

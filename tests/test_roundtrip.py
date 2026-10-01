@@ -11,6 +11,7 @@ from token_utils import (
     get_lines,
     get_stripped_lines,
     untokenize_lines_of_tokens,
+    stringify,
 )
 
 
@@ -19,6 +20,8 @@ def check_all(source):
     assert untokenize(get_significant_tokens(source)) == source
     assert untokenize_lines_of_tokens(get_lines(source)) == source
     assert untokenize_lines_of_tokens(get_stripped_lines(source)) == source
+    if source.find("\t") == -1:
+        assert stringify(get_significant_tokens(source)) == source
 
 
 def check(source):
@@ -73,6 +76,7 @@ def test_untokenize_with_backslash_in_comment():
     assert untokenize_lines_of_tokens(get_lines(source)) == source
     # assert untokenize_lines_of_tokens(get_stripped_lines(source)) == source
     # untokenizing get_stripped_lines fails in this very weird case.
+    assert stringify(tokenize(source)) == source
 
 
 escaped_newline = r'''def foo():
