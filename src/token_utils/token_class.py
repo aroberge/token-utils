@@ -230,6 +230,54 @@ class Token:
         )
 
 
+def add_operator(string, name):
+    """Adds a string defining an operator to the tokenizer.
+    If the string is already a known operator, nothing other than
+    returning ``False`` is done, otherwise ``True`` is returned.
+
+    For example, prior to Python 3.12, ``!`` was not a known operator;
+    it became so with Python 3.12 and thereafter.
+
+    The name given will be converted to uppercase. If that name already
+    exists in the module, a modified version with an added underscore
+    as a suffix will be created, with as many underscore needed as to make
+    the name unique.
+
+    Defining an operator is essential for proper tokenizing. For example,
+    if one does not define ``!!`` as an operator, ``!!`` would be tokenized
+    as two individual ``!`` tokens.
+    """
+    from token_utils import _py_tokenize as tok
+    import re
+
+    if string in tok.EXACT_TOKEN_TYPES:
+        return False
+
+    # Find an unused integer value
+    default_max = tok.N_TOKENS
+    value = default_max + 1
+    while value in dir(tok):
+        value += 1
+
+    # Ensure a unique name
+    name = name.upper()
+    while name in dir(tok):
+        name = f"{name}_"
+
+    # update the info for tokenizing.
+    tok.__dict__[name] = value
+    tok.EXACT_TOKEN_TYPES[string] = value
+    tok.tok_name[value] = name
+    tok.Special = tok.group(
+        *map(re.escape, sorted(tok.EXACT_TOKEN_TYPES, reverse=True))
+    )
+    tok.Funny = tok.group(r"\r?\n", tok.Special)
+    tok.PseudoToken = tok.Whitespace + tok.group(
+        tok.PseudoExtras, tok.Number, tok.Funny, tok.ContStr, tok.Name
+    )
+    return True
+
+
 def make_fake_token(
     type=_py_tokenize.FAKE_TOKEN, string="$", start=(0, 0), end=(0, 0), line=""
 ):
