@@ -54,8 +54,15 @@ class Token:
         line = self.line
         if len(line) > 20:
             line = line[:10] + " <...> " + line[-5:]
+        name = _py_tokenize.tok_name[self.type]
+        if name == "OP":
+            if self.string in _py_tokenize.EXACT_TOKEN_TYPES:
+                exact_type = _py_tokenize.EXACT_TOKEN_TYPES[self.string]
+                if exact_type in _py_tokenize.tok_name:
+                    exact_name = _py_tokenize.tok_name[exact_type]
+                    name = f"OP: {exact_name}"
         return _token_format.format(
-            type="%s (%s)" % (self.type, _py_tokenize.tok_name[self.type]),
+            type="%s (%s)" % (self.type, name),
             string=repr(self.string),
             start=str(self.start),
             end=str(self.end),
