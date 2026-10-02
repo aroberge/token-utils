@@ -10,7 +10,6 @@ from token_utils import (
     strip_comments,
     BracketStack,
     stringify,  # for testing commment removal
-    add_operator,
 )
 
 source1 = "a = b"
@@ -122,12 +121,3 @@ def test_bracket_stack():
             else:
                 assert result  # bracket popped
     assert bracket_stack.is_empty()
-
-
-def test_add_operator():
-    assert add_operator("=", "equal") is False
-    assert add_operator("!!!!!", "surprise") is True
-    tokens = tokenize("!!!!!")
-    new_tokens = [tok for tok in tokens if tok.is_operator()]
-    assert new_tokens[0] == "!!!!!"
-    assert len(new_tokens) == 1

@@ -3,6 +3,29 @@ import ast
 from token_utils import _py_tokenize
 
 _token_format = "type={type}  string={string}  start={start}  end={end}  line={line}"
+_op_categories = {
+    "assignment": [
+        "=",
+        "+=",
+        "-=",
+        "*=",
+        "@=",
+        "/=",
+        "//=",
+        "%=",
+        "**=",
+        ">>=",
+        "<<=",
+        "&=",
+        "^=",
+        "|=",
+        ":=",
+    ],
+    "bitwise": ["^", "&", "|", "<<", ">>", "~"],
+    "comparison": ["<", ">", "<=", ">=", "==", "!="],
+    "math": ["+", "-", "*", "**", "@", "/", "//", "%"],
+    "other": [":"],
+}
 
 
 class Token:
@@ -87,6 +110,14 @@ class Token:
         """Makes a copy of a given token"""
         return Token((self.type, self.string, self.start, self.end, self.line))
 
+    def is_assignment(self):
+        """Returns True if the token is an assigment or augmented assignment."""
+        return self.string in _op_categories["assignment"]
+
+    def is_bitwise(self):
+        """Returns True if the token is a bitwise operator."""
+        return self.string in _op_categories["bitwise"]
+
     def is_open_bracket(self):
         """Returns True if token is one of ([{"""
         return self.string in "({[" and len(self.string) == 1
@@ -102,6 +133,11 @@ class Token:
     def is_comment(self):
         """Returns True if the token is a comment."""
         return self.type == _py_tokenize.COMMENT
+
+    def is_comparison(self):
+        """Returns True if the token is a comparison operator."""
+
+        return self.string in _op_categories["comparison"]
 
     def is_complex(self):
         """Returns True if the token represents a complex number.cavie"""
@@ -188,6 +224,13 @@ class Token:
             or (self == "}" and other == "{")
         )
 
+    def is_math_operator(self):
+        """Returns True if the token represents a mathematical operation.
+
+        Note that some, like @, can have other meanings.
+        """
+        return self.string in _op_categories["math"]
+
     def is_name(self):
         """Returns ``True`` if the token is a type NAME"""
         return self.type == _py_tokenize.NAME
@@ -200,9 +243,15 @@ class Token:
         """Returns True if the token represents a number."""
         return self.type == _py_tokenize.NUMBER
 
-    def is_operator(self) -> bool:
+    def is_operator(self):
         """Returns true if the token is of type OP"""
         return self.type == _py_tokenize.OP
+
+    def is_other_operator(self):
+        """Returns True if the token is an operator in category "other".
+        By default, only the colon, ``:``, is part of that category.
+        """
+        return self.string in _op_categories["other"]
 
     def is_space(self):
         """Returns True if the token indicates a change in indentation,
@@ -234,7 +283,7 @@ class Token:
         )
 
 
-def add_operator(string, name):
+def add_operator(string, name, category=None):
     """Adds a string defining an operator to the tokenizer.
     If the string is already a known operator, nothing other than
     returning ``False`` is done, otherwise ``True`` is returned.
@@ -250,10 +299,18 @@ def add_operator(string, name):
     Defining an operator is essential for proper tokenizing. For example,
     if one does not define ``!!`` as an operator, ``!!`` would be tokenized
     as two individual ``!`` tokens.
+
+    ``category`` can be one of "assignment", "bitwise", "comparison",
+    "math", or "other".
+
+    Once added, say, to "assignment", it will be usable in Token.is_assignment().
     """
-    from token_utils import _py_tokenize as tok
     import re
 
+    if category in ["assignment", "bitwise", "comparison", "math", "other"]:
+        _op_categories[category].append(string)
+
+    tok = _py_tokenize
     if string in tok.EXACT_TOKEN_TYPES:
         return False
 

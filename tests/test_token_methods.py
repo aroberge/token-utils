@@ -2,7 +2,7 @@
 # case we make a typo when changing code. It happens...
 
 
-from token_utils import tokenize, untokenize, make_fake_token
+from token_utils import tokenize, untokenize, make_fake_token, add_operator
 
 
 def test_contains():
@@ -26,6 +26,51 @@ def test_len():
     assert len(tokens[1]) == 1
     assert tokens[2] == "'Albert'"
     assert len(tokens[2]) == 8
+
+
+def test_is_assignment():
+    for op_string in [
+        "=",
+        "+=",
+        "-=",
+        "*=",
+        "@=",
+        "/=",
+        "//=",
+        "%=",
+        "**=",
+        ">>=",
+        "<<=",
+        "&=",
+        "^=",
+        "|=",
+        ":=",
+    ]:
+        token = make_fake_token(string=op_string)
+        assert token.is_assignment()
+
+
+def test_is_bitwise():
+    for op_string in ["^", "&", "|", "<<", ">>", "~"]:
+        token = make_fake_token(string=op_string)
+        assert token.is_bitwise()
+
+
+def test_is_comparison():
+    for op_string in ["<", ">", "<=", ">=", "==", "!="]:
+        token = make_fake_token(string=op_string)
+        assert token.is_comparison()
+
+
+def test_is_math_operator():
+    for op_string in ["+", "-", "*", "**", "@", "/", "//", "%"]:
+        token = make_fake_token(string=op_string)
+        assert token.is_math_operator()
+
+
+def test_is_other_operatar():
+    token = make_fake_token(string=":")
+    assert token.is_other_operator()
 
 
 def test_is_open_bracket():
@@ -212,3 +257,14 @@ def test_make_fake():
     tokens = tokenize(source)
     tokens.insert(0, fake)
     assert untokenize(tokens) == "$a = b"
+
+
+def test_add_operator():
+    assert add_operator("=", "equal") is False
+    assert add_operator("!!!!!", "surprise", category="other") is True
+    tokens = tokenize("!!!!!")
+    new_tokens = [tok for tok in tokens if tok.is_operator()]
+    assert len(new_tokens) == 1
+    surprise = new_tokens[0]
+    assert surprise == "!!!!!"
+    assert surprise.is_other_operator()
