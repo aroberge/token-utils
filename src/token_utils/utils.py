@@ -226,7 +226,7 @@ class BracketStack:
         return not bool(self.stack)
 
 
-def add_tokenizing_operator(string, name):
+def add_operator(string, name):
     """Adds a string defining an operator to the tokenizer.
     If the string is already a known operator, nothing other than
     returning ``False`` is done, otherwise ``True`` is returned.
