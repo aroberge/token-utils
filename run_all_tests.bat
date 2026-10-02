@@ -19,4 +19,7 @@ call venv-token3.13\scripts\activate & python -m pytest
 echo Python 3.14:
 call venv-token3.14\scripts\activate & python -m pytest
 
+echo Python 3.15:
+call venv-token3.15\scripts\activate & python -m pytest
+
 call venv-token3.10\scripts\activate

@@ -8,6 +8,7 @@ if "%1"=="3.11" goto py_311
 if "%1"=="3.12" goto py_312
 if "%1"=="3.13" goto py_313
 if "%1"=="3.14" goto py_314
+if "%1"=="3.15" goto py_315
 
 :py_310
 venv-token3.10\scripts\activate
@@ -35,6 +36,10 @@ goto end
 
 :py_314
 venv-token3.14\scripts\activate
+goto end
+
+:py_315
+venv-token3.15\scripts\activate
 goto end
 
 :end
