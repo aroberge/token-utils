@@ -12,6 +12,12 @@ def test_contains():
     assert "'Bob'" in tokens[2]
 
 
+def test_copy():
+    tokens = tokenize("a")
+    copy = tokens[0].copy()
+    assert copy.is_identical(tokens[0])
+
+
 def test_len():
     tokens = tokenize("name = 'Albert'")
     assert tokens[0] == "name"

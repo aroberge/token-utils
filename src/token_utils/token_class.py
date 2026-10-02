@@ -83,6 +83,10 @@ class Token:
         """Returns the length of the string attribute"""
         return len(self.string)
 
+    def copy(self):
+        """Makes a copy of a given token"""
+        return Token((self.type, self.string, self.start, self.end, self.line))
+
     def is_open_bracket(self):
         """Returns True if token is one of ([{"""
         return self.string in "({[" and len(self.string) == 1
