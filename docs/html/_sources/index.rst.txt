@@ -73,7 +73,6 @@ Quick links to topics
 
     Token class <token_class>
     Tokenizing related methods <tokenizing_methods>
-    Other functions <utils>
 
 .. toctree::
     :caption: Appendix

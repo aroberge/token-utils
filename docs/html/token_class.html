@@ -62,9 +62,13 @@
 <li class="toctree-l4"><a class="reference internal" href="#token_utils.token_class.Token.__repr__"><code class="docutils literal notranslate"><span class="pre">Token.__repr__()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#token_utils.token_class.Token.__str__"><code class="docutils literal notranslate"><span class="pre">Token.__str__()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#token_utils.token_class.Token.__weakref__"><code class="docutils literal notranslate"><span class="pre">Token.__weakref__</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#token_utils.token_class.Token.copy"><code class="docutils literal notranslate"><span class="pre">Token.copy()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#token_utils.token_class.Token.is_assignment"><code class="docutils literal notranslate"><span class="pre">Token.is_assignment()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#token_utils.token_class.Token.is_bitwise"><code class="docutils literal notranslate"><span class="pre">Token.is_bitwise()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#token_utils.token_class.Token.is_bracket"><code class="docutils literal notranslate"><span class="pre">Token.is_bracket()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#token_utils.token_class.Token.is_close_bracket"><code class="docutils literal notranslate"><span class="pre">Token.is_close_bracket()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#token_utils.token_class.Token.is_comment"><code class="docutils literal notranslate"><span class="pre">Token.is_comment()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#token_utils.token_class.Token.is_comparison"><code class="docutils literal notranslate"><span class="pre">Token.is_comparison()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#token_utils.token_class.Token.is_complex"><code class="docutils literal notranslate"><span class="pre">Token.is_complex()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#token_utils.token_class.Token.is_f_string"><code class="docutils literal notranslate"><span class="pre">Token.is_f_string()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#token_utils.token_class.Token.is_float"><code class="docutils literal notranslate"><span class="pre">Token.is_float()</span></code></a></li>
@@ -77,16 +81,19 @@
 <li class="toctree-l4"><a class="reference internal" href="#token_utils.token_class.Token.is_integer"><code class="docutils literal notranslate"><span class="pre">Token.is_integer()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#token_utils.token_class.Token.is_keyword"><code class="docutils literal notranslate"><span class="pre">Token.is_keyword()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#token_utils.token_class.Token.is_matching_bracket"><code class="docutils literal notranslate"><span class="pre">Token.is_matching_bracket()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#token_utils.token_class.Token.is_math_operator"><code class="docutils literal notranslate"><span class="pre">Token.is_math_operator()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#token_utils.token_class.Token.is_name"><code class="docutils literal notranslate"><span class="pre">Token.is_name()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#token_utils.token_class.Token.is_newline"><code class="docutils literal notranslate"><span class="pre">Token.is_newline()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#token_utils.token_class.Token.is_number"><code class="docutils literal notranslate"><span class="pre">Token.is_number()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#token_utils.token_class.Token.is_open_bracket"><code class="docutils literal notranslate"><span class="pre">Token.is_open_bracket()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#token_utils.token_class.Token.is_operator"><code class="docutils literal notranslate"><span class="pre">Token.is_operator()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#token_utils.token_class.Token.is_other_operator"><code class="docutils literal notranslate"><span class="pre">Token.is_other_operator()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#token_utils.token_class.Token.is_space"><code class="docutils literal notranslate"><span class="pre">Token.is_space()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#token_utils.token_class.Token.is_string"><code class="docutils literal notranslate"><span class="pre">Token.is_string()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#token_utils.token_class.Token.is_unclosed_string"><code class="docutils literal notranslate"><span class="pre">Token.is_unclosed_string()</span></code></a></li>
 </ul>
 </li>
+<li class="toctree-l3"><a class="reference internal" href="#token_utils.token_class.add_operator"><code class="docutils literal notranslate"><span class="pre">add_operator()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#token_utils.token_class.make_fake_token"><code class="docutils literal notranslate"><span class="pre">make_fake_token()</span></code></a></li>
 </ul>
 </li>
@@ -211,6 +218,24 @@ provided in this module.</p>
 </dd></dl>
 
 <dl class="py method">
+<dt class="sig sig-object py" id="token_utils.token_class.Token.copy">
+<span class="sig-name descname"><span class="pre">copy</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/token_utils/token_class.html#Token.copy"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#token_utils.token_class.Token.copy" title="Link to this definition"></a></dt>
+<dd><p>Makes a copy of a given token</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="token_utils.token_class.Token.is_assignment">
+<span class="sig-name descname"><span class="pre">is_assignment</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/token_utils/token_class.html#Token.is_assignment"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#token_utils.token_class.Token.is_assignment" title="Link to this definition"></a></dt>
+<dd><p>Returns True if the token is an assigment or augmented assignment.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="token_utils.token_class.Token.is_bitwise">
+<span class="sig-name descname"><span class="pre">is_bitwise</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/token_utils/token_class.html#Token.is_bitwise"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#token_utils.token_class.Token.is_bitwise" title="Link to this definition"></a></dt>
+<dd><p>Returns True if the token is a bitwise operator.</p>
+</dd></dl>
+
+<dl class="py method">
 <dt class="sig sig-object py" id="token_utils.token_class.Token.is_bracket">
 <span class="sig-name descname"><span class="pre">is_bracket</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/token_utils/token_class.html#Token.is_bracket"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#token_utils.token_class.Token.is_bracket" title="Link to this definition"></a></dt>
 <dd><p>Returns True if the token is a bracket, i.e. one of (){}[]</p>
@@ -226,6 +251,12 @@ provided in this module.</p>
 <dt class="sig sig-object py" id="token_utils.token_class.Token.is_comment">
 <span class="sig-name descname"><span class="pre">is_comment</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/token_utils/token_class.html#Token.is_comment"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#token_utils.token_class.Token.is_comment" title="Link to this definition"></a></dt>
 <dd><p>Returns True if the token is a comment.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="token_utils.token_class.Token.is_comparison">
+<span class="sig-name descname"><span class="pre">is_comparison</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/token_utils/token_class.html#Token.is_comparison"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#token_utils.token_class.Token.is_comparison" title="Link to this definition"></a></dt>
+<dd><p>Returns True if the token is a comparison operator.</p>
 </dd></dl>
 
 <dl class="py method">
@@ -308,6 +339,13 @@ of strings.</p>
 </dd></dl>
 
 <dl class="py method">
+<dt class="sig sig-object py" id="token_utils.token_class.Token.is_math_operator">
+<span class="sig-name descname"><span class="pre">is_math_operator</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/token_utils/token_class.html#Token.is_math_operator"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#token_utils.token_class.Token.is_math_operator" title="Link to this definition"></a></dt>
+<dd><p>Returns True if the token represents a mathematical operation.</p>
+<p>Note that some, like &#64;, can have other meanings.</p>
+</dd></dl>
+
+<dl class="py method">
 <dt class="sig sig-object py" id="token_utils.token_class.Token.is_name">
 <span class="sig-name descname"><span class="pre">is_name</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/token_utils/token_class.html#Token.is_name"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#token_utils.token_class.Token.is_name" title="Link to this definition"></a></dt>
 <dd><p>Returns <code class="docutils literal notranslate"><span class="pre">True</span></code> if the token is a type NAME</p>
@@ -333,8 +371,15 @@ of strings.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="token_utils.token_class.Token.is_operator">
-<span class="sig-name descname"><span class="pre">is_operator</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span></span></span><a class="reference internal" href="_modules/token_utils/token_class.html#Token.is_operator"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#token_utils.token_class.Token.is_operator" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">is_operator</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/token_utils/token_class.html#Token.is_operator"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#token_utils.token_class.Token.is_operator" title="Link to this definition"></a></dt>
 <dd><p>Returns true if the token is of type OP</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="token_utils.token_class.Token.is_other_operator">
+<span class="sig-name descname"><span class="pre">is_other_operator</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/token_utils/token_class.html#Token.is_other_operator"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#token_utils.token_class.Token.is_other_operator" title="Link to this definition"></a></dt>
+<dd><p>Returns True if the token is an operator in category “other”.
+By default, only the colon, <code class="docutils literal notranslate"><span class="pre">:</span></code>, is part of that category.</p>
 </dd></dl>
 
 <dl class="py method">
@@ -360,6 +405,26 @@ on a given line are not considered to be tokens themselves.</p>
 <dd><p>Returns True if the token is an unclosed string</p>
 </dd></dl>
 
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="token_utils.token_class.add_operator">
+<span class="sig-prename descclassname"><span class="pre">token_utils.token_class.</span></span><span class="sig-name descname"><span class="pre">add_operator</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">string</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">category</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/token_utils/token_class.html#add_operator"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#token_utils.token_class.add_operator" title="Link to this definition"></a></dt>
+<dd><p>Adds a string defining an operator to the tokenizer.
+If the string is already a known operator, nothing other than
+returning <code class="docutils literal notranslate"><span class="pre">False</span></code> is done, otherwise <code class="docutils literal notranslate"><span class="pre">True</span></code> is returned.</p>
+<p>For example, prior to Python 3.12, <code class="docutils literal notranslate"><span class="pre">!</span></code> was not a known operator;
+it became so with Python 3.12 and thereafter.</p>
+<p>The name given will be converted to uppercase. If that name already
+exists in the module, a modified version with an added underscore
+as a suffix will be created, with as many underscore needed as to make
+the name unique.</p>
+<p>Defining an operator is essential for proper tokenizing. For example,
+if one does not define <code class="docutils literal notranslate"><span class="pre">!!</span></code> as an operator, <code class="docutils literal notranslate"><span class="pre">!!</span></code> would be tokenized
+as two individual <code class="docutils literal notranslate"><span class="pre">!</span></code> tokens.</p>
+<p><code class="docutils literal notranslate"><span class="pre">category</span></code> can be one of “assignment”, “bitwise”, “comparison”,
+“math”, or “other”.</p>
+<p>Once added, say, to “assignment”, it will be usable in Token.is_assignment().</p>
 </dd></dl>
 
 <dl class="py function">

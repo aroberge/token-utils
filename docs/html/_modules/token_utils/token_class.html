@@ -87,10 +87,33 @@
 <span class="kn">from</span><span class="w"> </span><span class="nn">token_utils</span><span class="w"> </span><span class="kn">import</span> <span class="n">_py_tokenize</span>
 
 <span class="n">_token_format</span> <span class="o">=</span> <span class="s2">"type=</span><span class="si">{type}</span><span class="s2">  string=</span><span class="si">{string}</span><span class="s2">  start=</span><span class="si">{start}</span><span class="s2">  end=</span><span class="si">{end}</span><span class="s2">  line=</span><span class="si">{line}</span><span class="s2">"</span>
+<span class="n">_op_categories</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s2">"assignment"</span><span class="p">:</span> <span class="p">[</span>
+        <span class="s2">"="</span><span class="p">,</span>
+        <span class="s2">"+="</span><span class="p">,</span>
+        <span class="s2">"-="</span><span class="p">,</span>
+        <span class="s2">"*="</span><span class="p">,</span>
+        <span class="s2">"@="</span><span class="p">,</span>
+        <span class="s2">"/="</span><span class="p">,</span>
+        <span class="s2">"//="</span><span class="p">,</span>
+        <span class="s2">"%="</span><span class="p">,</span>
+        <span class="s2">"**="</span><span class="p">,</span>
+        <span class="s2">"&gt;&gt;="</span><span class="p">,</span>
+        <span class="s2">"&lt;&lt;="</span><span class="p">,</span>
+        <span class="s2">"&amp;="</span><span class="p">,</span>
+        <span class="s2">"^="</span><span class="p">,</span>
+        <span class="s2">"|="</span><span class="p">,</span>
+        <span class="s2">":="</span><span class="p">,</span>
+    <span class="p">],</span>
+    <span class="s2">"bitwise"</span><span class="p">:</span> <span class="p">[</span><span class="s2">"^"</span><span class="p">,</span> <span class="s2">"&amp;"</span><span class="p">,</span> <span class="s2">"|"</span><span class="p">,</span> <span class="s2">"&lt;&lt;"</span><span class="p">,</span> <span class="s2">"&gt;&gt;"</span><span class="p">,</span> <span class="s2">"~"</span><span class="p">],</span>
+    <span class="s2">"comparison"</span><span class="p">:</span> <span class="p">[</span><span class="s2">"&lt;"</span><span class="p">,</span> <span class="s2">"&gt;"</span><span class="p">,</span> <span class="s2">"&lt;="</span><span class="p">,</span> <span class="s2">"&gt;="</span><span class="p">,</span> <span class="s2">"=="</span><span class="p">,</span> <span class="s2">"!="</span><span class="p">],</span>
+    <span class="s2">"math"</span><span class="p">:</span> <span class="p">[</span><span class="s2">"+"</span><span class="p">,</span> <span class="s2">"-"</span><span class="p">,</span> <span class="s2">"*"</span><span class="p">,</span> <span class="s2">"**"</span><span class="p">,</span> <span class="s2">"@"</span><span class="p">,</span> <span class="s2">"/"</span><span class="p">,</span> <span class="s2">"//"</span><span class="p">,</span> <span class="s2">"%"</span><span class="p">],</span>
+    <span class="s2">"other"</span><span class="p">:</span> <span class="p">[</span><span class="s2">":"</span><span class="p">],</span>
+<span class="p">}</span>
 
 
 <div class="viewcode-block" id="Token">
-<a class="viewcode-back" href="../../utils.html#token_utils.token_class.Token">[docs]</a>
+<a class="viewcode-back" href="../../token_class.html#token_utils.token_class.Token">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">Token</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">"""Token as generated from Python's tokenize.generate_tokens written here in</span>
 <span class="sd">    a more convenient form, and with some custom methods.</span>
@@ -148,8 +171,15 @@
         <span class="n">line</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">line</span>
         <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">line</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">20</span><span class="p">:</span>
             <span class="n">line</span> <span class="o">=</span> <span class="n">line</span><span class="p">[:</span><span class="mi">10</span><span class="p">]</span> <span class="o">+</span> <span class="s2">" &lt;...&gt; "</span> <span class="o">+</span> <span class="n">line</span><span class="p">[</span><span class="o">-</span><span class="mi">5</span><span class="p">:]</span>
+        <span class="n">name</span> <span class="o">=</span> <span class="n">_py_tokenize</span><span class="o">.</span><span class="n">tok_name</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">type</span><span class="p">]</span>
+        <span class="k">if</span> <span class="n">name</span> <span class="o">==</span> <span class="s2">"OP"</span><span class="p">:</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">string</span> <span class="ow">in</span> <span class="n">_py_tokenize</span><span class="o">.</span><span class="n">EXACT_TOKEN_TYPES</span><span class="p">:</span>
+                <span class="n">exact_type</span> <span class="o">=</span> <span class="n">_py_tokenize</span><span class="o">.</span><span class="n">EXACT_TOKEN_TYPES</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">string</span><span class="p">]</span>
+                <span class="k">if</span> <span class="n">exact_type</span> <span class="ow">in</span> <span class="n">_py_tokenize</span><span class="o">.</span><span class="n">tok_name</span><span class="p">:</span>
+                    <span class="n">exact_name</span> <span class="o">=</span> <span class="n">_py_tokenize</span><span class="o">.</span><span class="n">tok_name</span><span class="p">[</span><span class="n">exact_type</span><span class="p">]</span>
+                    <span class="n">name</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">"OP: </span><span class="si">{</span><span class="n">exact_name</span><span class="si">}</span><span class="s2">"</span>
         <span class="k">return</span> <span class="n">_token_format</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
-            <span class="nb">type</span><span class="o">=</span><span class="s2">"</span><span class="si">%s</span><span class="s2"> (</span><span class="si">%s</span><span class="s2">)"</span> <span class="o">%</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">type</span><span class="p">,</span> <span class="n">_py_tokenize</span><span class="o">.</span><span class="n">tok_name</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">type</span><span class="p">]),</span>
+            <span class="nb">type</span><span class="o">=</span><span class="s2">"</span><span class="si">%s</span><span class="s2"> (</span><span class="si">%s</span><span class="s2">)"</span> <span class="o">%</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">type</span><span class="p">,</span> <span class="n">name</span><span class="p">),</span>
             <span class="n">string</span><span class="o">=</span><span class="nb">repr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">string</span><span class="p">),</span>
             <span class="n">start</span><span class="o">=</span><span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">start</span><span class="p">),</span>
             <span class="n">end</span><span class="o">=</span><span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">end</span><span class="p">),</span>
@@ -180,43 +210,72 @@
         <span class="k">return</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">string</span><span class="p">)</span></div>
 
 
+<div class="viewcode-block" id="Token.copy">
+<a class="viewcode-back" href="../../token_class.html#token_utils.token_class.Token.copy">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">copy</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">"""Makes a copy of a given token"""</span>
+        <span class="k">return</span> <span class="n">Token</span><span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">type</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">string</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">start</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">end</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">line</span><span class="p">))</span></div>
+
+
+<div class="viewcode-block" id="Token.is_assignment">
+<a class="viewcode-back" href="../../token_class.html#token_utils.token_class.Token.is_assignment">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">is_assignment</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">"""Returns True if the token is an assigment or augmented assignment."""</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">string</span> <span class="ow">in</span> <span class="n">_op_categories</span><span class="p">[</span><span class="s2">"assignment"</span><span class="p">]</span></div>
+
+
+<div class="viewcode-block" id="Token.is_bitwise">
+<a class="viewcode-back" href="../../token_class.html#token_utils.token_class.Token.is_bitwise">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">is_bitwise</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">"""Returns True if the token is a bitwise operator."""</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">string</span> <span class="ow">in</span> <span class="n">_op_categories</span><span class="p">[</span><span class="s2">"bitwise"</span><span class="p">]</span></div>
+
+
 <div class="viewcode-block" id="Token.is_open_bracket">
-<a class="viewcode-back" href="../../utils.html#token_utils.token_class.Token.is_open_bracket">[docs]</a>
+<a class="viewcode-back" href="../../token_class.html#token_utils.token_class.Token.is_open_bracket">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">is_open_bracket</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">"""Returns True if token is one of ([{"""</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">string</span> <span class="ow">in</span> <span class="s2">"({["</span> <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">string</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span></div>
 
 
 <div class="viewcode-block" id="Token.is_close_bracket">
-<a class="viewcode-back" href="../../utils.html#token_utils.token_class.Token.is_close_bracket">[docs]</a>
+<a class="viewcode-back" href="../../token_class.html#token_utils.token_class.Token.is_close_bracket">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">is_close_bracket</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">"""Returns True if token is one of )}]"""</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">string</span> <span class="ow">in</span> <span class="s2">")]}"</span> <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">string</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span></div>
 
 
 <div class="viewcode-block" id="Token.is_bracket">
-<a class="viewcode-back" href="../../utils.html#token_utils.token_class.Token.is_bracket">[docs]</a>
+<a class="viewcode-back" href="../../token_class.html#token_utils.token_class.Token.is_bracket">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">is_bracket</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">"""Returns True if the token is a bracket, i.e. one of (){}[]"""</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">is_close_bracket</span><span class="p">()</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">is_open_bracket</span><span class="p">()</span></div>
 
 
 <div class="viewcode-block" id="Token.is_comment">
-<a class="viewcode-back" href="../../utils.html#token_utils.token_class.Token.is_comment">[docs]</a>
+<a class="viewcode-back" href="../../token_class.html#token_utils.token_class.Token.is_comment">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">is_comment</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">"""Returns True if the token is a comment."""</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">type</span> <span class="o">==</span> <span class="n">_py_tokenize</span><span class="o">.</span><span class="n">COMMENT</span></div>
 
 
+<div class="viewcode-block" id="Token.is_comparison">
+<a class="viewcode-back" href="../../token_class.html#token_utils.token_class.Token.is_comparison">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">is_comparison</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">"""Returns True if the token is a comparison operator."""</span>
+
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">string</span> <span class="ow">in</span> <span class="n">_op_categories</span><span class="p">[</span><span class="s2">"comparison"</span><span class="p">]</span></div>
+
+
 <div class="viewcode-block" id="Token.is_complex">
-<a class="viewcode-back" href="../../utils.html#token_utils.token_class.Token.is_complex">[docs]</a>
+<a class="viewcode-back" href="../../token_class.html#token_utils.token_class.Token.is_complex">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">is_complex</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">"""Returns True if the token represents a complex number.cavie"""</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">is_number</span><span class="p">()</span> <span class="ow">and</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">ast</span><span class="o">.</span><span class="n">literal_eval</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">string</span><span class="p">),</span> <span class="nb">complex</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="Token.is_f_string">
-<a class="viewcode-back" href="../../utils.html#token_utils.token_class.Token.is_f_string">[docs]</a>
+<a class="viewcode-back" href="../../token_class.html#token_utils.token_class.Token.is_f_string">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">is_f_string</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">"""Return True if the token is an f-string"""</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">type</span> <span class="o">==</span> <span class="n">_py_tokenize</span><span class="o">.</span><span class="n">STRING</span> <span class="ow">and</span> <span class="p">(</span>
@@ -225,14 +284,14 @@
 
 
 <div class="viewcode-block" id="Token.is_float">
-<a class="viewcode-back" href="../../utils.html#token_utils.token_class.Token.is_float">[docs]</a>
+<a class="viewcode-back" href="../../token_class.html#token_utils.token_class.Token.is_float">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">is_float</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">"""Returns True if the token represents a float."""</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">is_number</span><span class="p">()</span> <span class="ow">and</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">ast</span><span class="o">.</span><span class="n">literal_eval</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">string</span><span class="p">),</span> <span class="nb">float</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="Token.is_identical">
-<a class="viewcode-back" href="../../utils.html#token_utils.token_class.Token.is_identical">[docs]</a>
+<a class="viewcode-back" href="../../token_class.html#token_utils.token_class.Token.is_identical">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">is_identical</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">"""Returs True if the other token is identical"""</span>
         <span class="k">return</span> <span class="p">(</span>
@@ -245,7 +304,7 @@
 
 
 <div class="viewcode-block" id="Token.is_identifier">
-<a class="viewcode-back" href="../../utils.html#token_utils.token_class.Token.is_identifier">[docs]</a>
+<a class="viewcode-back" href="../../token_class.html#token_utils.token_class.Token.is_identifier">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">is_identifier</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">"""Returns ``True`` if the token represents a valid Python identifier</span>
 <span class="sd">        excluding Python keywords.</span>
@@ -257,7 +316,7 @@
 
 
 <div class="viewcode-block" id="Token.is_immediately_before">
-<a class="viewcode-back" href="../../utils.html#token_utils.token_class.Token.is_immediately_before">[docs]</a>
+<a class="viewcode-back" href="../../token_class.html#token_utils.token_class.Token.is_immediately_before">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">is_immediately_before</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">"""Returns True if the current token is immediately before other,</span>
 <span class="sd">        without any intervening space in between the two tokens.</span>
@@ -268,7 +327,7 @@
 
 
 <div class="viewcode-block" id="Token.is_immediately_after">
-<a class="viewcode-back" href="../../utils.html#token_utils.token_class.Token.is_immediately_after">[docs]</a>
+<a class="viewcode-back" href="../../token_class.html#token_utils.token_class.Token.is_immediately_after">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">is_immediately_after</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">"""Returns True if the current token is immediately after other,</span>
 <span class="sd">        without any intervening space in between the two tokens.</span>
@@ -279,7 +338,7 @@
 
 
 <div class="viewcode-block" id="Token.is_in">
-<a class="viewcode-back" href="../../utils.html#token_utils.token_class.Token.is_in">[docs]</a>
+<a class="viewcode-back" href="../../token_class.html#token_utils.token_class.Token.is_in">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">is_in</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">sequence_of_strings</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">"""Returns True if the token string is found in the sequence</span>
 <span class="sd">        of strings."""</span>
@@ -287,7 +346,7 @@
 
 
 <div class="viewcode-block" id="Token.is_indentation">
-<a class="viewcode-back" href="../../utils.html#token_utils.token_class.Token.is_indentation">[docs]</a>
+<a class="viewcode-back" href="../../token_class.html#token_utils.token_class.Token.is_indentation">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">is_indentation</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">"""Returns True if the token indicates a change in indentation,</span>
 <span class="sd">        (``INDENT``, ``DEDENT``, ``BAD_DEDENT``).</span>
@@ -300,14 +359,14 @@
 
 
 <div class="viewcode-block" id="Token.is_integer">
-<a class="viewcode-back" href="../../utils.html#token_utils.token_class.Token.is_integer">[docs]</a>
+<a class="viewcode-back" href="../../token_class.html#token_utils.token_class.Token.is_integer">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">is_integer</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">"""Returns True if the token represents an integer"""</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">is_number</span><span class="p">()</span> <span class="ow">and</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">ast</span><span class="o">.</span><span class="n">literal_eval</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">string</span><span class="p">),</span> <span class="nb">int</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="Token.is_keyword">
-<a class="viewcode-back" href="../../utils.html#token_utils.token_class.Token.is_keyword">[docs]</a>
+<a class="viewcode-back" href="../../token_class.html#token_utils.token_class.Token.is_keyword">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">is_keyword</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">"""Returns True if the token represents a Python keyword."""</span>
         <span class="kn">import</span><span class="w"> </span><span class="nn">keyword</span>
@@ -316,7 +375,7 @@
 
 
 <div class="viewcode-block" id="Token.is_matching_bracket">
-<a class="viewcode-back" href="../../utils.html#token_utils.token_class.Token.is_matching_bracket">[docs]</a>
+<a class="viewcode-back" href="../../token_class.html#token_utils.token_class.Token.is_matching_bracket">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">is_matching_bracket</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">"""Returns True if it is a matching (closing/opening pair) bracket"""</span>
         <span class="k">return</span> <span class="p">(</span>
@@ -329,36 +388,55 @@
         <span class="p">)</span></div>
 
 
+<div class="viewcode-block" id="Token.is_math_operator">
+<a class="viewcode-back" href="../../token_class.html#token_utils.token_class.Token.is_math_operator">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">is_math_operator</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">"""Returns True if the token represents a mathematical operation.</span>
+
+<span class="sd">        Note that some, like @, can have other meanings.</span>
+<span class="sd">        """</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">string</span> <span class="ow">in</span> <span class="n">_op_categories</span><span class="p">[</span><span class="s2">"math"</span><span class="p">]</span></div>
+
+
 <div class="viewcode-block" id="Token.is_name">
-<a class="viewcode-back" href="../../utils.html#token_utils.token_class.Token.is_name">[docs]</a>
+<a class="viewcode-back" href="../../token_class.html#token_utils.token_class.Token.is_name">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">is_name</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">"""Returns ``True`` if the token is a type NAME"""</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">type</span> <span class="o">==</span> <span class="n">_py_tokenize</span><span class="o">.</span><span class="n">NAME</span></div>
 
 
 <div class="viewcode-block" id="Token.is_newline">
-<a class="viewcode-back" href="../../utils.html#token_utils.token_class.Token.is_newline">[docs]</a>
+<a class="viewcode-back" href="../../token_class.html#token_utils.token_class.Token.is_newline">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">is_newline</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">"""Returns True if the token type is either ``NEWLINE`` or ``NL``."""</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">type</span> <span class="ow">in</span> <span class="p">(</span><span class="n">_py_tokenize</span><span class="o">.</span><span class="n">NEWLINE</span><span class="p">,</span> <span class="n">_py_tokenize</span><span class="o">.</span><span class="n">NL</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="Token.is_number">
-<a class="viewcode-back" href="../../utils.html#token_utils.token_class.Token.is_number">[docs]</a>
+<a class="viewcode-back" href="../../token_class.html#token_utils.token_class.Token.is_number">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">is_number</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">"""Returns True if the token represents a number."""</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">type</span> <span class="o">==</span> <span class="n">_py_tokenize</span><span class="o">.</span><span class="n">NUMBER</span></div>
 
 
 <div class="viewcode-block" id="Token.is_operator">
-<a class="viewcode-back" href="../../utils.html#token_utils.token_class.Token.is_operator">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">is_operator</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+<a class="viewcode-back" href="../../token_class.html#token_utils.token_class.Token.is_operator">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">is_operator</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">"""Returns true if the token is of type OP"""</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">type</span> <span class="o">==</span> <span class="n">_py_tokenize</span><span class="o">.</span><span class="n">OP</span></div>
 
 
+<div class="viewcode-block" id="Token.is_other_operator">
+<a class="viewcode-back" href="../../token_class.html#token_utils.token_class.Token.is_other_operator">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">is_other_operator</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">"""Returns True if the token is an operator in category "other".</span>
+<span class="sd">        By default, only the colon, ``:``, is part of that category.</span>
+<span class="sd">        """</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">string</span> <span class="ow">in</span> <span class="n">_op_categories</span><span class="p">[</span><span class="s2">"other"</span><span class="p">]</span></div>
+
+
 <div class="viewcode-block" id="Token.is_space">
-<a class="viewcode-back" href="../../utils.html#token_utils.token_class.Token.is_space">[docs]</a>
+<a class="viewcode-back" href="../../token_class.html#token_utils.token_class.Token.is_space">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">is_space</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">"""Returns True if the token indicates a change in indentation,</span>
 <span class="sd">        the end of a line, or the end of the source</span>
@@ -379,14 +457,14 @@
 
 
 <div class="viewcode-block" id="Token.is_string">
-<a class="viewcode-back" href="../../utils.html#token_utils.token_class.Token.is_string">[docs]</a>
+<a class="viewcode-back" href="../../token_class.html#token_utils.token_class.Token.is_string">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">is_string</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">"""Returns True if the token represents a string"""</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">type</span> <span class="o">==</span> <span class="n">_py_tokenize</span><span class="o">.</span><span class="n">STRING</span></div>
 
 
 <div class="viewcode-block" id="Token.is_unclosed_string">
-<a class="viewcode-back" href="../../utils.html#token_utils.token_class.Token.is_unclosed_string">[docs]</a>
+<a class="viewcode-back" href="../../token_class.html#token_utils.token_class.Token.is_unclosed_string">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">is_unclosed_string</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">"""Returns True if the token is an unclosed string"""</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">type</span> <span class="ow">in</span> <span class="p">(</span>
@@ -397,8 +475,67 @@
 
 
 
+<div class="viewcode-block" id="add_operator">
+<a class="viewcode-back" href="../../token_class.html#token_utils.token_class.add_operator">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">add_operator</span><span class="p">(</span><span class="n">string</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">category</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">"""Adds a string defining an operator to the tokenizer.</span>
+<span class="sd">    If the string is already a known operator, nothing other than</span>
+<span class="sd">    returning ``False`` is done, otherwise ``True`` is returned.</span>
+
+<span class="sd">    For example, prior to Python 3.12, ``!`` was not a known operator;</span>
+<span class="sd">    it became so with Python 3.12 and thereafter.</span>
+
+<span class="sd">    The name given will be converted to uppercase. If that name already</span>
+<span class="sd">    exists in the module, a modified version with an added underscore</span>
+<span class="sd">    as a suffix will be created, with as many underscore needed as to make</span>
+<span class="sd">    the name unique.</span>
+
+<span class="sd">    Defining an operator is essential for proper tokenizing. For example,</span>
+<span class="sd">    if one does not define ``!!`` as an operator, ``!!`` would be tokenized</span>
+<span class="sd">    as two individual ``!`` tokens.</span>
+
+<span class="sd">    ``category`` can be one of "assignment", "bitwise", "comparison",</span>
+<span class="sd">    "math", or "other".</span>
+
+<span class="sd">    Once added, say, to "assignment", it will be usable in Token.is_assignment().</span>
+<span class="sd">    """</span>
+    <span class="kn">import</span><span class="w"> </span><span class="nn">re</span>
+
+    <span class="k">if</span> <span class="n">category</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">"assignment"</span><span class="p">,</span> <span class="s2">"bitwise"</span><span class="p">,</span> <span class="s2">"comparison"</span><span class="p">,</span> <span class="s2">"math"</span><span class="p">,</span> <span class="s2">"other"</span><span class="p">]:</span>
+        <span class="n">_op_categories</span><span class="p">[</span><span class="n">category</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">string</span><span class="p">)</span>
+
+    <span class="n">tok</span> <span class="o">=</span> <span class="n">_py_tokenize</span>
+    <span class="k">if</span> <span class="n">string</span> <span class="ow">in</span> <span class="n">tok</span><span class="o">.</span><span class="n">EXACT_TOKEN_TYPES</span><span class="p">:</span>
+        <span class="k">return</span> <span class="kc">False</span>
+
+    <span class="c1"># Find an unused integer value</span>
+    <span class="n">default_max</span> <span class="o">=</span> <span class="n">tok</span><span class="o">.</span><span class="n">N_TOKENS</span>
+    <span class="n">value</span> <span class="o">=</span> <span class="n">default_max</span> <span class="o">+</span> <span class="mi">1</span>
+    <span class="k">while</span> <span class="n">value</span> <span class="ow">in</span> <span class="nb">dir</span><span class="p">(</span><span class="n">tok</span><span class="p">):</span>
+        <span class="n">value</span> <span class="o">+=</span> <span class="mi">1</span>
+
+    <span class="c1"># Ensure a unique name</span>
+    <span class="n">name</span> <span class="o">=</span> <span class="n">name</span><span class="o">.</span><span class="n">upper</span><span class="p">()</span>
+    <span class="k">while</span> <span class="n">name</span> <span class="ow">in</span> <span class="nb">dir</span><span class="p">(</span><span class="n">tok</span><span class="p">):</span>
+        <span class="n">name</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s2">_"</span>
+
+    <span class="c1"># update the info for tokenizing.</span>
+    <span class="n">tok</span><span class="o">.</span><span class="vm">__dict__</span><span class="p">[</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span>
+    <span class="n">tok</span><span class="o">.</span><span class="n">EXACT_TOKEN_TYPES</span><span class="p">[</span><span class="n">string</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span>
+    <span class="n">tok</span><span class="o">.</span><span class="n">tok_name</span><span class="p">[</span><span class="n">value</span><span class="p">]</span> <span class="o">=</span> <span class="n">name</span>
+    <span class="n">tok</span><span class="o">.</span><span class="n">Special</span> <span class="o">=</span> <span class="n">tok</span><span class="o">.</span><span class="n">group</span><span class="p">(</span>
+        <span class="o">*</span><span class="nb">map</span><span class="p">(</span><span class="n">re</span><span class="o">.</span><span class="n">escape</span><span class="p">,</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">tok</span><span class="o">.</span><span class="n">EXACT_TOKEN_TYPES</span><span class="p">,</span> <span class="n">reverse</span><span class="o">=</span><span class="kc">True</span><span class="p">))</span>
+    <span class="p">)</span>
+    <span class="n">tok</span><span class="o">.</span><span class="n">Funny</span> <span class="o">=</span> <span class="n">tok</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="sa">r</span><span class="s2">"\r?\n"</span><span class="p">,</span> <span class="n">tok</span><span class="o">.</span><span class="n">Special</span><span class="p">)</span>
+    <span class="n">tok</span><span class="o">.</span><span class="n">PseudoToken</span> <span class="o">=</span> <span class="n">tok</span><span class="o">.</span><span class="n">Whitespace</span> <span class="o">+</span> <span class="n">tok</span><span class="o">.</span><span class="n">group</span><span class="p">(</span>
+        <span class="n">tok</span><span class="o">.</span><span class="n">PseudoExtras</span><span class="p">,</span> <span class="n">tok</span><span class="o">.</span><span class="n">Number</span><span class="p">,</span> <span class="n">tok</span><span class="o">.</span><span class="n">Funny</span><span class="p">,</span> <span class="n">tok</span><span class="o">.</span><span class="n">ContStr</span><span class="p">,</span> <span class="n">tok</span><span class="o">.</span><span class="n">Name</span>
+    <span class="p">)</span>
+    <span class="k">return</span> <span class="kc">True</span></div>
+
+
+
 <div class="viewcode-block" id="make_fake_token">
-<a class="viewcode-back" href="../../token_class.html#token_utils.token_class.make_fake_token">[docs]</a>
+<a class="viewcode-back" href="../../tokenizing_methods.html#token_utils.token_class.make_fake_token">[docs]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">make_fake_token</span><span class="p">(</span>
     <span class="nb">type</span><span class="o">=</span><span class="n">_py_tokenize</span><span class="o">.</span><span class="n">FAKE_TOKEN</span><span class="p">,</span> <span class="n">string</span><span class="o">=</span><span class="s2">"$"</span><span class="p">,</span> <span class="n">start</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="n">end</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="n">line</span><span class="o">=</span><span class="s2">""</span>
 <span class="p">):</span>
