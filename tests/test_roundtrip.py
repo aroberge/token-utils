@@ -8,7 +8,7 @@ from token_utils import (
     tokenize,
     untokenize,
     get_significant_tokens,
-    get_lines,
+    get_physical_lines,
     get_stripped_lines,
     untokenize_lines_of_tokens,
     stringify,
@@ -18,7 +18,7 @@ from token_utils import (
 def check_all(source):
     assert untokenize(tokenize(source)) == source
     assert untokenize(get_significant_tokens(source)) == source
-    assert untokenize_lines_of_tokens(get_lines(source)) == source
+    assert untokenize_lines_of_tokens(get_physical_lines(source)) == source
     assert untokenize_lines_of_tokens(get_stripped_lines(source)) == source
     if source.find("\t") == -1:
         assert stringify(get_significant_tokens(source)) == source
@@ -73,7 +73,7 @@ def test_untokenize_with_backslash_in_comment():
     source = backslash_in_comment
     assert untokenize(tokenize(source)) == source
     assert untokenize(get_significant_tokens(source)) == source
-    assert untokenize_lines_of_tokens(get_lines(source)) == source
+    assert untokenize_lines_of_tokens(get_physical_lines(source)) == source
     # assert untokenize_lines_of_tokens(get_stripped_lines(source)) == source
     # untokenizing get_stripped_lines fails in this very weird case.
     assert stringify(tokenize(source)) == source

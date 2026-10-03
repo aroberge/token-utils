@@ -97,10 +97,10 @@ def get_significant_tokens(source):
     return tokens
 
 
-def get_lines(source):
+def get_physical_lines(source):
     """Transforms a source (string) into a list of of list of Tokens,
     with each (inner) list containing all the tokens found on a given
-    line of code.
+    physical line of code.
     """
     lines = []
     current_row = -1
@@ -146,12 +146,12 @@ def get_stripped_lines(source):
 
 def untokenize_lines_of_tokens(lines):
     """Given a line of lines of tokens, such as that
-    obtained by ``get_lines()`` or ``get_stripped_lines``,
+    obtained by ``get_physical_lines()`` or ``get_stripped_lines``,
     returns a string containing the source.
 
     The following should be true::
 
-        untokenize_lines_of_tokens(get_lines(source)) == source
+        untokenize_lines_of_tokens(get_physical_lines(source)) == source
     """
     tokens = [token for line in lines for token in line]
     return untokenize(tokens)
@@ -310,7 +310,7 @@ def print_tokens(source):
     if isinstance(source[0], Token):
         source = untokenize(source)
 
-    for lines in get_lines(source):
+    for lines in get_physical_lines(source):
         for token in lines:
             print(repr(token))
         print()

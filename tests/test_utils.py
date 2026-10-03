@@ -2,7 +2,7 @@ from token_utils import (
     generate_tokens,
     tokenize,
     make_fake_token,
-    get_lines,
+    get_physical_lines,
     dedent,
     pairwise,
     sliding_window,
@@ -20,8 +20,8 @@ if True:
 """
 tokens1 = tokenize(source1)
 tokens2 = tokenize(source2)
-lines2 = get_lines(source2)
-lines3 = get_lines(source3)
+lines2 = get_physical_lines(source2)
+lines3 = get_physical_lines(source3)
 
 
 def test_pairwise():
