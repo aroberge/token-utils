@@ -8,10 +8,21 @@ class TokenUtilsEOFWarning(UserWarning):
     pass
 
 
+class SemiColonWarning(UserWarning):
+    """Raised when a semi-colon is found separating statements
+    on a logical line other than the first one.
+    """
+
+    # We don't warn if it's on the first line in case it's a
+    # "one-liner" passed as an argument on a command line
+    pass
+
+
 def disable_warnings():
     """Disable all warnings arising from token_utils."""
 
     warnings.filterwarnings("ignore", category=TokenUtilsEOFWarning)
+    warnings.filterwarnings("ignore", category=SemiColonWarning)
 
 
 def custom_showwarning(message, category, filename, lineno, file=None, line=None):

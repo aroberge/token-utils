@@ -7,12 +7,12 @@ All the functions dealing with tokenizing/untokenizing.
 
 from collections import deque
 from itertools import chain, islice
+from io import StringIO
+import warnings
 
 from token_utils import _py_tokenize
-
-from io import StringIO
-
 from token_utils.token_class import Token, make_fake_token
+from token_utils.custom_warnings import SemiColonWarning
 
 
 def _fix_empty_line(source, prev_token, last_token):
@@ -75,7 +75,7 @@ def generate_tokens(source):
         print(exc, repr(exc))
 
 
-def tokenize(source, warning=True):
+def tokenize(source):
     """Transforms a source (string) into a list of Tokens."""
 
     return list(generate_tokens(source))
@@ -97,64 +97,76 @@ def get_significant_tokens(source):
     return tokens
 
 
-def get_physical_lines(source):
+def get_physical_lines(source, remove_comments=True):
     """Transforms a source (string) into a list of of list of Tokens,
     with each (inner) list containing all the tokens found on a given
-    physical line of code.
+    physical line of code except comments that correspond to indentation.
+
+    Note that lines visually separated by a continuation character (``\\``)
+    are considered to be part of the same physical line
+
+    Thus, for a given (inner) list of tokens, the first token (list[0])
+    will either be:
+
+    - A newline character (``NL`` or ``NEWLINE`` token)
+    - A significant (non-space) token.
+    - An ``ENDMARKER`` token
+
+    Similarly, the last token (list[-1]) will be a either
+    a new line character (``NL`` or ``NEWLINE`` token) or ``ENDMARKER`` token.
+
+    Set ``remove_comments`` to ``False`` to keep comments.
+    In that case, the first token oa an inner list could be a comment.
     """
     lines = []
-    current_row = -1
     new_line = []
     for token in generate_tokens(source):
-        if token.start_row != current_row:
-            current_row = token.start_row
-            if new_line:
-                lines.append(new_line)
+        if token.is_newline():
+            new_line.append(token)
+            lines.append(new_line)
             new_line = []
+            continue
+        elif token.is_indentation():
+            continue
+        if remove_comments and token.is_comment():
+            continue
         new_line.append(token)
     if new_line:
         lines.append(new_line)
     return lines
 
 
-def get_stripped_lines(source):
-    """Transforms a source (string) into a list of of list of Tokens,
-    with each (inner) list containing all the tokens found on a given
-    line of code except that any token related to change in
-    indentation and comments will have been removed. Thus, for a given
-    (inner) list of tokens, list[0] will be a non-space token.
-    """
+def get_logical_lines(source, remove_comments=True, remove_semi_colons=True):
+    """..."""
     lines = []
-    current_row = -1
     new_line = []
-    first_token = ""
-    for token in generate_tokens(source):
-        if token.start_row != current_row:
-            current_row = token.start_row
-            if new_line:
-                lines.append(new_line)
-            elif first_token:
-                lines.append([first_token])
-            new_line = []
-            first_token = token
-        if not (token.is_indentation() or token.is_comment()):
+    for token, next_ in pairwise(generate_tokens(source)):
+        if token.type == _py_tokenize.NEWLINE:
             new_line.append(token)
+            lines.append(new_line)
+            new_line = []
+            continue
+        elif token.type == _py_tokenize.NL:
+            continue
+        elif token.is_indentation():
+            continue
+        elif token.is_comment() and remove_comments:
+            continue
+        elif token == ";" and next_.is_newline() and remove_semi_colons:
+            continue
+        elif token == ";" and token.start_row > 1 and remove_semi_colons:
+            warnings.warn(
+                f"Semi-colon found on line {token.start_row}",
+                SemiColonWarning,
+                stacklevel=2,
+            )
+        elif token.type == _py_tokenize.ENDMARKER:
+            break
+        new_line.append(token)
+
     if new_line:
         lines.append(new_line)
     return lines
-
-
-def untokenize_lines_of_tokens(lines):
-    """Given a line of lines of tokens, such as that
-    obtained by ``get_physical_lines()`` or ``get_stripped_lines``,
-    returns a string containing the source.
-
-    The following should be true::
-
-        untokenize_lines_of_tokens(get_physical_lines(source)) == source
-    """
-    tokens = [token for line in lines for token in line]
-    return untokenize(tokens)
 
 
 def untokenize(tokens):
@@ -192,13 +204,18 @@ def untokenize(tokens):
     #    as we go along
     # 2. We allow the inclusion of pure strings as token, but without
     #    taking their length into consideration.
+    # 3. We accept lines of lines of tokens
     # Begin code (for extraction by Sphinx)
+    # Allow both lists of Tokens or strings, or lists of lists of Tokens or strings
+    if isinstance(tokens[0], list):
+        tokens = [token for line in tokens for token in line]
+    assert isinstance(tokens[0], (Token, str))
+
     words = []
     previous_line = ""
     last_row = 0
     last_column = -1
     last_non_whitespace_token_type = None
-
     for token in tokens:
         if isinstance(token, str):
             words.append(token)
@@ -257,6 +274,9 @@ def stringify(tokens, remove_comments=False):
 
         ideas.utils.remove_comments(source)
     """
+    if isinstance(tokens[0], list):
+        tokens = [token for line in tokens for token in line]
+
     words = []
     previous_line = ""
     last_row = 0
