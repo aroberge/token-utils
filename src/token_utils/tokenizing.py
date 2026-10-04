@@ -577,6 +577,18 @@ class BracketStack:
         return not bool(self.stack)
 
 
+def split_at_token(seq, token):
+    """Split a list of tokens in two sublists: those occuring before the
+    token specified, and those after."""
+    before = []
+    for index, tok in enumerate(seq):
+        if tok.is_identical(token):
+            break
+        before.append(tok)
+    after = seq[index + 1 :]
+    return before, after
+
+
 __all__ = ["__all__"]
 _names = dir()
 
