@@ -117,6 +117,9 @@ def get_physical_lines(source, remove_comments=True):
 
     Set ``remove_comments`` to ``False`` to keep comments.
     In that case, the first token oa an inner list could be a comment.
+
+    ## If one needs lines with Indentation information still present,
+    ## see Issue #14.
     """
     lines = []
     new_line = []
@@ -137,7 +140,23 @@ def get_physical_lines(source, remove_comments=True):
 
 
 def get_logical_lines(source, remove_comments=True, remove_semi_colons=True):
-    """..."""
+    """This retrieves logical lines, each essentially correponding to a single statement.
+
+    Warning: untokenize(get_logical_lines) != source in general.
+
+    When two or more physical lines are joined **explitly** into logical lines
+    using backslash characters (`\\`) or **implicitly** by using
+    parentheses, square brackets or curly braces opening on a given physical line
+    and closing on another, the ``NL`` token is used to indicate that a ``\\n``
+    was used. By removing these continuation symbol, or signs, we can potentially
+    combine many physical line into a single logical line ~ statement.
+    (Note that we could have multiple statements separated by semi-colons ``;``.)
+
+    Empty lines (or lines with only comments) also end with an ``NL`` token.
+
+    This function extract logical lines, removing all space tokens (``INDENT``, etc.)
+    ``NL`` tokens
+    """
     lines = []
     new_line = []
     for token, next_ in pairwise(generate_tokens(source)):
@@ -321,14 +340,26 @@ def stringify(tokens, remove_comments=False):
 
 
 def print_tokens(source):
-    """Prints tokens found in source, excluding spaces and comments.
+    """Prints tokens found in source, line by line, followed by a
+       string version of that line.
 
-    ``source`` is either a string to be tokenized, or a list of Token objects.
+    ``source`` is either a string to be tokenized, a list of Token objects,
+    or a list of lists of tokens.
 
-    This is occasionally useful as a debugging tool.
+    This can be useful as a debugging tool.
     """
+
+    if isinstance(source[0], list):
+        for line in source:
+            for token in line:
+                print(repr(token))
+            print(stringify(line))
+        return
+
     if isinstance(source[0], Token):
         source = untokenize(source)
+    elif isinstance(source, str):
+        pass
 
     for lines in get_physical_lines(source):
         for token in lines:
