@@ -6,7 +6,7 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Purpose &mdash; token-utils 0.3.0 documentation</title>
+  <title>Purpose &mdash; token-utils 0.3.2 documentation</title>
       <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=03e43079" />
       <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=9edc463e" />
       <link rel="stylesheet" type="text/css" href="_static/sphinx-new-tab-link.css?v=d87cb1ac" />
@@ -15,7 +15,7 @@
   
       <script src="_static/jquery.js?v=5d32c60e"></script>
       <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="_static/documentation_options.js?v=e259d695"></script>
+      <script src="_static/documentation_options.js?v=71d9d8e6"></script>
       <script src="_static/doctools.js?v=9bcbadda"></script>
       <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="_static/js/theme.js"></script>
@@ -46,7 +46,8 @@
               <ul>
 <li class="toctree-l1"><a class="reference internal" href="about_tokens.html"> About tokens: Python vs token-utils</a></li>
 <li class="toctree-l1"><a class="reference internal" href="untokenizing.html"> About untokenizing</a></li>
-<li class="toctree-l1"><a class="reference internal" href="tips.html"> Recipes, tips, and tricks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tutorial_prelude.html"> Prelude to the tutorial</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tips.html"> Tutorial: recipes, tips, and tricks</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">API</span></p>
 <ul>
@@ -172,7 +173,7 @@ supporting fancy f-strings.</p>
 <li class="toctree-l1"><a class="reference internal" href="about_tokens.html"> About tokens: Python vs token-utils</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="about_tokens.html#about-python-tokens">About Python tokens</a></li>
 <li class="toctree-l2"><a class="reference internal" href="about_tokens.html#about-token-utils-tokens">About token-utils tokens</a></li>
-<li class="toctree-l2"><a class="reference internal" href="about_tokens.html#comparing-tokenizing-untokenizing-results">Comparing tokenizing/untokenizing results</a></li>
+<li class="toctree-l2"><a class="reference internal" href="about_tokens.html#highlighting-potential-problems-with-python-s-tokenize-untokenize">Highlighting potential problems with Python’s tokenize/untokenize</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="untokenizing.html"> About untokenizing</a><ul>
@@ -181,7 +182,13 @@ supporting fancy f-strings.</p>
 <li class="toctree-l2"><a class="reference internal" href="untokenizing.html#about-stringify">About stringify()</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="tips.html"> Recipes, tips, and tricks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tutorial_prelude.html"> Prelude to the tutorial</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tips.html"> Tutorial: recipes, tips, and tricks</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="tips.html#adding-a-factorial-symbol">Adding a factorial symbol</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tips.html#better-factorial-and-bracketstack">Better factorial and BracketStack</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tips.html#keeping-track-of-indentation-with-indentstack">Keeping track of indentation with IndentStack</a></li>
+</ul>
+</li>
 </ul>
 </div>
 <div class="toctree-wrapper compound">
@@ -198,7 +205,8 @@ supporting fancy f-strings.</p>
 <li class="toctree-l4"><a class="reference internal" href="token_class.html#token_utils.token_class.Token.__repr__"><code class="docutils literal notranslate"><span class="pre">Token.__repr__()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="token_class.html#token_utils.token_class.Token.__str__"><code class="docutils literal notranslate"><span class="pre">Token.__str__()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="token_class.html#token_utils.token_class.Token.__weakref__"><code class="docutils literal notranslate"><span class="pre">Token.__weakref__</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="token_class.html#token_utils.token_class.Token.copy"><code class="docutils literal notranslate"><span class="pre">Token.copy()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="token_class.html#token_utils.token_class.Token.clone"><code class="docutils literal notranslate"><span class="pre">Token.clone()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="token_class.html#token_utils.token_class.Token.indentation"><code class="docutils literal notranslate"><span class="pre">Token.indentation()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="token_class.html#token_utils.token_class.Token.is_assignment"><code class="docutils literal notranslate"><span class="pre">Token.is_assignment()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="token_class.html#token_utils.token_class.Token.is_bitwise"><code class="docutils literal notranslate"><span class="pre">Token.is_bitwise()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="token_class.html#token_utils.token_class.Token.is_bracket"><code class="docutils literal notranslate"><span class="pre">Token.is_bracket()</span></code></a></li>
@@ -243,22 +251,31 @@ supporting fancy f-strings.</p>
 <li class="toctree-l4"><a class="reference internal" href="tokenizing_methods.html#token_utils.tokenizing.BracketStack.is_empty"><code class="docutils literal notranslate"><span class="pre">BracketStack.is_empty()</span></code></a></li>
 </ul>
 </li>
+<li class="toctree-l3"><a class="reference internal" href="tokenizing_methods.html#token_utils.tokenizing.IndentStack"><code class="docutils literal notranslate"><span class="pre">IndentStack</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="tokenizing_methods.html#token_utils.tokenizing.IndentStack.is_inside_class"><code class="docutils literal notranslate"><span class="pre">IndentStack.is_inside_class()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="tokenizing_methods.html#token_utils.tokenizing.IndentStack.is_inside_def"><code class="docutils literal notranslate"><span class="pre">IndentStack.is_inside_def()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="tokenizing_methods.html#token_utils.tokenizing.IndentStack.print_stack"><code class="docutils literal notranslate"><span class="pre">IndentStack.print_stack()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="tokenizing_methods.html#token_utils.tokenizing.IndentStack.top_item"><code class="docutils literal notranslate"><span class="pre">IndentStack.top_item()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="tokenizing_methods.html#token_utils.tokenizing.IndentStack.update_indent"><code class="docutils literal notranslate"><span class="pre">IndentStack.update_indent()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="tokenizing_methods.html#token_utils.tokenizing.SemiColonWarning"><code class="docutils literal notranslate"><span class="pre">SemiColonWarning</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="tokenizing_methods.html#token_utils.tokenizing.dedent"><code class="docutils literal notranslate"><span class="pre">dedent()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="tokenizing_methods.html#token_utils.tokenizing.generate_tokens"><code class="docutils literal notranslate"><span class="pre">generate_tokens()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="tokenizing_methods.html#token_utils.tokenizing.get_logical_lines"><code class="docutils literal notranslate"><span class="pre">get_logical_lines()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="tokenizing_methods.html#token_utils.tokenizing.get_number_significant_tokens"><code class="docutils literal notranslate"><span class="pre">get_number_significant_tokens()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="tokenizing_methods.html#token_utils.tokenizing.get_physical_lines"><code class="docutils literal notranslate"><span class="pre">get_physical_lines()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="tokenizing_methods.html#token_utils.tokenizing.get_significant_tokens"><code class="docutils literal notranslate"><span class="pre">get_significant_tokens()</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="tokenizing_methods.html#token_utils.tokenizing.get_stripped_lines"><code class="docutils literal notranslate"><span class="pre">get_stripped_lines()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="tokenizing_methods.html#token_utils.tokenizing.indent"><code class="docutils literal notranslate"><span class="pre">indent()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="tokenizing_methods.html#token_utils.tokenizing.make_fake_token"><code class="docutils literal notranslate"><span class="pre">make_fake_token()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="tokenizing_methods.html#token_utils.tokenizing.pairwise"><code class="docutils literal notranslate"><span class="pre">pairwise()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="tokenizing_methods.html#token_utils.tokenizing.print_tokens"><code class="docutils literal notranslate"><span class="pre">print_tokens()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="tokenizing_methods.html#token_utils.tokenizing.sliding_window"><code class="docutils literal notranslate"><span class="pre">sliding_window()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="tokenizing_methods.html#token_utils.tokenizing.split_at_token"><code class="docutils literal notranslate"><span class="pre">split_at_token()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="tokenizing_methods.html#token_utils.tokenizing.stringify"><code class="docutils literal notranslate"><span class="pre">stringify()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="tokenizing_methods.html#token_utils.tokenizing.strip_comments"><code class="docutils literal notranslate"><span class="pre">strip_comments()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="tokenizing_methods.html#token_utils.tokenizing.tokenize"><code class="docutils literal notranslate"><span class="pre">tokenize()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="tokenizing_methods.html#token_utils.tokenizing.untokenize"><code class="docutils literal notranslate"><span class="pre">untokenize()</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="tokenizing_methods.html#token_utils.tokenizing.untokenize_lines_of_tokens"><code class="docutils literal notranslate"><span class="pre">untokenize_lines_of_tokens()</span></code></a></li>
 </ul>
 </li>
 </ul>

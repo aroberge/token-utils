@@ -106,9 +106,14 @@ class Token:
         """Returns the length of the string attribute"""
         return len(self.string)
 
-    def copy(self):
-        """Makes a copy of a given token"""
+    def clone(self):
+        """Makes an exact copy of a given token"""
         return Token((self.type, self.string, self.start, self.end, self.line))
+
+    def indentation(self):
+        """Returns the indentation as a number of spaces."""
+        # Easier to remember than the start_col attribute
+        return self.start_col
 
     def is_assignment(self):
         """Returns True if the token is an assigment or augmented assignment."""
@@ -283,7 +288,7 @@ class Token:
         )
 
 
-def add_operator(string, name, category=None):
+def add_operator(string, name, category="other"):
     """Adds a string defining an operator to the tokenizer.
     If the string is already a known operator, nothing other than
     returning ``False`` is done, otherwise ``True`` is returned.

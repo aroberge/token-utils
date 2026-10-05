@@ -1,0 +1,269 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="./">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Useful functions to know before the tutorial &mdash; token-utils 0.3.2 documentation</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=03e43079" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=9edc463e" />
+      <link rel="stylesheet" type="text/css" href="_static/sphinx-new-tab-link.css?v=d87cb1ac" />
+      <link rel="stylesheet" type="text/css" href="_static/custom.css?v=c7e4a82f" />
+
+  
+      <script src="_static/jquery.js?v=5d32c60e"></script>
+      <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="_static/documentation_options.js?v=71d9d8e6"></script>
+      <script src="_static/doctools.js?v=9bcbadda"></script>
+      <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Tutorial: recipes, tips, and tricks" href="tips.html" />
+    <link rel="prev" title="About untokenizing" href="untokenizing.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            token-utils
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="about_tokens.html"> About tokens: Python vs token-utils</a></li>
+<li class="toctree-l1"><a class="reference internal" href="untokenizing.html"> About untokenizing</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#"> Prelude to the tutorial</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tips.html"> Tutorial: recipes, tips, and tricks</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">API</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="token_class.html">Token class</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tokenizing_methods.html">Tokenizing related methods</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Appendix</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="todo.html">To do</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">token-utils</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content style-external-links">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">Useful functions to know before the tutorial</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/tutorial_prelude.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul><div class="rst-breadcrumbs-buttons" role="navigation" aria-label="Sequential page navigation">
+        <a href="untokenizing.html" class="btn btn-neutral float-left" title="About untokenizing" accesskey="p"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="tips.html" class="btn btn-neutral float-right" title="Tutorial: recipes, tips, and tricks" accesskey="n">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+  </div>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="useful-functions-to-know-before-the-tutorial">
+<h1>Useful functions to know before the tutorial<a class="headerlink" href="#useful-functions-to-know-before-the-tutorial" title="Link to this heading"></a></h1>
+<div class="admonition-summary admonition">
+<p class="admonition-title">Summary</p>
+<p>We explain briefly how token-utils makes it easy to
+work with either <em>physical lines</em> or <em>logical lines</em>
+and introduce a function, <code class="docutils literal notranslate"><span class="pre">print_tokens</span></code>, that facilitates
+exploring tokens in an interactive session and introduce
+<code class="docutils literal notranslate"><span class="pre">get_physical_lines()</span></code> and <code class="docutils literal notranslate"><span class="pre">get_logical_lines()</span></code>.</p>
+</div>
+<p>To <strong>simplify</strong> the information found in Python’s documentation
+<a class="reference external" href="https://docs.python.org/3/reference/lexical_analysis.html#line-structure" rel="noreferrer" target="_blank">Lexical analysis: line structure</a>
+we can think of a Python source as consisting of:</p>
+<ul class="simple">
+<li><p>Physical lines, separated by newline characters; or</p></li>
+<li><p>Logical lines, corresponding to statements.</p></li>
+</ul>
+<p>We’ve already seen how <code class="docutils literal notranslate"><span class="pre">tokenize()</span></code> produces a list of tokens and how we can
+print those. To facilitate doing this in interactive sessions,
+token-utils includes a function named <code class="docutils literal notranslate"><span class="pre">print_tokens</span></code>.
+Consider the following source:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">source</span> <span class="o">=</span> <span class="s2">"""</span>
+<span class="gp">... </span><span class="s2">def double(</span>
+<span class="gp">... </span><span class="s2">      n):   # a useful function</span>
+<span class="gp">... </span><span class="s2">    return 2*n</span>
+<span class="gp">...</span>
+<span class="gp">... </span><span class="s2">four = double(2)</span>
+<span class="gp">... </span><span class="s2">"""</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">print_tokens</span><span class="p">(</span><span class="n">tokenize</span><span class="p">(</span><span class="n">source</span><span class="p">))</span>
+<span class="go">Processing list of tokens:</span>
+
+<span class="go">type=62 (NL)  string='\n'  start=(1, 0)  end=(1, 1)  line='\n'</span>
+<span class="go">--&gt; line:  '\n'</span>
+<span class="go">type=1 (NAME)  string='def'  start=(2, 0)  end=(2, 3)  line='def double( \n'</span>
+<span class="go">type=1 (NAME)  string='double'  start=(2, 4)  end=(2, 10)  line='def double( \n'</span>
+<span class="go">type=54 (OP: LPAR)  string='('  start=(2, 10)  end=(2, 11)  line='def double( \n'</span>
+<span class="go">type=62 (NL)  string='\n'  start=(2, 12)  end=(2, 13)  line='def double( \n'</span>
+<span class="go">--&gt; line:  'def double(\n'</span>
+<span class="go">type=1 (NAME)  string='n'  start=(3, 6)  end=(3, 7)  line='      n):  &lt;...&gt; tion\n'</span>
+<span class="go">type=54 (OP: RPAR)  string=')'  start=(3, 7)  end=(3, 8)  line='      n):  &lt;...&gt; tion\n'</span>
+<span class="go">type=54 (OP: COLON)  string=':'  start=(3, 8)  end=(3, 9)  line='      n):  &lt;...&gt; tion\n'</span>
+<span class="go">type=61 (COMMENT)  string='# a useful function'  start=(3, 12)  end=(3, 31)  line='      n):  &lt;...&gt; tion\n'</span>
+<span class="go">type=4 (NEWLINE)  string='\n'  start=(3, 31)  end=(3, 32)  line='      n):  &lt;...&gt; tion\n'</span>
+<span class="go">--&gt; line:  '      n):   # a useful function\n'</span>
+<span class="go">type=5 (INDENT)  string='    '  start=(4, 0)  end=(4, 4)  line='    return 2*n\n'</span>
+<span class="go">type=1 (NAME)  string='return'  start=(4, 4)  end=(4, 10)  line='    return 2*n\n'</span>
+<span class="go">type=2 (NUMBER)  string='2'  start=(4, 11)  end=(4, 12)  line='    return 2*n\n'</span>
+<span class="go">type=54 (OP: STAR)  string='*'  start=(4, 12)  end=(4, 13)  line='    return 2*n\n'</span>
+<span class="go">type=1 (NAME)  string='n'  start=(4, 13)  end=(4, 14)  line='    return 2*n\n'</span>
+<span class="go">type=4 (NEWLINE)  string='\n'  start=(4, 14)  end=(4, 15)  line='    return 2*n\n'</span>
+<span class="go">--&gt; line:  '    return 2*n\n'</span>
+<span class="go">type=62 (NL)  string='\n'  start=(5, 0)  end=(5, 1)  line='\n'</span>
+<span class="go">--&gt; line:  '\n'</span>
+<span class="go">type=6 (DEDENT)  string=''  start=(6, 0)  end=(6, 0)  line='four = double(2)\n'</span>
+<span class="go">type=1 (NAME)  string='four'  start=(6, 0)  end=(6, 4)  line='four = double(2)\n'</span>
+<span class="go">type=54 (OP: EQUAL)  string='='  start=(6, 5)  end=(6, 6)  line='four = double(2)\n'</span>
+<span class="go">type=1 (NAME)  string='double'  start=(6, 7)  end=(6, 13)  line='four = double(2)\n'</span>
+<span class="go">type=54 (OP: LPAR)  string='('  start=(6, 13)  end=(6, 14)  line='four = double(2)\n'</span>
+<span class="go">type=2 (NUMBER)  string='2'  start=(6, 14)  end=(6, 15)  line='four = double(2)\n'</span>
+<span class="go">type=54 (OP: RPAR)  string=')'  start=(6, 15)  end=(6, 16)  line='four = double(2)\n'</span>
+<span class="go">type=4 (NEWLINE)  string='\n'  start=(6, 16)  end=(6, 17)  line='four = double(2)\n'</span>
+<span class="go">--&gt; line:  'four = double(2)\n'</span>
+<span class="go">type=0 (ENDMARKER)  string=''  start=(7, 0)  end=(7, 0)  line=''</span>
+<span class="go">--&gt; line:  ''</span>
+</pre></div>
+</div>
+<p>We can see how <code class="docutils literal notranslate"><span class="pre">print_tokens</span></code> prints a representation of each token, breaking out
+the output in physical lines, with a string representation at the end.
+This turns out to simply being the content of the <code class="docutils literal notranslate"><span class="pre">line</span></code> attribute of the tokens –
+but this might not always be the case if tokens have been removed or modified
+prior to printing.</p>
+<p>We can also use this function directly on the original source:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">print_tokens</span><span class="p">(</span><span class="n">source</span><span class="p">)</span>
+<span class="go">Extracting physical lines from source:</span>
+
+<span class="go">type=62 (NL)  string='\n'  start=(1, 0)  end=(1, 1)  line='\n'</span>
+<span class="go">--&gt; line:  '\n'</span>
+<span class="go">type=1 (NAME)  string='def'  start=(2, 0)  end=(2, 3)  line='def double( \n'</span>
+<span class="go">type=1 (NAME)  string='double'  start=(2, 4)  end=(2, 10)  line='def double( \n'</span>
+<span class="go">type=54 (OP: LPAR)  string='('  start=(2, 10)  end=(2, 11)  line='def double( \n'</span>
+<span class="go">type=62 (NL)  string='\n'  start=(2, 12)  end=(2, 13)  line='def double( \n'</span>
+<span class="go">--&gt; line:  'def double(\n'</span>
+<span class="go">type=1 (NAME)  string='n'  start=(3, 6)  end=(3, 7)  line='      n):  &lt;...&gt; tion\n'</span>
+<span class="go">type=54 (OP: RPAR)  string=')'  start=(3, 7)  end=(3, 8)  line='      n):  &lt;...&gt; tion\n'</span>
+<span class="go">type=54 (OP: COLON)  string=':'  start=(3, 8)  end=(3, 9)  line='      n):  &lt;...&gt; tion\n'</span>
+<span class="go">type=4 (NEWLINE)  string='\n'  start=(3, 31)  end=(3, 32)  line='      n):  &lt;...&gt; tion\n'</span>
+<span class="go">--&gt; line:  '      n):\n'</span>
+<span class="go">type=1 (NAME)  string='return'  start=(4, 4)  end=(4, 10)  line='    return 2*n\n'</span>
+<span class="go">type=2 (NUMBER)  string='2'  start=(4, 11)  end=(4, 12)  line='    return 2*n\n'</span>
+<span class="go">type=54 (OP: STAR)  string='*'  start=(4, 12)  end=(4, 13)  line='    return 2*n\n'</span>
+<span class="go">type=1 (NAME)  string='n'  start=(4, 13)  end=(4, 14)  line='    return 2*n\n'</span>
+<span class="go">type=4 (NEWLINE)  string='\n'  start=(4, 14)  end=(4, 15)  line='    return 2*n\n'</span>
+<span class="go">--&gt; line:  '    return 2*n\n'</span>
+<span class="go">type=62 (NL)  string='\n'  start=(5, 0)  end=(5, 1)  line='\n'</span>
+<span class="go">--&gt; line:  '\n'</span>
+<span class="go">type=1 (NAME)  string='four'  start=(6, 0)  end=(6, 4)  line='four = double(2)\n'</span>
+<span class="go">type=54 (OP: EQUAL)  string='='  start=(6, 5)  end=(6, 6)  line='four = double(2)\n'</span>
+<span class="go">type=1 (NAME)  string='double'  start=(6, 7)  end=(6, 13)  line='four = double(2)\n'</span>
+<span class="go">type=54 (OP: LPAR)  string='('  start=(6, 13)  end=(6, 14)  line='four = double(2)\n'</span>
+<span class="go">type=2 (NUMBER)  string='2'  start=(6, 14)  end=(6, 15)  line='four = double(2)\n'</span>
+<span class="go">type=54 (OP: RPAR)  string=')'  start=(6, 15)  end=(6, 16)  line='four = double(2)\n'</span>
+<span class="go">type=4 (NEWLINE)  string='\n'  start=(6, 16)  end=(6, 17)  line='four = double(2)\n'</span>
+<span class="go">--&gt; line:  'four = double(2)\n'</span>
+<span class="go">type=0 (ENDMARKER)  string=''  start=(7, 0)  end=(7, 0)  line=''</span>
+<span class="go">--&gt; line:  ''</span>
+</pre></div>
+</div>
+<p>This gives a slightly reduced output, as the <code class="docutils literal notranslate"><span class="pre">INDENT</span></code> and <code class="docutils literal notranslate"><span class="pre">DEDENT</span></code> tokens
+have been removed, as well as the comment. This output is equivalent to doing
+<code class="docutils literal notranslate"><span class="pre">print_tokens(get_physical_lines(source))</span></code>. Both this output, and the previous
+one using the list of tokens include empty lines.</p>
+<p>Finally, we can focus on logical lines:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">print_tokens</span><span class="p">(</span><span class="n">get_logical_lines</span><span class="p">(</span><span class="n">source</span><span class="p">))</span>
+<span class="go">Processing list of lists of tokens:</span>
+
+<span class="go">type=1 (NAME)  string='def'  start=(2, 0)  end=(2, 3)  line='def double( \n'</span>
+<span class="go">type=1 (NAME)  string='double'  start=(2, 4)  end=(2, 10)  line='def double( \n'</span>
+<span class="go">type=54 (OP: LPAR)  string='('  start=(2, 10)  end=(2, 11)  line='def double( \n'</span>
+<span class="go">type=1 (NAME)  string='n'  start=(3, 6)  end=(3, 7)  line='      n):  &lt;...&gt; tion\n'</span>
+<span class="go">type=54 (OP: RPAR)  string=')'  start=(3, 7)  end=(3, 8)  line='      n):  &lt;...&gt; tion\n'</span>
+<span class="go">type=54 (OP: COLON)  string=':'  start=(3, 8)  end=(3, 9)  line='      n):  &lt;...&gt; tion\n'</span>
+<span class="go">type=4 (NEWLINE)  string='\n'  start=(3, 31)  end=(3, 32)  line='      n):  &lt;...&gt; tion\n'</span>
+<span class="go">--&gt; line:  'def double(      n):\n'</span>
+<span class="go">type=1 (NAME)  string='return'  start=(4, 4)  end=(4, 10)  line='    return 2*n\n'</span>
+<span class="go">type=2 (NUMBER)  string='2'  start=(4, 11)  end=(4, 12)  line='    return 2*n\n'</span>
+<span class="go">type=54 (OP: STAR)  string='*'  start=(4, 12)  end=(4, 13)  line='    return 2*n\n'</span>
+<span class="go">type=1 (NAME)  string='n'  start=(4, 13)  end=(4, 14)  line='    return 2*n\n'</span>
+<span class="go">type=4 (NEWLINE)  string='\n'  start=(4, 14)  end=(4, 15)  line='    return 2*n\n'</span>
+<span class="go">--&gt; line:  '    return 2*n\n'</span>
+<span class="go">type=1 (NAME)  string='four'  start=(6, 0)  end=(6, 4)  line='four = double(2)\n'</span>
+<span class="go">type=54 (OP: EQUAL)  string='='  start=(6, 5)  end=(6, 6)  line='four = double(2)\n'</span>
+<span class="go">type=1 (NAME)  string='double'  start=(6, 7)  end=(6, 13)  line='four = double(2)\n'</span>
+<span class="go">type=54 (OP: LPAR)  string='('  start=(6, 13)  end=(6, 14)  line='four = double(2)\n'</span>
+<span class="go">type=2 (NUMBER)  string='2'  start=(6, 14)  end=(6, 15)  line='four = double(2)\n'</span>
+<span class="go">type=54 (OP: RPAR)  string=')'  start=(6, 15)  end=(6, 16)  line='four = double(2)\n'</span>
+<span class="go">type=4 (NEWLINE)  string='\n'  start=(6, 16)  end=(6, 17)  line='four = double(2)\n'</span>
+<span class="go">--&gt; line:  'four = double(2)\n'</span>
+</pre></div>
+</div>
+<p>This does not include any empty lines, nor any <code class="docutils literal notranslate"><span class="pre">INDENT/DEDENT/NL/COMMENT</span></code> tokens.
+Notice how the first logical line,
+<code class="docutils literal notranslate"><span class="pre">def</span> <span class="pre">double(</span>&#160;&#160;&#160;&#160;&#160; <span class="pre">n):\n</span></code>, combines two physical lines.
+<code class="docutils literal notranslate"><span class="pre">get_logical_lines()</span></code> will often be the preferable way to obtain relevant tokens
+for either code analysis or code transformation.</p>
+<p>Note that, in this specific example, doing <code class="docutils literal notranslate"><span class="pre">untokenize(get_logical_lines(source))</span></code> would not recover
+the original source, but one functionnally equivalent.</p>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="untokenizing.html" class="btn btn-neutral float-left" title="About untokenizing" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="tips.html" class="btn btn-neutral float-right" title="Tutorial: recipes, tips, and tricks" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2026, André Roberge.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

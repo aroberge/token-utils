@@ -66,7 +66,8 @@ Quick links to topics
 
     About tokens: Python vs token-utils <about_tokens>
     About untokenizing <untokenizing>
-    Recipes, tips, and tricks <tips>
+    Prelude to the tutorial <tutorial_prelude>
+    Tutorial: recipes, tips, and tricks <tips>
 
 .. toctree::
     :caption: API

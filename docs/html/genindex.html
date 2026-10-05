@@ -5,7 +5,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Index &mdash; token-utils 0.3.0 documentation</title>
+  <title>Index &mdash; token-utils 0.3.2 documentation</title>
       <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=03e43079" />
       <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=9edc463e" />
       <link rel="stylesheet" type="text/css" href="_static/sphinx-new-tab-link.css?v=d87cb1ac" />
@@ -14,7 +14,7 @@
   
       <script src="_static/jquery.js?v=5d32c60e"></script>
       <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="_static/documentation_options.js?v=e259d695"></script>
+      <script src="_static/documentation_options.js?v=71d9d8e6"></script>
       <script src="_static/doctools.js?v=9bcbadda"></script>
       <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="_static/js/theme.js"></script>
@@ -44,7 +44,8 @@
               <ul>
 <li class="toctree-l1"><a class="reference internal" href="about_tokens.html"> About tokens: Python vs token-utils</a></li>
 <li class="toctree-l1"><a class="reference internal" href="untokenizing.html"> About untokenizing</a></li>
-<li class="toctree-l1"><a class="reference internal" href="tips.html"> Recipes, tips, and tricks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tutorial_prelude.html"> Prelude to the tutorial</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tips.html"> Tutorial: recipes, tips, and tricks</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">API</span></p>
 <ul>
@@ -144,7 +145,7 @@
 <h2 id="C">C</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="token_class.html#token_utils.token_class.Token.copy">copy() (token_utils.token_class.Token method)</a>
+      <li><a href="token_class.html#token_utils.token_class.Token.clone">clone() (token_utils.token_class.Token method)</a>
 </li>
   </ul></td>
 </tr></table>
@@ -162,15 +163,15 @@
   <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="tokenizing_methods.html#token_utils.tokenizing.generate_tokens">generate_tokens() (in module token_utils.tokenizing)</a>
 </li>
-      <li><a href="tokenizing_methods.html#token_utils.tokenizing.get_number_significant_tokens">get_number_significant_tokens() (in module token_utils.tokenizing)</a>
+      <li><a href="tokenizing_methods.html#token_utils.tokenizing.get_logical_lines">get_logical_lines() (in module token_utils.tokenizing)</a>
 </li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="tokenizing_methods.html#token_utils.tokenizing.get_number_significant_tokens">get_number_significant_tokens() (in module token_utils.tokenizing)</a>
+</li>
       <li><a href="tokenizing_methods.html#token_utils.tokenizing.get_physical_lines">get_physical_lines() (in module token_utils.tokenizing)</a>
 </li>
       <li><a href="tokenizing_methods.html#token_utils.tokenizing.get_significant_tokens">get_significant_tokens() (in module token_utils.tokenizing)</a>
-</li>
-      <li><a href="tokenizing_methods.html#token_utils.tokenizing.get_stripped_lines">get_stripped_lines() (in module token_utils.tokenizing)</a>
 </li>
   </ul></td>
 </tr></table>
@@ -179,6 +180,10 @@
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="tokenizing_methods.html#token_utils.tokenizing.indent">indent() (in module token_utils.tokenizing)</a>
+</li>
+      <li><a href="token_class.html#token_utils.token_class.Token.indentation">indentation() (token_utils.token_class.Token method)</a>
+</li>
+      <li><a href="tokenizing_methods.html#token_utils.tokenizing.IndentStack">IndentStack (class in token_utils.tokenizing)</a>
 </li>
       <li><a href="token_class.html#token_utils.token_class.Token.is_assignment">is_assignment() (token_utils.token_class.Token method)</a>
 </li>
@@ -213,6 +218,10 @@
       <li><a href="token_class.html#token_utils.token_class.Token.is_in">is_in() (token_utils.token_class.Token method)</a>
 </li>
       <li><a href="token_class.html#token_utils.token_class.Token.is_indentation">is_indentation() (token_utils.token_class.Token method)</a>
+</li>
+      <li><a href="tokenizing_methods.html#token_utils.tokenizing.IndentStack.is_inside_class">is_inside_class() (token_utils.tokenizing.IndentStack method)</a>
+</li>
+      <li><a href="tokenizing_methods.html#token_utils.tokenizing.IndentStack.is_inside_def">is_inside_def() (token_utils.tokenizing.IndentStack method)</a>
 </li>
       <li><a href="token_class.html#token_utils.token_class.Token.is_integer">is_integer() (token_utils.token_class.Token method)</a>
 </li>
@@ -273,6 +282,8 @@
 </li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="tokenizing_methods.html#token_utils.tokenizing.IndentStack.print_stack">print_stack() (token_utils.tokenizing.IndentStack method)</a>
+</li>
       <li><a href="tokenizing_methods.html#token_utils.tokenizing.print_tokens">print_tokens() (in module token_utils.tokenizing)</a>
 </li>
   </ul></td>
@@ -281,10 +292,14 @@
 <h2 id="S">S</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="tokenizing_methods.html#token_utils.tokenizing.SemiColonWarning">SemiColonWarning</a>
+</li>
       <li><a href="tokenizing_methods.html#token_utils.tokenizing.sliding_window">sliding_window() (in module token_utils.tokenizing)</a>
 </li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="tokenizing_methods.html#token_utils.tokenizing.split_at_token">split_at_token() (in module token_utils.tokenizing)</a>
+</li>
       <li><a href="tokenizing_methods.html#token_utils.tokenizing.stringify">stringify() (in module token_utils.tokenizing)</a>
 </li>
       <li><a href="tokenizing_methods.html#token_utils.tokenizing.strip_comments">strip_comments() (in module token_utils.tokenizing)</a>
@@ -315,6 +330,8 @@
       </ul></li>
       <li><a href="tokenizing_methods.html#token_utils.tokenizing.tokenize">tokenize() (in module token_utils.tokenizing)</a>
 </li>
+      <li><a href="tokenizing_methods.html#token_utils.tokenizing.IndentStack.top_item">top_item() (token_utils.tokenizing.IndentStack method)</a>
+</li>
   </ul></td>
 </tr></table>
 
@@ -325,7 +342,7 @@
 </li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="tokenizing_methods.html#token_utils.tokenizing.untokenize_lines_of_tokens">untokenize_lines_of_tokens() (in module token_utils.tokenizing)</a>
+      <li><a href="tokenizing_methods.html#token_utils.tokenizing.IndentStack.update_indent">update_indent() (token_utils.tokenizing.IndentStack method)</a>
 </li>
   </ul></td>
 </tr></table>

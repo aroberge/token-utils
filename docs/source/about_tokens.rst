@@ -14,8 +14,8 @@ About Python tokens
 
 Using token-utils requires knowing what "tokens" produced
 by Python's tokenize module are.
-If you are not familiar with those, we suggest that
-you read through at least once through the
+If you are not familiar with those and want to find out more,
+it might be useful to read through at least once through the
 `documentation about Python's tokenize module <https://docs.python.org/3/library/tokenize.html>`_.
 Perhaps even better would be to go through the outstanding tutorial
 `Brown Water Python <https://www.asmeurer.com/brown-water-python/>`_
@@ -30,7 +30,7 @@ The main points to understand:
   (identified by starting and ending **row**, aka line number, and **column**),
   as well as the content of the line where they are found.
 
-    Because they are tuples, Python's tokens are **immutable**.
+    *Because they are tuples, Python's tokens are* **immutable**.
 
 - From a list of tokens, the original source can essentially recreated
   by using the ``untokenize`` function.
@@ -55,18 +55,6 @@ The main points to understand:
   information as we have seen in the previous example to which we will
   soon come back.
 
-
-.. important::
-
-    token_utils's tokenizer is based on Python's version 3.11.
-    As such, it has a limitation when it comes to parsing f-strings.
-
-    This was done because, starting with Python 3.12, the tokenizer
-    can raise an exception when it encounters expressions that are not valid Python syntax.
-
-    As token_utils is partly intended to experiments with alternative to Python's
-    syntax, we had to resort to using an older version, at the cost of not
-    supporting fancy f-strings.
 
 About token-utils tokens
 -------------------------
@@ -95,11 +83,37 @@ By contrast with Python's tokens, we have the following:
 - To ``untokenize`` using the function included with token-utils, we can
   mix tokens and **regular strings** in a predictable fashion.
 
+- The instances of the ``Token`` class have over 30 methods that can be
+  used to write code. We've already seen of of these where instead of
+  identifying floats using something like ``toknum == NUMBER and "." in tokval``,
+  we simply write ``token.is_float()``, which is both more readable and
+  can prevent accidental misidentification - for example, if a complex
+  number is present.
 
-Comparing tokenizing/untokenizing results
-------------------------------------------
 
-.. important::
+Highlighting potential problems with Python's tokenize/untokenize
+-----------------------------------------------------------------
+
+I created token-utils to use in various of my projects,
+adding more features as needed. The main projects in which I
+use it are:
+
+- `ideas <https://aroberge.github.io/ideas/docs/html/>`_
+  which uses import hooks to modify files, mostly
+  to experiment with alternatives to Python's syntax.
+
+- `friendly/friendly-traceback <https://friendly-traceback.github.io/docs/index.html>`_
+  which almost always provide better explanation
+  than Python when an exception is raised. In this project, token-utils is
+  used to analyze the code rather than transforming it.
+
+For both of these projects, it is essential to be able to tokenize
+an entire source completely without an exception being raised,
+so that the source be either transformed into valid Python syntax
+(for **ideas**) or examined closely around the token where the
+exception was raised (for **friendly/friendly-traceback**).
+
+.. sidebar::
 
     Currently, token-utils only works with normal string sources.
     Binary strings which need to be decoded, perhaps using a specific
@@ -107,10 +121,9 @@ Comparing tokenizing/untokenizing results
     an issue, including as much information as you can.
 
 Let's compare the result of first tokenizing followed by untokenizing
-some "problematic" source code, to illustrate the differences between
-Python and token-utils. We will proceed from the least problematic cases
-to the worst ones; admittedly, the first few cases will likely not
-seem as problematic by most Python programmers.
+some "problematic" source code. We will proceed from the least problematic cases
+to the worst ones; admittedly, the first few cases, especially the first one,
+will likely not seem as problematic by most Python programmers.
 
 In the following, we will do something like::
 
@@ -124,6 +137,11 @@ In the following, we will do something like::
 
 .. sidebar:: Do not take my word for it!
 
+    In all these cases, while we don't show it here,
+    token-utils does a perfect tokenize/untokenize round trip,
+    i.e. we recover **exactly** the original
+    source.
+
     Try by yourself and see how token-utils
     does do a perfect tokenize/untokenize
     round trip!
@@ -135,7 +153,7 @@ Continuation character
 Our first example is for a code sample containing a continuation
 character.
 
-First, the result using Python::
+This would be the result using Python::
 
     Source with continuation character:
     x =   \
@@ -146,19 +164,9 @@ First, the result using Python::
     line 2 in : '    1'|
     line 2 out: '    1'|
 
-Note how the space before the continuation character is removed
-using Python. Using token-utils, as advertised, the output
-is identical to the input::
 
-    Source with continuation character:
-    x =   \
-        1
-    line 1 in : 'x =   \\'|
-    line 1 out: 'x =   \\'|
-
-    line 2 in : '    1'|
-    line 2 out: '    1'|
-
+Note how some (trivial) space is lost on the first line, before the
+continuation character.
 
 Mix of tabs and spaces
 ~~~~~~~~~~~~~~~~~~~~~~
@@ -182,22 +190,10 @@ the content is entirely dropped. With Python 3.12+ this last observation
 is no longer valid: Python now keep in the space in the last line,
 albeit with tab characters still converted to space characters.
 
-As might be expected from what we said, the result from
-token-utils is perfect::
-
-    Source with tabs and spaces ('x \t= \t 1\n \t '):
-    x       =        1
-
-    line 1 in : 'x \t= \t 1'|
-    line 1 out: 'x \t= \t 1'|
-
-    line 2 in : ' \t '|
-    line 2 out: ' \t '|
-
 IndentationError
 ~~~~~~~~~~~~~~~~~~
 
-Next, let's look at a more problematic example, first using
+Next, let's look at a more problematic example, with using
 Python's tokenize module.
 
     >>> from tokenize import untokenize, generate_tokens
@@ -256,8 +252,9 @@ at the individual tokens.
     >>> with open('temp.txt', 'r') as f:
     ...     source = f.read()
     ...
-    >>> output = untokenize(tokenize(source))
+    >>> tokens = tokenize(source)
     >>> # no exception raised!
+    >>> output = untokenize(tokens)
     >>> output == source
     True
     >>> print(source)
@@ -266,29 +263,31 @@ at the individual tokens.
       c = d
         e = f
 
-    >>> from token_utils import print_tokens  # easier to read, line by line
-    >>> print_tokens(source)
+    >>> for token in tokens:
+    ...     print(repr(token))
+    ...     if token == "\n": print()
+    ...
     type=1 (NAME)  string='def'  start=(1, 0)  end=(1, 3)  line='def test():\n'
     type=1 (NAME)  string='test'  start=(1, 4)  end=(1, 8)  line='def test():\n'
-    type=54 (OP)  string='('  start=(1, 8)  end=(1, 9)  line='def test():\n'
-    type=54 (OP)  string=')'  start=(1, 9)  end=(1, 10)  line='def test():\n'
-    type=54 (OP)  string=':'  start=(1, 10)  end=(1, 11)  line='def test():\n'
+    type=54 (OP: LPAR)  string='('  start=(1, 8)  end=(1, 9)  line='def test():\n'
+    type=54 (OP: RPAR)  string=')'  start=(1, 9)  end=(1, 10)  line='def test():\n'
+    type=54 (OP: COLON)  string=':'  start=(1, 10)  end=(1, 11)  line='def test():\n'
     type=4 (NEWLINE)  string='\n'  start=(1, 11)  end=(1, 12)  line='def test():\n'
 
     type=5 (INDENT)  string='    '  start=(2, 0)  end=(2, 4)  line='    a = b\n'
     type=1 (NAME)  string='a'  start=(2, 4)  end=(2, 5)  line='    a = b\n'
-    type=54 (OP)  string='='  start=(2, 6)  end=(2, 7)  line='    a = b\n'
+    type=54 (OP: EQUAL)  string='='  start=(2, 6)  end=(2, 7)  line='    a = b\n'
     type=1 (NAME)  string='b'  start=(2, 8)  end=(2, 9)  line='    a = b\n'
     type=4 (NEWLINE)  string='\n'  start=(2, 9)  end=(2, 10)  line='    a = b\n'
 
     type=-1 (BAD_DEDENT)  string='  '  start=(3, 0)  end=(3, 2)  line='  c = d\n'
     type=1 (NAME)  string='c'  start=(3, 2)  end=(3, 3)  line='  c = d\n'
-    type=54 (OP)  string='='  start=(3, 4)  end=(3, 5)  line='  c = d\n'
+    type=54 (OP: EQUAL)  string='='  start=(3, 4)  end=(3, 5)  line='  c = d\n'
     type=1 (NAME)  string='d'  start=(3, 6)  end=(3, 7)  line='  c = d\n'
     type=4 (NEWLINE)  string='\n'  start=(3, 7)  end=(3, 8)  line='  c = d\n'
 
     type=1 (NAME)  string='e'  start=(4, 4)  end=(4, 5)  line='    e = f\n'
-    type=54 (OP)  string='='  start=(4, 6)  end=(4, 7)  line='    e = f\n'
+    type=54 (OP: EQUAL)  string='='  start=(4, 6)  end=(4, 7)  line='    e = f\n'
     type=1 (NAME)  string='f'  start=(4, 8)  end=(4, 9)  line='    e = f\n'
     type=4 (NEWLINE)  string='\n'  start=(4, 9)  end=(4, 10)  line='    e = f\n'
 

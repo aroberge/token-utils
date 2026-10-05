@@ -1,35 +1,23 @@
 About untokenizing
 ==================
 
-.. important::
+.. admonition:: Summary
 
-    **Summary of this section**
-
-    In order to modify some source code, there are three recommended
-    ways to proceed.
-
-    If you want to preserve all tab character information,
-    use ``untokenize()`` as follows:
+    In order to modify some source code:
 
     1. If possible, simply mutate the string of one or more tokens.
-    2. When needed, simply insert a normal string in the token stream.
-
-    Do not attempt to **remove** tokens nor to **insert extra tokens** when
-    using ``untokenize()``.
-
-    If you don't care about having tab characters converted to simple
-    spaces:
-
-    3. Use ``stringify()`` (added in version 0.3.0) instead of ``untokenize()``.
-
-    As is the case for ``untokenize()``, do not attempt
-    to **insert extra tokens** when using ``stringify()``.
-    If needed, simply insert normal strings.
+    2. Do **not** insert tokens: if needed, simply insert a normal string in the token stream.
+    3. If you want to preserve all tab character information, use ``untokenize()``.
+    4. If you don't want to set a token's string to the empty string to
+       effectively remove it, and absolutely want to remove a token,
+       then use ``stringify()`` instead of ``untokenize()`` to obtain a string version;
+       note however that all token characters will be replaced by spaces.
 
 Understanding the untokenizing algorithm
 ----------------------------------------
 
-In the previous section, we've seen how we could perform
+In the previous section, we've mentioned and shown in
+a few examples how we could perform
 perfect tokenize/untokenize round trips. However, if you attempt
 to modify a list of tokens prior to recover a string version
 using ``untokenize``, you might get some surprising result if
@@ -84,7 +72,7 @@ content into an original source.
    :start-after: # Begin code (for extraction by Sphinx)
    :end-before: # End code (for extraction by Sphinx)
    :linenos:
-   :emphasize-lines: 8-10, 25-27, 32
+   :emphasize-lines: 12-14, 29-31, 36
 
 
 Let's focus on the following for the example we just saw.
@@ -144,10 +132,11 @@ Let's use the first method to show how to remove comments.
     import math
     print(math.pi)
 
-Note that this ends up leaving some extra spaces at the end of each line.
+While you cannot see them, note that this ends up leaving some extra spaces
+at the end of each line.
 
 As for adding string content: remember our ``float_to_decimal()`` function?
-In order to use decimals properly, we need to do the appropriaate import first.
+In order to use decimals properly, we need to do the appropriate import first.
 Here's a modified version:
 
 .. literalinclude:: ../../docs_examples/decimal_tok2.py
@@ -175,14 +164,7 @@ We can create additional tokens with token-utils in a fairly simple way::
 
     make_fake_token(type=-4, string='$', start=(0, 0), end=(0, 0), line='')
         Useful when we need to process a list of tokens with
-        multiple consecutive at a time, and we need to lengthen
-        the list for doing so.
-
-        Do not use as token to be inserted in a list of tokens
-        to be untokenize as it will almost certainly not lead to
-        the desired result. If needed for modifying a list of token
-        prior to untokenizing, simply insert regular strings instead
-        of fake tokens.
+        multiple consecutive at a time ...
 
     >>> fake = make_fake_token(string=" | ")
     >>> tokens = []

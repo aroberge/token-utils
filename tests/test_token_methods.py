@@ -12,9 +12,9 @@ def test_contains():
     assert "'Bob'" in tokens[2]
 
 
-def test_copy():
+def test_clone():
     tokens = tokenize("a")
-    copy = tokens[0].copy()
+    copy = tokens[0].clone()
     assert copy.is_identical(tokens[0])
 
 

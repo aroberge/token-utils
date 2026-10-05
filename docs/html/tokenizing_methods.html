@@ -6,7 +6,7 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Tokenizing related methods &mdash; token-utils 0.3.0 documentation</title>
+  <title>Tokenizing related methods &mdash; token-utils 0.3.2 documentation</title>
       <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=03e43079" />
       <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=9edc463e" />
       <link rel="stylesheet" type="text/css" href="_static/sphinx-new-tab-link.css?v=d87cb1ac" />
@@ -15,13 +15,13 @@
   
       <script src="_static/jquery.js?v=5d32c60e"></script>
       <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="_static/documentation_options.js?v=e259d695"></script>
+      <script src="_static/documentation_options.js?v=71d9d8e6"></script>
       <script src="_static/doctools.js?v=9bcbadda"></script>
       <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="_static/js/theme.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="Other functions" href="utils.html" />
+    <link rel="next" title="To do" href="todo.html" />
     <link rel="prev" title="Token class" href="token_class.html" /> 
 </head>
 
@@ -47,7 +47,8 @@
               <ul>
 <li class="toctree-l1"><a class="reference internal" href="about_tokens.html"> About tokens: Python vs token-utils</a></li>
 <li class="toctree-l1"><a class="reference internal" href="untokenizing.html"> About untokenizing</a></li>
-<li class="toctree-l1"><a class="reference internal" href="tips.html"> Recipes, tips, and tricks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tutorial_prelude.html"> Prelude to the tutorial</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tips.html"> Tutorial: recipes, tips, and tricks</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">API</span></p>
 <ul class="current">
@@ -60,27 +61,35 @@
 <li class="toctree-l4"><a class="reference internal" href="#token_utils.tokenizing.BracketStack.is_empty"><code class="docutils literal notranslate"><span class="pre">BracketStack.is_empty()</span></code></a></li>
 </ul>
 </li>
+<li class="toctree-l3"><a class="reference internal" href="#token_utils.tokenizing.IndentStack"><code class="docutils literal notranslate"><span class="pre">IndentStack</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#token_utils.tokenizing.IndentStack.is_inside_class"><code class="docutils literal notranslate"><span class="pre">IndentStack.is_inside_class()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#token_utils.tokenizing.IndentStack.is_inside_def"><code class="docutils literal notranslate"><span class="pre">IndentStack.is_inside_def()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#token_utils.tokenizing.IndentStack.print_stack"><code class="docutils literal notranslate"><span class="pre">IndentStack.print_stack()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#token_utils.tokenizing.IndentStack.top_item"><code class="docutils literal notranslate"><span class="pre">IndentStack.top_item()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#token_utils.tokenizing.IndentStack.update_indent"><code class="docutils literal notranslate"><span class="pre">IndentStack.update_indent()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#token_utils.tokenizing.SemiColonWarning"><code class="docutils literal notranslate"><span class="pre">SemiColonWarning</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#token_utils.tokenizing.dedent"><code class="docutils literal notranslate"><span class="pre">dedent()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#token_utils.tokenizing.generate_tokens"><code class="docutils literal notranslate"><span class="pre">generate_tokens()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#token_utils.tokenizing.get_logical_lines"><code class="docutils literal notranslate"><span class="pre">get_logical_lines()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#token_utils.tokenizing.get_number_significant_tokens"><code class="docutils literal notranslate"><span class="pre">get_number_significant_tokens()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#token_utils.tokenizing.get_physical_lines"><code class="docutils literal notranslate"><span class="pre">get_physical_lines()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#token_utils.tokenizing.get_significant_tokens"><code class="docutils literal notranslate"><span class="pre">get_significant_tokens()</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="#token_utils.tokenizing.get_stripped_lines"><code class="docutils literal notranslate"><span class="pre">get_stripped_lines()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#token_utils.tokenizing.indent"><code class="docutils literal notranslate"><span class="pre">indent()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#token_utils.tokenizing.make_fake_token"><code class="docutils literal notranslate"><span class="pre">make_fake_token()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#token_utils.tokenizing.pairwise"><code class="docutils literal notranslate"><span class="pre">pairwise()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#token_utils.tokenizing.print_tokens"><code class="docutils literal notranslate"><span class="pre">print_tokens()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#token_utils.tokenizing.sliding_window"><code class="docutils literal notranslate"><span class="pre">sliding_window()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#token_utils.tokenizing.split_at_token"><code class="docutils literal notranslate"><span class="pre">split_at_token()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#token_utils.tokenizing.stringify"><code class="docutils literal notranslate"><span class="pre">stringify()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#token_utils.tokenizing.strip_comments"><code class="docutils literal notranslate"><span class="pre">strip_comments()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#token_utils.tokenizing.tokenize"><code class="docutils literal notranslate"><span class="pre">tokenize()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#token_utils.tokenizing.untokenize"><code class="docutils literal notranslate"><span class="pre">untokenize()</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="#token_utils.tokenizing.untokenize_lines_of_tokens"><code class="docutils literal notranslate"><span class="pre">untokenize_lines_of_tokens()</span></code></a></li>
 </ul>
 </li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="utils.html">Other functions</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Appendix</span></p>
 <ul>
@@ -107,7 +116,7 @@
       </li>
   </ul><div class="rst-breadcrumbs-buttons" role="navigation" aria-label="Sequential page navigation">
         <a href="token_class.html" class="btn btn-neutral float-left" title="Token class" accesskey="p"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
-        <a href="utils.html" class="btn btn-neutral float-right" title="Other functions" accesskey="n">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="todo.html" class="btn btn-neutral float-right" title="To do" accesskey="n">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
   </div>
   <hr/>
 </div>
@@ -158,6 +167,57 @@ first one added, a TypeError is raised.</p>
 
 </dd></dl>
 
+<dl class="py class">
+<dt class="sig sig-object py" id="token_utils.tokenizing.IndentStack">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">token_utils.tokenizing.</span></span><span class="sig-name descname"><span class="pre">IndentStack</span></span><a class="reference internal" href="_modules/token_utils/tokenizing.html#IndentStack"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#token_utils.tokenizing.IndentStack" title="Link to this definition"></a></dt>
+<dd><p>docstring</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="token_utils.tokenizing.IndentStack.is_inside_class">
+<span class="sig-name descname"><span class="pre">is_inside_class</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/token_utils/tokenizing.html#IndentStack.is_inside_class"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#token_utils.tokenizing.IndentStack.is_inside_class" title="Link to this definition"></a></dt>
+<dd><p>Returns True if there is a line defining a class
+in the indentation stack.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="token_utils.tokenizing.IndentStack.is_inside_def">
+<span class="sig-name descname"><span class="pre">is_inside_def</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/token_utils/tokenizing.html#IndentStack.is_inside_def"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#token_utils.tokenizing.IndentStack.is_inside_def" title="Link to this definition"></a></dt>
+<dd><p>Returns True if there is a line defining a function
+in the indentation stack.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="token_utils.tokenizing.IndentStack.print_stack">
+<span class="sig-name descname"><span class="pre">print_stack</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/token_utils/tokenizing.html#IndentStack.print_stack"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#token_utils.tokenizing.IndentStack.print_stack" title="Link to this definition"></a></dt>
+<dd><p>Useful for diagnostic</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="token_utils.tokenizing.IndentStack.top_item">
+<span class="sig-name descname"><span class="pre">top_item</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/token_utils/tokenizing.html#IndentStack.top_item"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#token_utils.tokenizing.IndentStack.top_item" title="Link to this definition"></a></dt>
+<dd><p>Returns the token at the top of the stack or None.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="token_utils.tokenizing.IndentStack.update_indent">
+<span class="sig-name descname"><span class="pre">update_indent</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">line</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/token_utils/tokenizing.html#IndentStack.update_indent"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#token_utils.tokenizing.IndentStack.update_indent" title="Link to this definition"></a></dt>
+<dd><p>Receives a line containing tokens. This line argument
+can be any <strong>logical</strong> line obtained using get_logical_lines().</p>
+<p>If the line signals a change in indentation, this function returns
+the last “top token” starting a line at that indentation. By “top token”
+we mean a token that can start a block such as <code class="docutils literal notranslate"><span class="pre">if</span></code> (for <code class="docutils literal notranslate"><span class="pre">if/elif/else</span></code>),
+<code class="docutils literal notranslate"><span class="pre">try</span></code>, etc.</p>
+<p>It returns None if there is no such token.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py exception">
+<dt class="sig sig-object py" id="token_utils.tokenizing.SemiColonWarning">
+<em class="property"><span class="pre">exception</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">token_utils.tokenizing.</span></span><span class="sig-name descname"><span class="pre">SemiColonWarning</span></span><a class="reference internal" href="_modules/token_utils/custom_warnings.html#SemiColonWarning"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#token_utils.tokenizing.SemiColonWarning" title="Link to this definition"></a></dt>
+<dd><p>Raised when a semi-colon is found separating statements
+on a logical line other than the first one.</p>
+</dd></dl>
+
 <dl class="py function">
 <dt class="sig sig-object py" id="token_utils.tokenizing.dedent">
 <span class="sig-prename descclassname"><span class="pre">token_utils.tokenizing.</span></span><span class="sig-name descname"><span class="pre">dedent</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">tokens</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">nb</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/token_utils/tokenizing.html#dedent"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#token_utils.tokenizing.dedent" title="Link to this definition"></a></dt>
@@ -181,6 +241,26 @@ must be used.</p>
 </dd></dl>
 
 <dl class="py function">
+<dt class="sig sig-object py" id="token_utils.tokenizing.get_logical_lines">
+<span class="sig-prename descclassname"><span class="pre">token_utils.tokenizing.</span></span><span class="sig-name descname"><span class="pre">get_logical_lines</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">source</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">remove_comments</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">remove_semi_colons</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/token_utils/tokenizing.html#get_logical_lines"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#token_utils.tokenizing.get_logical_lines" title="Link to this definition"></a></dt>
+<dd><p>This retrieves logical lines, each essentially correponding to a single statement.</p>
+<p>Warning: untokenize(get_logical_lines) != source in general. However, the
+untokenized version executes the same as the original.</p>
+<p>When two or more physical lines are joined <strong>explitly</strong> into logical lines
+using backslash characters (<cite>`) or **implicitly** by using
+parentheses, square brackets or curly braces opening on a given physical line
+and closing on another, the ``NL`</cite> token is used to indicate that a <code class="docutils literal notranslate"><span class="pre">\n</span></code>
+was used. By removing these continuation symbol, or signs, we can potentially
+combine many physical line into a single logical line ~ statement.
+(Note that we could have multiple statements separated by semi-colons <code class="docutils literal notranslate"><span class="pre">;</span></code>.)</p>
+<p>Empty lines (or lines with only comments) also end with an <code class="docutils literal notranslate"><span class="pre">NL</span></code> token.</p>
+<p>This function extract logical lines, removing all space tokens (<code class="docutils literal notranslate"><span class="pre">INDENT</span></code>, etc.)
+<code class="docutils literal notranslate"><span class="pre">NL</span></code> as well as <code class="docutils literal notranslate"><span class="pre">ENDMARKER</span></code>. This makes it possible
+to focus on tokens that are relevant for modifying the syntax,
+with the exception of <code class="docutils literal notranslate"><span class="pre">NEWLINE</span></code>.</p>
+</dd></dl>
+
+<dl class="py function">
 <dt class="sig sig-object py" id="token_utils.tokenizing.get_number_significant_tokens">
 <span class="sig-prename descclassname"><span class="pre">token_utils.tokenizing.</span></span><span class="sig-name descname"><span class="pre">get_number_significant_tokens</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">tokens</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/token_utils/tokenizing.html#get_number_significant_tokens"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#token_utils.tokenizing.get_number_significant_tokens" title="Link to this definition"></a></dt>
 <dd><p>Given a list of tokens representing a single line,
@@ -193,10 +273,25 @@ line, an exception is raised.</p>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="token_utils.tokenizing.get_physical_lines">
-<span class="sig-prename descclassname"><span class="pre">token_utils.tokenizing.</span></span><span class="sig-name descname"><span class="pre">get_physical_lines</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">source</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/token_utils/tokenizing.html#get_physical_lines"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#token_utils.tokenizing.get_physical_lines" title="Link to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">token_utils.tokenizing.</span></span><span class="sig-name descname"><span class="pre">get_physical_lines</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">source</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">remove_comments</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/token_utils/tokenizing.html#get_physical_lines"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#token_utils.tokenizing.get_physical_lines" title="Link to this definition"></a></dt>
 <dd><p>Transforms a source (string) into a list of of list of Tokens,
 with each (inner) list containing all the tokens found on a given
-physical line of code.</p>
+physical line of code except comments that correspond to indentation.</p>
+<p>Note that lines visually separated by a continuation character (<code class="docutils literal notranslate"><span class="pre">\</span></code>)
+are considered to be part of the same physical line</p>
+<p>Thus, for a given (inner) list of tokens, the first token (list[0])
+will either be:</p>
+<ul class="simple">
+<li><p>A newline character (<code class="docutils literal notranslate"><span class="pre">NL</span></code> or <code class="docutils literal notranslate"><span class="pre">NEWLINE</span></code> token)</p></li>
+<li><p>A significant (non-space) token.</p></li>
+<li><p>An <code class="docutils literal notranslate"><span class="pre">ENDMARKER</span></code> token</p></li>
+</ul>
+<p>Similarly, the last token (list[-1]) will be a either
+a new line character (<code class="docutils literal notranslate"><span class="pre">NL</span></code> or <code class="docutils literal notranslate"><span class="pre">NEWLINE</span></code> token) or <code class="docutils literal notranslate"><span class="pre">ENDMARKER</span></code> token.</p>
+<p>Set <code class="docutils literal notranslate"><span class="pre">remove_comments</span></code> to <code class="docutils literal notranslate"><span class="pre">False</span></code> to keep comments.
+In that case, the first token oa an inner list could be a comment.</p>
+<p>## If one needs lines with Indentation information still present,
+## see Issue #14.</p>
 </dd></dl>
 
 <dl class="py function">
@@ -204,16 +299,6 @@ physical line of code.</p>
 <span class="sig-prename descclassname"><span class="pre">token_utils.tokenizing.</span></span><span class="sig-name descname"><span class="pre">get_significant_tokens</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">source</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/token_utils/tokenizing.html#get_significant_tokens"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#token_utils.tokenizing.get_significant_tokens" title="Link to this definition"></a></dt>
 <dd><p>Gets a list of tokens from a source (str), removing
 any token that signal a change in indentation.</p>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="token_utils.tokenizing.get_stripped_lines">
-<span class="sig-prename descclassname"><span class="pre">token_utils.tokenizing.</span></span><span class="sig-name descname"><span class="pre">get_stripped_lines</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">source</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/token_utils/tokenizing.html#get_stripped_lines"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#token_utils.tokenizing.get_stripped_lines" title="Link to this definition"></a></dt>
-<dd><p>Transforms a source (string) into a list of of list of Tokens,
-with each (inner) list containing all the tokens found on a given
-line of code except that any token related to change in
-indentation and comments will have been removed. Thus, for a given
-(inner) list of tokens, list[0] will be a non-space token.</p>
 </dd></dl>
 
 <dl class="py function">
@@ -242,9 +327,9 @@ of fake tokens.</p>
 <dd><p>Similar to itertools.pairwise (Python 3.10+). However, it adds a fake
 token at the end if <code class="docutils literal notranslate"><span class="pre">prev==0</span></code> (the default) or at the beginning
 if <code class="docutils literal notranslate"><span class="pre">prev==1</span></code>. Any other value will result in a <code class="docutils literal notranslate"><span class="pre">ValueError</span></code></p>
-<p>Given a list of tokens represented by lower case letters, and a fake token by F,
+<p>Given a list of tokens represented by lower case letters, and a fake token by $,
 the default corresponds to something like:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>pairwise('abcde') → Fa ab bc cd de
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>pairwise('abcde') → ab bc cd de e$
 </pre></div>
 </div>
 </dd></dl>
@@ -252,9 +337,13 @@ the default corresponds to something like:</p>
 <dl class="py function">
 <dt class="sig sig-object py" id="token_utils.tokenizing.print_tokens">
 <span class="sig-prename descclassname"><span class="pre">token_utils.tokenizing.</span></span><span class="sig-name descname"><span class="pre">print_tokens</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">source</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/token_utils/tokenizing.html#print_tokens"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#token_utils.tokenizing.print_tokens" title="Link to this definition"></a></dt>
-<dd><p>Prints tokens found in source, excluding spaces and comments.</p>
-<p><code class="docutils literal notranslate"><span class="pre">source</span></code> is either a string to be tokenized, or a list of Token objects.</p>
-<p>This is occasionally useful as a debugging tool.</p>
+<dd><dl class="simple">
+<dt>Prints tokens found in source, line by line, followed by a</dt><dd><p>string version of that line.</p>
+</dd>
+</dl>
+<p><code class="docutils literal notranslate"><span class="pre">source</span></code> is either a string to be tokenized, a list of Token objects,
+or a list of lists of tokens.</p>
+<p>This can be useful as a debugging tool.</p>
 </dd></dl>
 
 <dl class="py function">
@@ -266,16 +355,23 @@ and a requested ‘window’ of size ‘n’, by default (prev=0),
 it adds ‘n-1’ fake token at the end and iterates, emitting ‘n’
 items at a time until all the items have been served.</p>
 <p>Given a list of tokens represented by lower case letters,
-and F representing a fake token, we would have something like:</p>
-<p>sliding_window(‘abcde’, 3) → abc bcd cde deF eFF</p>
+and $ representing a fake token, we would have something like:</p>
+<p>sliding_window(‘abcde’, 3) → abc bcd cde deF e$$</p>
 <p>With <code class="docutils literal notranslate"><span class="pre">prev==1</span></code>, we would have 1 fake token prepended and
 one appended; thus</p>
-<p>sliding_window(‘abcde’, 3, prev=1) → Fab abc bcd cde deF</p>
-<p>We must have <code class="docutils literal notranslate"><span class="pre">0</span> <span class="pre">&lt;=</span> <span class="pre">prev</span> <span class="pre">&lt;</span> <span class="pre">n</span></code>, otherwise a ValueError is raised</p>
+<p>sliding_window(‘abcde’, 3, prev=1) → $ab abc bcd cde de$</p>
+<p>We must have <code class="docutils literal notranslate"><span class="pre">0</span> <span class="pre">&lt;=</span> <span class="pre">prev</span> <span class="pre">&lt;=</span> <span class="pre">n-1</span></code>, otherwise a ValueError is raised</p>
 <p>We essentially have:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">sliding_window</span><span class="p">(</span><span class="n">iterable</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span> <span class="o">==</span> <span class="n">pairwise</span><span class="p">(</span><span class="n">iterator</span><span class="p">)</span>
 </pre></div>
 </div>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="token_utils.tokenizing.split_at_token">
+<span class="sig-prename descclassname"><span class="pre">token_utils.tokenizing.</span></span><span class="sig-name descname"><span class="pre">split_at_token</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">seq</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">token</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/token_utils/tokenizing.html#split_at_token"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#token_utils.tokenizing.split_at_token" title="Link to this definition"></a></dt>
+<dd><p>Split a list of tokens in two sublists: those occuring before the
+token specified, and those after.</p>
 </dd></dl>
 
 <dl class="py function">
@@ -314,7 +410,7 @@ efficient to use:</p>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="token_utils.tokenizing.tokenize">
-<span class="sig-prename descclassname"><span class="pre">token_utils.tokenizing.</span></span><span class="sig-name descname"><span class="pre">tokenize</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">source</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">warning</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/token_utils/tokenizing.html#tokenize"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#token_utils.tokenizing.tokenize" title="Link to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">token_utils.tokenizing.</span></span><span class="sig-name descname"><span class="pre">tokenize</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">source</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/token_utils/tokenizing.html#tokenize"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#token_utils.tokenizing.tokenize" title="Link to this definition"></a></dt>
 <dd><p>Transforms a source (string) into a list of Tokens.</p>
 </dd></dl>
 
@@ -344,18 +440,6 @@ identified as being of type <code class="docutils literal notranslate"><span cla
 came from another source.</p>
 </dd></dl>
 
-<dl class="py function">
-<dt class="sig sig-object py" id="token_utils.tokenizing.untokenize_lines_of_tokens">
-<span class="sig-prename descclassname"><span class="pre">token_utils.tokenizing.</span></span><span class="sig-name descname"><span class="pre">untokenize_lines_of_tokens</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">lines</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/token_utils/tokenizing.html#untokenize_lines_of_tokens"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#token_utils.tokenizing.untokenize_lines_of_tokens" title="Link to this definition"></a></dt>
-<dd><p>Given a line of lines of tokens, such as that
-obtained by <code class="docutils literal notranslate"><span class="pre">get_physical_lines()</span></code> or <code class="docutils literal notranslate"><span class="pre">get_stripped_lines</span></code>,
-returns a string containing the source.</p>
-<p>The following should be true:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">untokenize_lines_of_tokens</span><span class="p">(</span><span class="n">get_physical_lines</span><span class="p">(</span><span class="n">source</span><span class="p">))</span> <span class="o">==</span> <span class="n">source</span>
-</pre></div>
-</div>
-</dd></dl>
-
 </section>
 </section>
 
@@ -364,7 +448,7 @@ returns a string containing the source.</p>
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
         <a href="token_class.html" class="btn btn-neutral float-left" title="Token class" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
-        <a href="utils.html" class="btn btn-neutral float-right" title="Other functions" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="todo.html" class="btn btn-neutral float-right" title="To do" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>

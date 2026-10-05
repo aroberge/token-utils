@@ -6,7 +6,7 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Recipes, tips, and tricks &mdash; token-utils 0.3.0 documentation</title>
+  <title>Tutorial: recipes, tips, and tricks &mdash; token-utils 0.3.2 documentation</title>
       <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=03e43079" />
       <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=9edc463e" />
       <link rel="stylesheet" type="text/css" href="_static/sphinx-new-tab-link.css?v=d87cb1ac" />
@@ -15,14 +15,14 @@
   
       <script src="_static/jquery.js?v=5d32c60e"></script>
       <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="_static/documentation_options.js?v=e259d695"></script>
+      <script src="_static/documentation_options.js?v=71d9d8e6"></script>
       <script src="_static/doctools.js?v=9bcbadda"></script>
       <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="_static/js/theme.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
     <link rel="next" title="Token class" href="token_class.html" />
-    <link rel="prev" title="About untokenizing" href="untokenizing.html" /> 
+    <link rel="prev" title="Useful functions to know before the tutorial" href="tutorial_prelude.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
@@ -47,13 +47,18 @@
               <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="about_tokens.html"> About tokens: Python vs token-utils</a></li>
 <li class="toctree-l1"><a class="reference internal" href="untokenizing.html"> About untokenizing</a></li>
-<li class="toctree-l1 current"><a class="current reference internal" href="#"> Recipes, tips, and tricks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tutorial_prelude.html"> Prelude to the tutorial</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#"> Tutorial: recipes, tips, and tricks</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#adding-a-factorial-symbol">Adding a factorial symbol</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#better-factorial-and-bracketstack">Better factorial and BracketStack</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#keeping-track-of-indentation-with-indentstack">Keeping track of indentation with IndentStack</a></li>
+</ul>
+</li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">API</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="token_class.html">Token class</a></li>
 <li class="toctree-l1"><a class="reference internal" href="tokenizing_methods.html">Tokenizing related methods</a></li>
-<li class="toctree-l1"><a class="reference internal" href="utils.html">Other functions</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Appendix</span></p>
 <ul>
@@ -74,12 +79,12 @@
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
       <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
-      <li class="breadcrumb-item active">Recipes, tips, and tricks</li>
+      <li class="breadcrumb-item active">Tutorial: recipes, tips, and tricks</li>
       <li class="wy-breadcrumbs-aside">
             <a href="_sources/tips.rst.txt" rel="nofollow"> View page source</a>
       </li>
   </ul><div class="rst-breadcrumbs-buttons" role="navigation" aria-label="Sequential page navigation">
-        <a href="untokenizing.html" class="btn btn-neutral float-left" title="About untokenizing" accesskey="p"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="tutorial_prelude.html" class="btn btn-neutral float-left" title="Useful functions to know before the tutorial" accesskey="p"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
         <a href="token_class.html" class="btn btn-neutral float-right" title="Token class" accesskey="n">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
   </div>
   <hr/>
@@ -87,33 +92,271 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <section id="recipes-tips-and-tricks">
-<h1>Recipes, tips, and tricks<a class="headerlink" href="#recipes-tips-and-tricks" title="Link to this heading"></a></h1>
-<p>I created token-utils to use in various of my projects,
-adding more features as needed. The main projects in which I
-use it are:</p>
-<ul class="simple">
-<li><p><a class="reference external" href="https://aroberge.github.io/ideas/docs/html/" rel="noreferrer" target="_blank">ideas</a> which uses import hooks to modify files, mostly
-to experiment with alternatives to Python’s syntax.</p></li>
-<li><p><a class="reference external" href="https://friendly-traceback.github.io/docs/index.html" rel="noreferrer" target="_blank">friendly/friendly-traceback</a> which almost always provide better explanation
-than Python when an exception is raised. In this project, token-utils is
-used to analyze the code rather than transforming it.</p></li>
-</ul>
-<p>The following are some examples of using token-utils to perform
-some code transformations. The goal of these examples is mostly to
-introduce you to token-utils’ API, and the best ways I have found
-to accomplish certain tasks.</p>
-<div class="admonition-todo admonition" id="id1">
-<p class="admonition-title">Todo</p>
-<p>Write the recipes, tips, and tricks.</p>
+  <section id="tutorial-recipes-tips-and-tricks">
+<h1>Tutorial: recipes, tips, and tricks<a class="headerlink" href="#tutorial-recipes-tips-and-tricks" title="Link to this heading"></a></h1>
+<p>In what follows, I will attempt to demonstrate some useful ways to
+use token-utils, focusing on those that make changes to
+existing code. For simplicity, all the examples will assume
+that I did <code class="docutils literal notranslate"><span class="pre">from</span> <span class="pre">token_utils</span> <span class="pre">import</span> <span class="pre">*</span></code>.</p>
+<aside class="sidebar">
+<p class="sidebar-title">Suggestions welcome</p>
+<p>If you can think of other useful examples,
+newer or better helper functions,
+please do not hesitate to file an issue.</p>
+</aside>
+<section id="adding-a-factorial-symbol">
+<h2>Adding a factorial symbol<a class="headerlink" href="#adding-a-factorial-symbol" title="Link to this heading"></a></h2>
+<p>The factorial function is included in the math module.
+In usual mathematical notation, we would write something like:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>n! == n * (n-1) * .... * 2 * 1
+</pre></div>
 </div>
+<p>Let’s see what tokens would represents a simple factorial:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">print_tokens</span><span class="p">(</span><span class="s2">"n!"</span><span class="p">)</span>
+<span class="go">Extracting physical lines from source:</span>
+
+<span class="go">type=1 (NAME)  string='n'  start=(1, 0)  end=(1, 1)  line='n!'</span>
+<span class="go">type=60 (ERRORTOKEN)  string='!'  start=(1, 1)  end=(1, 2)  line='n!'</span>
+<span class="go">type=4 (NEWLINE)  string=''  start=(1, 2)  end=(1, 3)  line='n!'</span>
+<span class="go">  --&gt; line:  'n!'</span>
+<span class="go">type=0 (ENDMARKER)  string=''  start=(2, 0)  end=(2, 0)  line=''</span>
+<span class="go">  --&gt; line:  ''</span>
+</pre></div>
+</div>
+<p>While there’s nothing wrong with <code class="docutils literal notranslate"><span class="pre">!</span></code> being an <code class="docutils literal notranslate"><span class="pre">ERRORTOKEN</span></code> for us,
+let’s nonetheless add it to the list of valid operators recognized by
+Python. We will see a bit later why it is often very useful
+to add symbols to the list of operators.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">add_operator</span><span class="p">(</span><span class="s2">"!"</span><span class="p">,</span> <span class="s2">"exclamation"</span><span class="p">)</span>
+<span class="go">True</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">print_tokens</span><span class="p">(</span><span class="s2">"n!"</span><span class="p">)</span>
+<span class="go">Extracting physical lines from source:</span>
+
+<span class="go">type=1 (NAME)  string='n'  start=(1, 0)  end=(1, 1)  line='n!'</span>
+<span class="go">type=54 (OP: EXCLAMATION)  string='!'  start=(1, 1)  end=(1, 2)  line='n!'</span>
+<span class="go">type=4 (NEWLINE)  string=''  start=(1, 2)  end=(1, 3)  line='n!'</span>
+<span class="go">  --&gt; line:  'n!'</span>
+<span class="go">type=0 (ENDMARKER)  string=''  start=(2, 0)  end=(2, 0)  line=''</span>
+<span class="go">  --&gt; line:  ''</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">tokens</span> <span class="o">=</span> <span class="n">tokenize</span><span class="p">(</span><span class="s2">"n!"</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">tokens</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">==</span> <span class="s2">"!"</span>
+<span class="go">True</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">tokens</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">is_operator</span><span class="p">()</span>
+<span class="go">True</span>
+</pre></div>
+</div>
+<p>We can see that, not only <code class="docutils literal notranslate"><span class="pre">!</span></code> is a valid operator token, but it is also
+recognized as such by the <code class="docutils literal notranslate"><span class="pre">Token</span></code> method <code class="docutils literal notranslate"><span class="pre">is_operator()</span></code>.
+The function <code class="docutils literal notranslate"><span class="pre">add_operator()</span></code> returned <code class="docutils literal notranslate"><span class="pre">True</span></code>. If we were to add
+a string already known to be an operator, it would return <code class="docutils literal notranslate"><span class="pre">False</span></code>,
+with no negative consequence.</p>
+<aside class="sidebar">
+<p class="sidebar-title">‘!’ in Python 3.12+</p>
+<p>For Python 3.12+, if you use Python’s <code class="docutils literal notranslate"><span class="pre">tokenize</span></code>
+module directly, you will see that <code class="docutils literal notranslate"><span class="pre">!</span></code>
+is defined as an operator.</p>
+</aside>
+<p>While Python does not care about spaces between tokens, humans do.
+For the mathematically inclined, it wouldn’t be appropriate to write something
+like:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>a = 3                                          !
+</pre></div>
+</div>
+<p>expecting <code class="docutils literal notranslate"><span class="pre">a</span></code> to be now equal to 6. So, to define a factorial, we will
+require <code class="docutils literal notranslate"><span class="pre">!</span></code> to come <strong>immediately after</strong> either a variable name (identifier)
+or an integer; by ‘immediately after’, we mean no space between the two
+tokens.</p>
+<p>Here is how we can do it, using token-utils’ <code class="docutils literal notranslate"><span class="pre">immediately_after()</span></code> instead
+of <code class="docutils literal notranslate"><span class="pre">immediately_before()</span></code> as it looks more natural in this example.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># factorial_1.py</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">token_utils</span><span class="w"> </span><span class="kn">import</span> <span class="n">tokenize</span><span class="p">,</span> <span class="n">untokenize</span><span class="p">,</span> <span class="n">add_operator</span><span class="p">,</span> <span class="n">pairwise</span>
+
+<span class="n">add_operator</span><span class="p">(</span><span class="s2">"!"</span><span class="p">,</span> <span class="s2">"exclamation"</span><span class="p">)</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">make_factorial</span><span class="p">(</span><span class="n">source</span><span class="p">):</span>
+    <span class="n">tokens</span> <span class="o">=</span> <span class="n">tokenize</span><span class="p">(</span><span class="n">source</span><span class="p">)</span>
+    <span class="n">new_tokens</span> <span class="o">=</span> <span class="p">[]</span>
+
+    <span class="k">for</span> <span class="n">token</span><span class="p">,</span> <span class="n">next_</span> <span class="ow">in</span> <span class="n">pairwise</span><span class="p">(</span><span class="n">tokens</span><span class="p">):</span>
+        <span class="k">if</span> <span class="p">(</span>
+            <span class="n">next_</span> <span class="o">==</span> <span class="s2">"!"</span>
+            <span class="ow">and</span> <span class="n">token</span><span class="o">.</span><span class="n">is_immediately_before</span><span class="p">(</span><span class="n">next_</span><span class="p">)</span>
+            <span class="ow">and</span> <span class="p">(</span><span class="n">token</span><span class="o">.</span><span class="n">is_integer</span><span class="p">()</span> <span class="ow">or</span> <span class="n">token</span><span class="o">.</span><span class="n">is_identifier</span><span class="p">())</span>
+        <span class="p">):</span>
+            <span class="n">token</span><span class="o">.</span><span class="n">string</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">"factorial(</span><span class="si">{</span><span class="n">token</span><span class="o">.</span><span class="n">string</span><span class="si">}</span><span class="s2">)"</span>
+            <span class="n">next_</span><span class="o">.</span><span class="n">string</span> <span class="o">=</span> <span class="s2">""</span>
+        <span class="n">new_tokens</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">token</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">untokenize</span><span class="p">(</span><span class="n">new_tokens</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Before we show it in action, we should add a word about <code class="docutils literal notranslate"><span class="pre">pairwise</span></code>.</p>
+<p>token-utils has its own implementation of Python’s itertools function <code class="docutils literal notranslate"><span class="pre">pairwise</span></code>
+(available only for Python 3.10+). Given an iterable denoted by <code class="docutils literal notranslate"><span class="pre">ABCDEF</span></code>,
+itertools’ <code class="docutils literal notranslate"><span class="pre">pairwise</span></code> will emit the items in pairs (tuples) like so:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">AB</span> <span class="n">BC</span> <span class="n">CD</span> <span class="n">DE</span> <span class="n">EF</span>
+</pre></div>
+</div>
+<p>Notice how the last item is never emitted as the first item of a pair.
+To “solve this problem”,
+token-utils adds a fake token (<code class="docutils literal notranslate"><span class="pre">$</span></code>) to the iterable list so that each
+token of the original sequence appears as a the first element of the pair:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>AB BC CD DE EF F$
+</pre></div>
+</div>
+<p>There is also an option to have this extra token at the beginning if it
+is more convenient to focus on the second element of a pair.</p>
+<p>As for the rest of the algorithm, we assume that is should be straightforward
+to understand given our description of
+the problem, and with the corresponding method names
+<code class="docutils literal notranslate"><span class="pre">is_immediately_before()</span></code>, <code class="docutils literal notranslate"><span class="pre">is_identifier()</span></code>, and <code class="docutils literal notranslate"><span class="pre">is_integer()</span></code>.
+The only subtlety is when we modify <code class="docutils literal notranslate"><span class="pre">next_.string</span></code>: we can do this as
+we haven’t added this token to the <code class="docutils literal notranslate"><span class="pre">new_tokens</span></code> list.</p>
+<p>Here’s a quick demonstration of our transformation:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">factorial_1</span><span class="w"> </span><span class="kn">import</span> <span class="n">make_factorial</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">make_factorial</span><span class="p">(</span><span class="s2">"3!"</span><span class="p">)</span>
+<span class="go">'factorial(3)'</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">make_factorial</span><span class="p">(</span><span class="s2">"a = 5!"</span><span class="p">)</span>
+<span class="go">'a = factorial(5)'</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">make_factorial</span><span class="p">(</span><span class="s2">"4  !"</span><span class="p">)</span>    <span class="c1"># not immediately before/after</span>
+<span class="go">'4  !'</span>
+</pre></div>
+</div>
+</section>
+<section id="better-factorial-and-bracketstack">
+<h2>Better factorial and BracketStack<a class="headerlink" href="#better-factorial-and-bracketstack" title="Link to this heading"></a></h2>
+<p>Before we describe how to improve our factorial, we make a
+brief detour to introduce <code class="docutils literal notranslate"><span class="pre">BracketStack</span></code>, a class that
+keeps track of whether or not brackets, <code class="docutils literal notranslate"><span class="pre">(),</span> <span class="pre">{},</span> <span class="pre">[]</span></code>,
+are closed or unclosed in a stream. When a closing bracket is added
+<strong>as a token-utils Token</strong>, <code class="docutils literal notranslate"><span class="pre">BracketStack</span></code> will return
+a corresponding opening bracket if is is found, and will
+return <code class="docutils literal notranslate"><span class="pre">False</span></code> otherwise.</p>
+<p>Here’s a sample session:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">stack</span> <span class="o">=</span> <span class="n">BracketStack</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">for</span> <span class="n">token</span> <span class="ow">in</span> <span class="n">generate_tokens</span><span class="p">(</span><span class="s2">" ({[ ]}) []"</span><span class="p">):</span>
+<span class="gp">... </span>    <span class="k">if</span> <span class="n">token</span><span class="o">.</span><span class="n">is_bracket</span><span class="p">():</span>
+<span class="gp">... </span>        <span class="n">other</span> <span class="o">=</span> <span class="n">stack</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">token</span><span class="p">)</span>
+<span class="gp">... </span>        <span class="k">if</span> <span class="n">other</span><span class="p">:</span>
+<span class="gp">... </span>            <span class="nb">print</span><span class="p">(</span><span class="n">other</span><span class="p">,</span> <span class="n">token</span><span class="p">,</span> <span class="n">stack</span><span class="o">.</span><span class="n">is_empty</span><span class="p">())</span>
+<span class="gp">...</span>
+<span class="go">[ ] False</span>
+<span class="go">{ } False</span>
+<span class="go">( ) True</span>
+<span class="go">[ ] True</span>
+</pre></div>
+</div>
+<p>Going back to our factorial: in addition to appearing after
+integers or variable names, the factorial symbol, <code class="docutils literal notranslate"><span class="pre">!</span></code>,
+can appear after a closing parenthesis, <code class="docutils literal notranslate"><span class="pre">)</span></code>,
+as in <code class="docutils literal notranslate"><span class="pre">(n</span> <span class="pre">+</span> <span class="pre">1)!</span></code>, for example.
+We can modify our <code class="docutils literal notranslate"><span class="pre">make_factorial()</span></code> function to include
+such cases, again insisting that <code class="docutils literal notranslate"><span class="pre">!</span></code> had to appear
+immediately after a symbol, such as <code class="docutils literal notranslate"><span class="pre">)</span></code>, in order to
+mean that it is meant to indicate that it is a factorial.</p>
+<p>In addition to keeping track of open/close brackets,
+we have one more difficulty to consider. Imagine that we have something
+like the following:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>A B C D E ( a b c )!
+</pre></div>
+</div>
+<p>If we proceed to add tokens as we find them to a <code class="docutils literal notranslate"><span class="pre">new_tokens</span></code> list,
+when we arrive at <code class="docutils literal notranslate"><span class="pre">)!</span></code>, we would have to go backwards, retrieve
+all the previously added tokens (<code class="docutils literal notranslate"><span class="pre">a</span> <span class="pre">b</span> <span class="pre">c</span></code>), until we find the
+right open parenthesis, do the appropriate modification and add back
+the extracted material. This can actually be done easily using
+the function <code class="docutils literal notranslate"><span class="pre">split_at_token()</span></code>.
+Here’s a modified <code class="docutils literal notranslate"><span class="pre">make_factorial()</span></code> that uses this.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># factorial_2.py</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">token_utils</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span>
+    <span class="n">tokenize</span><span class="p">,</span>
+    <span class="n">untokenize</span><span class="p">,</span>
+    <span class="n">add_operator</span><span class="p">,</span>
+    <span class="n">pairwise</span><span class="p">,</span>
+    <span class="n">BracketStack</span><span class="p">,</span>
+    <span class="n">split_at_token</span><span class="p">,</span>
+<span class="p">)</span>
+
+<span class="n">add_operator</span><span class="p">(</span><span class="s2">"!"</span><span class="p">,</span> <span class="s2">"exclamation"</span><span class="p">)</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">make_factorial</span><span class="p">(</span><span class="n">source</span><span class="p">):</span>
+    <span class="n">tokens</span> <span class="o">=</span> <span class="n">tokenize</span><span class="p">(</span><span class="n">source</span><span class="p">)</span>
+    <span class="n">stack</span> <span class="o">=</span> <span class="n">BracketStack</span><span class="p">()</span>
+    <span class="n">new_tokens</span> <span class="o">=</span> <span class="p">[]</span>
+
+    <span class="k">for</span> <span class="n">token</span><span class="p">,</span> <span class="n">next_</span> <span class="ow">in</span> <span class="n">pairwise</span><span class="p">(</span><span class="n">tokens</span><span class="p">):</span>
+        <span class="k">if</span> <span class="p">(</span>
+            <span class="n">next_</span> <span class="o">==</span> <span class="s2">"!"</span>
+            <span class="ow">and</span> <span class="n">token</span><span class="o">.</span><span class="n">is_immediately_before</span><span class="p">(</span><span class="n">next_</span><span class="p">)</span>
+            <span class="ow">and</span> <span class="p">(</span><span class="n">token</span><span class="o">.</span><span class="n">is_integer</span><span class="p">()</span> <span class="ow">or</span> <span class="n">token</span><span class="o">.</span><span class="n">is_identifier</span><span class="p">())</span>
+        <span class="p">):</span>
+            <span class="n">token</span><span class="o">.</span><span class="n">string</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">"factorial(</span><span class="si">{</span><span class="n">token</span><span class="o">.</span><span class="n">string</span><span class="si">}</span><span class="s2">)"</span>
+            <span class="n">next_</span><span class="o">.</span><span class="n">string</span> <span class="o">=</span> <span class="s2">""</span>
+        <span class="k">elif</span> <span class="n">next_</span> <span class="o">==</span> <span class="s2">"!"</span> <span class="ow">and</span> <span class="n">token</span><span class="o">.</span><span class="n">is_immediately_before</span><span class="p">(</span><span class="n">next_</span><span class="p">)</span> <span class="ow">and</span> <span class="n">token</span> <span class="o">==</span> <span class="s2">")"</span><span class="p">:</span>
+            <span class="n">matching_bracket</span> <span class="o">=</span> <span class="n">stack</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">token</span><span class="p">)</span>
+            <span class="n">next_</span><span class="o">.</span><span class="n">string</span> <span class="o">=</span> <span class="s2">""</span>
+            <span class="n">new_tokens</span><span class="p">,</span> <span class="n">remainder</span> <span class="o">=</span> <span class="n">split_at_token</span><span class="p">(</span><span class="n">new_tokens</span><span class="p">,</span> <span class="n">matching_bracket</span><span class="p">)</span>
+            <span class="n">matching_bracket</span><span class="o">.</span><span class="n">string</span> <span class="o">=</span> <span class="s2">"factorial("</span>
+            <span class="n">new_tokens</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">matching_bracket</span><span class="p">)</span>
+            <span class="n">new_tokens</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">remainder</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">token</span><span class="o">.</span><span class="n">is_bracket</span><span class="p">():</span>
+                <span class="n">stack</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">token</span><span class="p">)</span>
+        <span class="n">new_tokens</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">token</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">untokenize</span><span class="p">(</span><span class="n">new_tokens</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Inside <code class="docutils literal notranslate"><span class="pre">split_at_token</span></code>, we make use of the <code class="docutils literal notranslate"><span class="pre">is_identical()</span></code> method
+to ensure that we find the correct <code class="docutils literal notranslate"><span class="pre">(</span></code>. Note that we simply need to
+modify <code class="docutils literal notranslate"><span class="pre">matching_bracket.string</span></code> from <code class="docutils literal notranslate"><span class="pre">(</span></code> to <code class="docutils literal notranslate"><span class="pre">factorial(</span></code>.
+Instead of simply showing the result of such transformations,
+let me instead show it after evaluation by Python using
+the <strong>ideas</strong> project I have already mentioned in which
+this is done as an example:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>&gt; ideas -a factorial
+
+The following initializing code has been executed in the Ideas console:
+
+from math import factorial
+
+Ideas Console version 0.3.12. [Python version: 3.11.9]
+ideas&gt; 3!
+6
+ideas&gt; 3 + (4 + 7 - 3)!
+40323
+ideas&gt; n = 8
+ideas&gt; (n + 1)!
+362880
+</pre></div>
+</div>
+</section>
+<section id="keeping-track-of-indentation-with-indentstack">
+<h2>Keeping track of indentation with IndentStack<a class="headerlink" href="#keeping-track-of-indentation-with-indentstack" title="Link to this heading"></a></h2>
+<p>In Python, the following keywords, or soft keywords, can signal the introduction
+of an indented block:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">class</span><span class="p">,</span> <span class="n">def</span><span class="p">,</span> <span class="k">if</span><span class="o">/</span><span class="k">elif</span><span class="o">/</span><span class="k">else</span><span class="p">,</span> <span class="k">for</span><span class="o">/</span><span class="k">else</span><span class="p">,</span> <span class="k">try</span><span class="o">/</span><span class="k">except</span><span class="o">/</span><span class="k">else</span><span class="o">/</span><span class="k">finally</span><span class="p">,</span> <span class="k">while</span><span class="o">/</span><span class="k">else</span><span class="p">,</span> <span class="k">with</span><span class="p">,</span> <span class="n">match</span><span class="p">,</span> <span class="n">case</span>
+</pre></div>
+</div>
+<p>For some code analysis or code modification, it might be very useful of keeping track
+of such keywords when they introduce a change in indentation. When they do so, and ignoring
+end of line comments, they will appear as the first non-space token
+on a <strong>logical line</strong> terminated by a colon <code class="docutils literal notranslate"><span class="pre">:</span></code>.
+If we use token-utils’ <code class="docutils literal notranslate"><span class="pre">get_logical_lines()</span></code> to analyze some source code, the last token
+of each such line will always be a <code class="docutils literal notranslate"><span class="pre">NEWLINE</span></code> token, preceded by a colon.
+This allowed us to define the utility class <code class="docutils literal notranslate"><span class="pre">IndentStack</span></code>.</p>
+</section>
 </section>
 
 
            </div>
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
-        <a href="untokenizing.html" class="btn btn-neutral float-left" title="About untokenizing" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="tutorial_prelude.html" class="btn btn-neutral float-left" title="Useful functions to know before the tutorial" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
         <a href="token_class.html" class="btn btn-neutral float-right" title="Token class" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 

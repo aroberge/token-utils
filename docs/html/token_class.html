@@ -6,7 +6,7 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Token class &mdash; token-utils 0.3.0 documentation</title>
+  <title>Token class &mdash; token-utils 0.3.2 documentation</title>
       <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=03e43079" />
       <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=9edc463e" />
       <link rel="stylesheet" type="text/css" href="_static/sphinx-new-tab-link.css?v=d87cb1ac" />
@@ -15,14 +15,14 @@
   
       <script src="_static/jquery.js?v=5d32c60e"></script>
       <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="_static/documentation_options.js?v=e259d695"></script>
+      <script src="_static/documentation_options.js?v=71d9d8e6"></script>
       <script src="_static/doctools.js?v=9bcbadda"></script>
       <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="_static/js/theme.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
     <link rel="next" title="Tokenizing related methods" href="tokenizing_methods.html" />
-    <link rel="prev" title="Recipes, tips, and tricks" href="tips.html" /> 
+    <link rel="prev" title="Tutorial: recipes, tips, and tricks" href="tips.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
@@ -47,7 +47,8 @@
               <ul>
 <li class="toctree-l1"><a class="reference internal" href="about_tokens.html"> About tokens: Python vs token-utils</a></li>
 <li class="toctree-l1"><a class="reference internal" href="untokenizing.html"> About untokenizing</a></li>
-<li class="toctree-l1"><a class="reference internal" href="tips.html"> Recipes, tips, and tricks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tutorial_prelude.html"> Prelude to the tutorial</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tips.html"> Tutorial: recipes, tips, and tricks</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">API</span></p>
 <ul class="current">
@@ -62,7 +63,8 @@
 <li class="toctree-l4"><a class="reference internal" href="#token_utils.token_class.Token.__repr__"><code class="docutils literal notranslate"><span class="pre">Token.__repr__()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#token_utils.token_class.Token.__str__"><code class="docutils literal notranslate"><span class="pre">Token.__str__()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#token_utils.token_class.Token.__weakref__"><code class="docutils literal notranslate"><span class="pre">Token.__weakref__</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="#token_utils.token_class.Token.copy"><code class="docutils literal notranslate"><span class="pre">Token.copy()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#token_utils.token_class.Token.clone"><code class="docutils literal notranslate"><span class="pre">Token.clone()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#token_utils.token_class.Token.indentation"><code class="docutils literal notranslate"><span class="pre">Token.indentation()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#token_utils.token_class.Token.is_assignment"><code class="docutils literal notranslate"><span class="pre">Token.is_assignment()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#token_utils.token_class.Token.is_bitwise"><code class="docutils literal notranslate"><span class="pre">Token.is_bitwise()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#token_utils.token_class.Token.is_bracket"><code class="docutils literal notranslate"><span class="pre">Token.is_bracket()</span></code></a></li>
@@ -100,7 +102,6 @@
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="tokenizing_methods.html">Tokenizing related methods</a></li>
-<li class="toctree-l1"><a class="reference internal" href="utils.html">Other functions</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Appendix</span></p>
 <ul>
@@ -126,7 +127,7 @@
             <a href="_sources/token_class.rst.txt" rel="nofollow"> View page source</a>
       </li>
   </ul><div class="rst-breadcrumbs-buttons" role="navigation" aria-label="Sequential page navigation">
-        <a href="tips.html" class="btn btn-neutral float-left" title="Recipes, tips, and tricks" accesskey="p"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="tips.html" class="btn btn-neutral float-left" title="Tutorial: recipes, tips, and tricks" accesskey="p"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
         <a href="tokenizing_methods.html" class="btn btn-neutral float-right" title="Tokenizing related methods" accesskey="n">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
   </div>
   <hr/>
@@ -218,9 +219,15 @@ provided in this module.</p>
 </dd></dl>
 
 <dl class="py method">
-<dt class="sig sig-object py" id="token_utils.token_class.Token.copy">
-<span class="sig-name descname"><span class="pre">copy</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/token_utils/token_class.html#Token.copy"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#token_utils.token_class.Token.copy" title="Link to this definition"></a></dt>
-<dd><p>Makes a copy of a given token</p>
+<dt class="sig sig-object py" id="token_utils.token_class.Token.clone">
+<span class="sig-name descname"><span class="pre">clone</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/token_utils/token_class.html#Token.clone"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#token_utils.token_class.Token.clone" title="Link to this definition"></a></dt>
+<dd><p>Makes an exact copy of a given token</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="token_utils.token_class.Token.indentation">
+<span class="sig-name descname"><span class="pre">indentation</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/token_utils/token_class.html#Token.indentation"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#token_utils.token_class.Token.indentation" title="Link to this definition"></a></dt>
+<dd><p>Returns the indentation as a number of spaces.</p>
 </dd></dl>
 
 <dl class="py method">
@@ -409,7 +416,7 @@ on a given line are not considered to be tokens themselves.</p>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="token_utils.token_class.add_operator">
-<span class="sig-prename descclassname"><span class="pre">token_utils.token_class.</span></span><span class="sig-name descname"><span class="pre">add_operator</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">string</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">category</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/token_utils/token_class.html#add_operator"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#token_utils.token_class.add_operator" title="Link to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">token_utils.token_class.</span></span><span class="sig-name descname"><span class="pre">add_operator</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">string</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">category</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'other'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/token_utils/token_class.html#add_operator"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#token_utils.token_class.add_operator" title="Link to this definition"></a></dt>
 <dd><p>Adds a string defining an operator to the tokenizer.
 If the string is already a known operator, nothing other than
 returning <code class="docutils literal notranslate"><span class="pre">False</span></code> is done, otherwise <code class="docutils literal notranslate"><span class="pre">True</span></code> is returned.</p>
@@ -447,7 +454,7 @@ of fake tokens.</p>
            </div>
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
-        <a href="tips.html" class="btn btn-neutral float-left" title="Recipes, tips, and tricks" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="tips.html" class="btn btn-neutral float-left" title="Tutorial: recipes, tips, and tricks" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
         <a href="tokenizing_methods.html" class="btn btn-neutral float-right" title="Tokenizing related methods" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 

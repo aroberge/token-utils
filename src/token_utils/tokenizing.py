@@ -142,7 +142,8 @@ def get_physical_lines(source, remove_comments=True):
 def get_logical_lines(source, remove_comments=True, remove_semi_colons=True):
     """This retrieves logical lines, each essentially correponding to a single statement.
 
-    Warning: untokenize(get_logical_lines) != source in general.
+    Warning: untokenize(get_logical_lines) != source in general. However, the
+    untokenized version executes the same as the original.
 
     When two or more physical lines are joined **explitly** into logical lines
     using backslash characters (`\\`) or **implicitly** by using
@@ -155,7 +156,9 @@ def get_logical_lines(source, remove_comments=True, remove_semi_colons=True):
     Empty lines (or lines with only comments) also end with an ``NL`` token.
 
     This function extract logical lines, removing all space tokens (``INDENT``, etc.)
-    ``NL`` tokens
+    ``NL`` as well as ``ENDMARKER``. This makes it possible
+    to focus on tokens that are relevant for modifying the syntax,
+    with the exception of ``NEWLINE``.
     """
     lines = []
     new_line = []
@@ -350,21 +353,34 @@ def print_tokens(source):
     """
 
     if isinstance(source[0], list):
+        print("Printing list of lists of tokens:\n")
         for line in source:
             for token in line:
                 print(repr(token))
-            print(stringify(line))
+            print("  --> line: ", repr(stringify(line)))
         return
 
     if isinstance(source[0], Token):
-        source = untokenize(source)
-    elif isinstance(source, str):
-        pass
-
-    for lines in get_physical_lines(source):
-        for token in lines:
+        print("Printing list of tokens:\n")
+        line = []
+        for token in source:
             print(repr(token))
-        print()
+            if token == "\n":
+                line.append(token)
+                print("  --> line: ", repr(stringify(line)))
+                line = []
+                continue
+            line.append(token)
+
+        if line:
+            print("  --> line: ", repr(stringify(line)))
+            return
+
+    print("Printing physical lines from source (indent tokens removed):\n")
+    for line in get_physical_lines(source):
+        for token in line:
+            print(repr(token))
+        print("  --> line: ", repr(stringify(line)))
 
 
 def pairwise(iterable, prev=0):
@@ -372,10 +388,10 @@ def pairwise(iterable, prev=0):
     token at the end if ``prev==0`` (the default) or at the beginning
     if ``prev==1``. Any other value will result in a ``ValueError``
 
-    Given a list of tokens represented by lower case letters, and a fake token by F,
+    Given a list of tokens represented by lower case letters, and a fake token by $,
     the default corresponds to something like::
 
-        pairwise('abcde') → Fa ab bc cd de
+        pairwise('abcde') → ab bc cd de e$
     """
     if prev not in [0, 1]:
         raise ValueError("'prev' must be either 0 (the default) or 1.")
@@ -400,16 +416,16 @@ def sliding_window(iterable, n, prev=0):
     items at a time until all the items have been served.
 
     Given a list of tokens represented by lower case letters,
-    and F representing a fake token, we would have something like:
+    and $ representing a fake token, we would have something like:
 
-    sliding_window('abcde', 3) → abc bcd cde deF eFF
+    sliding_window('abcde', 3) → abc bcd cde deF e$$
 
     With ``prev==1``, we would have 1 fake token prepended and
     one appended; thus
 
-    sliding_window('abcde', 3, prev=1) → Fab abc bcd cde deF
+    sliding_window('abcde', 3, prev=1) → $ab abc bcd cde de$
 
-    We must have ``0 <= prev < n``, otherwise a ValueError is raised
+    We must have ``0 <= prev <= n-1``, otherwise a ValueError is raised
 
     We essentially have::
 
@@ -552,7 +568,8 @@ class BracketStack:
 
         If an open bracket is added, False is returned.
         """
-        assert isinstance(bracket, Token)
+        if not isinstance(bracket, Token):
+            raise TypeError("'bracket' parameter must be a Token.")
         if self.stack:
             if bracket.is_matching_bracket(self.stack[-1]):
                 return self.stack.pop()
@@ -575,6 +592,136 @@ class BracketStack:
     def is_empty(self):
         """Return True if the stack is empty, False if it contains brackets."""
         return not bool(self.stack)
+
+
+class IndentStack:
+    """docstring"""
+
+    # In Python, the following keywords, or soft keywords, can signal the introduction
+    # of an indented block::
+
+    #     class, def, if/elif/else, for/else, try/except/else/finally, while/else, with, match, case
+
+    # For some code analysis or code modification, it might be very useful of keeping track
+    # of such keywords when they introduce a change in indentation. When they do so, and ignoring
+    # end of line comments, they will appear as the first non-space token
+    # on a **logical line** terminated by a colon ``:``.
+    # If we use token-utils' ``get_logical_lines()`` to analyze some source code, the last token
+    # of each such line will always be a ``NEWLINE`` token, preceded by a colon.
+    # This allowed us to define the utility class ``IndentStack``.
+    def __init__(self):
+        self.stack = []
+        self.top_indent_keywords = [
+            "class",
+            "def",
+            "if",
+            "for",
+            "try",
+            "while",
+            "with",
+            "match",
+            "case",
+        ]
+        self.same_indent_keywords = [
+            "elif",
+            "else",
+            "except",
+            "finally",
+        ]
+        self.indent_keywords = self.top_indent_keywords + self.same_indent_keywords
+
+    def print_stack(self):
+        """Useful for diagnostic"""
+        print([(tok.string, tok.start) for tok in self.stack])
+
+    def top_item(self):
+        """Returns the token at the top of the stack or None."""
+        if not self.stack:
+            return None
+        return self.stack[-1]
+
+    def update_indent(self, line):
+        """Receives a line containing tokens. This line argument
+        can be any **logical** line obtained using get_logical_lines().
+
+        If the line signals a change in indentation, this function returns
+        the last "top token" starting a line at that indentation. By "top token"
+        we mean a token that can start a block such as ``if`` (for ``if/elif/else``),
+        ``try``, etc.
+
+        It returns None if there is no such token.
+        """
+        if not isinstance(line, list) or not line:
+            raise TypeError("'line' parameter must be a list containing tokens")
+        if not isinstance(line[0], Token):
+            raise TypeError("'line' parameter must be a list containing tokens")
+        # A relevant line will include at least a keyword, a colon and a NEWLINE token
+        indenting_line = True
+        first_token = line[0]
+
+        if len(line) < 3:
+            indenting_line = False
+        elif not first_token.is_in(self.indent_keywords):
+            indenting_line = False
+        else:  # line could start with a soft keyword
+            colon = line[-2]
+            if colon != ":":
+                indenting_line = False
+
+        if not indenting_line:
+            while self.stack:
+                top_item = self.stack.pop()
+                if top_item.start_col >= first_token.start_col:
+                    continue
+                self.stack.append(top_item)
+                return top_item
+            return None
+
+        if not self.stack:
+            self.stack.append(first_token)
+            return first_token
+
+        while True:
+            top_item = self.stack.pop()
+
+            # Indent: add popped item back and add new
+            if top_item.start_col < first_token.start_col:
+                self.stack.append(top_item)  # add back
+                self.stack.append(first_token)
+                return first_token
+
+            # No change: depends if token starts new block or not
+            if top_item.start_col == first_token.start_col:
+                if first_token.is_in(self.top_indent_keywords):
+                    # previous item at same level
+                    self.stack.append(first_token)
+                    return first_token
+                else:
+                    self.stack.append(top_item)
+                    return top_item
+
+            # Dedent; need to pop new item if possible
+            if top_item.start_col > first_token.start_col:
+                if not self.stack:
+                    self.stack.append(first_token)
+                    return first_token  # new item at top
+                continue
+
+    def is_inside_class(self):
+        """Returns True if there is a line defining a class
+        in the indentation stack."""
+        for token in self.stack:
+            if token == "class":
+                return True
+        return False
+
+    def is_inside_def(self):
+        """Returns True if there is a line defining a function
+        in the indentation stack."""
+        for token in self.stack:
+            if token == "def":
+                return True
+        return False
 
 
 def split_at_token(seq, token):
