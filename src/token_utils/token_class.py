@@ -141,7 +141,6 @@ class Token:
 
     def is_comparison(self):
         """Returns True if the token is a comparison operator."""
-
         return self.string in _op_categories["comparison"]
 
     def is_complex(self):

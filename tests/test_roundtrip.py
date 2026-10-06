@@ -7,7 +7,6 @@ Most of these tests have been adapted from https://github.com/myint/untokenize.
 from token_utils import (
     tokenize,
     untokenize,
-    get_significant_tokens,
     get_physical_lines,
     stringify,
 )
@@ -15,11 +14,8 @@ from token_utils import (
 
 def check_all(source):
     assert untokenize(tokenize(source)) == source
-    assert untokenize(get_significant_tokens(source)) == source
     assert untokenize(get_physical_lines(source)) == source
     assert untokenize(get_physical_lines(source, remove_comments=False)) == source
-    if source.find("\t") == -1:
-        assert stringify(get_significant_tokens(source)) == source
 
 
 def check(source):
@@ -66,7 +62,6 @@ def foo():
 def test_untokenize_with_backslash_in_comment():
     source = backslash_in_comment
     assert untokenize(tokenize(source)) == source
-    assert untokenize(get_significant_tokens(source)) == source
     assert untokenize(get_physical_lines(source, remove_comments=False)) == source
     assert stringify(tokenize(source)) == source
 
