@@ -366,33 +366,6 @@ def print_tokens(source):
         print("  --> line: ", repr(stringify(line)))
 
 
-def strip_comments(source):
-    """Removes the comments in a source.
-
-    It also removes any space at the end of each line
-    (before the ``\\n`` if present).
-    """
-    # The untokenizing function uses not only the string attribute
-    # but also the start_col, end_col, and line attributes
-    # to see if any character included in the line attribute
-    # between the end_col of a token preceeding the start_col
-    # of another must be included. Thus, we must not simply remove
-    # tokens from a stream unless they contain only spaces,
-    # otherwise we might not get the desired result.
-    tokens = []
-
-    for token in generate_tokens(source):
-        if token.is_comment():
-            token.string = ""  # does not remove any space preceeding it.
-        tokens.append(token)
-
-    mid_removal = untokenize(tokens)
-    # now we remove the extra spaces before the commment
-    lines = mid_removal.split("\n")
-    new_lines = [line.rstrip() for line in lines]
-    return "\n".join(new_lines)
-
-
 def dedent(tokens, nb):
     """Given a list of tokens representing a line,
     produces an equivalent list corresponding
