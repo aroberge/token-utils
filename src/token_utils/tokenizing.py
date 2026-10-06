@@ -367,53 +367,28 @@ def print_tokens(source):
 
 
 def dedent(tokens, nb):
-    """Given a list of tokens representing a line,
+    """Given a list of tokens representing a single physical line,
     produces an equivalent list corresponding
     to a line of code with the first nb characters removed.
 
-    If the list includes tokens from more than one line,
-    or no token at all, a ``ValueError`` is raised.
+    If the list doesn't include any tokens, or if a negative
+    value for nb is given, a ``ValueError`` is raised.
 
     If an attempt to remove non-space characters is made,
     a ``TypeError`` is raised.
-
-    If a negative value for nb is used, the line is indented
-    by spaces or tab characters instead, with the
-    first character determining if spaces or tab characters
-    must be used.
     """
     # The "indent" part is probably not needed...
     if len(tokens) == 0:
         raise ValueError("Empty list of tokens was passed to dedent()/indent().")
-    row = tokens[0].start_row
-    for token in tokens:
-        if token.start_row != row:
-            raise ValueError(
-                "Tokens in dedent()/indent() do not come from a single line of code."
-            )
+    if nb < 0:
+        raise ValueError("'nb' must be a positive number in dedent().")
+
     line = untokenize(tokens)
-    if nb >= 0:
-        begin = line[:nb]
-        end = line[nb:]
-        if begin.strip():
-            raise TypeError("Attempting to remove non-space character in dedent().")
-        return tokenize(end)
-
-    nb = -nb
-    if len(line) == 0:
-        return tokenize(" " * nb)
-    first_char = line[0]
-    if first_char == "\t":
-        line = "\t" * nb + line
-    else:
-        line = " " * nb + line
-    return tokenize(line)
-
-
-def indent(tokens, n):
-    """Calls dedent(tokens, -n) and adds the required number of spaces
-    or tab characters as needed"""
-    return dedent(tokens, -n)
+    begin = line[:nb]
+    end = line[nb:]
+    if begin.strip():
+        raise TypeError("Attempting to remove non-space character in dedent().")
+    return tokenize(end)
 
 
 __all__ = ["__all__"]
