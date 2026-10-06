@@ -87,6 +87,14 @@ class IndentStack:
         ]
         self.indent_keywords = self.top_indent_keywords + self.same_indent_keywords
 
+    def add_top_indent_keyword(self, name):
+        self.top_indent_keywords.append(name)
+        self.indent_keywords = self.top_indent_keywords + self.same_indent_keywords
+
+    def add_same_indent_keyword(self, name):
+        self.same_indent_keywords.append(name)
+        self.indent_keywords = self.top_indent_keywords + self.same_indent_keywords
+
     def print_stack(self):
         """Useful for diagnostic"""
         print([(tok.string, tok.start) for tok in self.stack])
@@ -97,9 +105,16 @@ class IndentStack:
             return None
         return self.stack[-1]
 
-    def update_indent(self, line):
-        """Receives a line containing tokens. This line argument
-        can be any **logical** line obtained using get_logical_lines().
+    def update(self, line):
+        """Receives a line as a list containing tokens
+        and keeps track of the indentation of the code.
+
+        A line will deem to signal a change in indentation if it begins
+        with an appropriate keyword (``class, def, if, else, ...``) **and**
+        ends with a colon. For this reason, it is highly recommended
+        to obtain lines using ``get_logical_lines()`` since lines
+        obtained using ``get_physical_lines()`` may have their last token
+        on a different physical line.
 
         If the line signals a change in indentation, this function returns
         the last "top token" starting a line at that indentation. By "top token"
@@ -164,19 +179,15 @@ class IndentStack:
                     return first_token  # new item at top
                 continue
 
-    def is_inside_class(self):
-        """Returns True if there is a line defining a class
-        in the indentation stack."""
-        for token in self.stack:
-            if token == "class":
-                return True
-        return False
+    def is_token_in_named_block(self, token, name):
+        """Returns True if the token is indented more than
+        a token with the name given.
 
-    def is_inside_def(self):
-        """Returns True if there is a line defining a function
-        in the indentation stack."""
-        for token in self.stack:
-            if token == "def":
+        Example usage: figuring out if a 'def' represents
+        a method of a class, or a pure function definition.
+        """
+        for tok in self.stack:
+            if tok == name and tok.start_col < token.start_col:
                 return True
         return False
 
