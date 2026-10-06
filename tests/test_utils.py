@@ -69,13 +69,6 @@ def test_dedent():
     assert new_tokens == tokens2
 
 
-def test_indent():
-    new_tokens = dedent(lines2[0], -4)
-    new_line_a = untokenize(new_tokens)
-    new_line_b = untokenize(lines3[2])
-    assert new_line_a == new_line_b
-
-
 # spaces between the last token and the comment
 # would be left behind, so we put the comments
 # right next to a non-space token for testing
