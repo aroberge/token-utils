@@ -1,0 +1,14 @@
+# decorator_exemple.txt
+
+def f1():
+    pass
+
+if True:
+    def f2():
+        pass
+
+
+class Something:
+
+    def method():
+        pass
