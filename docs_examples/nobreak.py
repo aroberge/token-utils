@@ -10,7 +10,7 @@ stack.add_same_indent_keyword("nobreak")
 
 for line in get_logical_lines(source):
     top = stack.update(line)
-    if top is None:
+    if top is None:  # this line does not introduce an indented block
         new_lines.append(line)
         continue
 

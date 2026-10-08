@@ -6,7 +6,7 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Tutorial: recipes, tips, and tricks &mdash; token-utils 0.3.2 documentation</title>
+  <title>Tutorial: recipes, tips, and tricks &mdash; token-utils 0.3.3 documentation</title>
       <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=03e43079" />
       <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=9edc463e" />
       <link rel="stylesheet" type="text/css" href="_static/sphinx-new-tab-link.css?v=d87cb1ac" />
@@ -15,7 +15,7 @@
   
       <script src="_static/jquery.js?v=5d32c60e"></script>
       <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="_static/documentation_options.js?v=71d9d8e6"></script>
+      <script src="_static/documentation_options.js?v=d5a15cff"></script>
       <script src="_static/doctools.js?v=9bcbadda"></script>
       <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="_static/js/theme.js"></script>
@@ -51,7 +51,11 @@
 <li class="toctree-l1 current"><a class="current reference internal" href="#"> Tutorial: recipes, tips, and tricks</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#adding-a-factorial-symbol">Adding a factorial symbol</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#better-factorial-and-bracketstack">Better factorial and BracketStack</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#keeping-track-of-indentation-with-indentstack">Keeping track of indentation with IndentStack</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#keeping-track-of-indentation-with-indentstack">Keeping track of indentation with IndentStack</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#adding-a-decorator">Adding a decorator</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#adding-a-better-keyword-nobreak">Adding a better keyword: nobreak</a></li>
+</ul>
+</li>
 </ul>
 </li>
 </ul>
@@ -59,6 +63,8 @@
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="token_class.html">Token class</a></li>
 <li class="toctree-l1"><a class="reference internal" href="tokenizing_methods.html">Tokenizing related methods</a></li>
+<li class="toctree-l1"><a class="reference internal" href="utils.html">Utility functions and classes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="custom_warnings.html">Custom warnings</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Appendix</span></p>
 <ul>
@@ -94,16 +100,46 @@
              
   <section id="tutorial-recipes-tips-and-tricks">
 <h1>Tutorial: recipes, tips, and tricks<a class="headerlink" href="#tutorial-recipes-tips-and-tricks" title="Link to this heading"></a></h1>
-<p>In what follows, I will attempt to demonstrate some useful ways to
-use token-utils, focusing on those that make changes to
-existing code. For simplicity, all the examples will assume
-that I did <code class="docutils literal notranslate"><span class="pre">from</span> <span class="pre">token_utils</span> <span class="pre">import</span> <span class="pre">*</span></code>.</p>
+<p>When I started working with what would become token-utils, inside both
+<strong>friendly/friendly-traceback</strong> and <strong>ideas</strong>, the focus was on either
+analysing or modifying a few tokens at a time. As more complex cases
+were considered, I continued working on lists of tokens and developed
+functions which helped identified individual tokens (<code class="docutils literal notranslate"><span class="pre">get_first()</span></code>,
+<code class="docutils literal notranslate"><span class="pre">get_last()</span></code>, <code class="docutils literal notranslate"><span class="pre">get_significant_tokens()</span></code>, etc.) and their
+position in the list (<code class="docutils literal notranslate"><span class="pre">get_first_index()</span></code> for the first “significant” token,
+etc.). I developed ad-hoc methods to identify entire statements, keeping
+track of open/close brackets, etc., all the while working with lists
+of tokens obtained more or less in an ad-hoc way. If you have come
+across token-utils before, and have followed a jupyter notebook
+tutorial that I wrote, you know what I mean …</p>
 <aside class="sidebar">
 <p class="sidebar-title">Suggestions welcome</p>
 <p>If you can think of other useful examples,
 newer or better helper functions,
-please do not hesitate to file an issue.</p>
+<strong>please</strong> do not hesitate to file an issue.</p>
 </aside>
+<p>The current tutorial is based on a completely different approach,
+which leads to much more powerful and readable code. The key functions/classes
+I came up with, and which are described in this one-page tutorial are
+the following:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">get_logical_lines()</span></code> which I have introduced previously. There is also the
+slightly less useful <code class="docutils literal notranslate"><span class="pre">get_physical_lines()</span></code> which is more or less equivalent
+to the no longer existent <code class="docutils literal notranslate"><span class="pre">get_lines()</span></code>.</p></li>
+<li><p>My own implementation of <code class="docutils literal notranslate"><span class="pre">pairwise()</span></code>, similar in spirit to <code class="docutils literal notranslate"><span class="pre">itertools.pairwise()</span></code>.</p></li>
+<li><p>My own implementation of <code class="docutils literal notranslate"><span class="pre">sliding_window()</span></code>, similar to a recipe with the same name
+found in <code class="docutils literal notranslate"><span class="pre">itertools</span></code> as well as the third-party package <code class="docutils literal notranslate"><span class="pre">more_itertools</span></code>.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">BracketStack()</span></code>, which facilitates keeping track of matching set of
+brackets (<code class="docutils literal notranslate"><span class="pre">()</span> <span class="pre">{}</span> <span class="pre">[]</span></code>).</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">IndentStack()</span></code>, which helps to keep track of statement indentation.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">split_at_token()</span></code>, which is useful when changes are needed in two distant
+parts of a list of tokens.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">add_operator()</span></code>, which is useful for exploring potential addition to Python’s syntax.</p></li>
+</ul>
+<p>In addition, the <code class="docutils literal notranslate"><span class="pre">Token</span></code> class has well over 30 different methods which are very useful
+to identify types of tokens (and more) in a very readable way.</p>
+<p>In what follows, I will attempt to demonstrate how to use these functions,
+using examples of modifying Python’s syntax.</p>
 <section id="adding-a-factorial-symbol">
 <h2>Adding a factorial symbol<a class="headerlink" href="#adding-a-factorial-symbol" title="Link to this heading"></a></h2>
 <p>The factorial function is included in the math module.
@@ -125,8 +161,8 @@ In usual mathematical notation, we would write something like:</p>
 </div>
 <p>While there’s nothing wrong with <code class="docutils literal notranslate"><span class="pre">!</span></code> being an <code class="docutils literal notranslate"><span class="pre">ERRORTOKEN</span></code> for us,
 let’s nonetheless add it to the list of valid operators recognized by
-Python. We will see a bit later why it is often very useful
-to add symbols to the list of operators.</p>
+Python. When exploring potential changes to Python syntax, it can
+be really useful to add new operators to the tokenizer.</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">add_operator</span><span class="p">(</span><span class="s2">"!"</span><span class="p">,</span> <span class="s2">"exclamation"</span><span class="p">)</span>
 <span class="go">True</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">print_tokens</span><span class="p">(</span><span class="s2">"n!"</span><span class="p">)</span>
@@ -159,7 +195,7 @@ is defined as an operator.</p>
 <p>While Python does not care about spaces between tokens, humans do.
 For the mathematically inclined, it wouldn’t be appropriate to write something
 like:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>a = 3                                          !
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>a = 3                                          !  # &lt;--
 </pre></div>
 </div>
 <p>expecting <code class="docutils literal notranslate"><span class="pre">a</span></code> to be now equal to 6. So, to define a factorial, we will
@@ -193,20 +229,23 @@ of <code class="docutils literal notranslate"><span class="pre">immediately_befo
 </pre></div>
 </div>
 <p>Before we show it in action, we should add a word about <code class="docutils literal notranslate"><span class="pre">pairwise</span></code>.</p>
-<p>token-utils has its own implementation of Python’s itertools function <code class="docutils literal notranslate"><span class="pre">pairwise</span></code>
-(available only for Python 3.10+). Given an iterable denoted by <code class="docutils literal notranslate"><span class="pre">ABCDEF</span></code>,
-itertools’ <code class="docutils literal notranslate"><span class="pre">pairwise</span></code> will emit the items in pairs (tuples) like so:</p>
+<p>token-utils has its own implementation of Python’s <code class="docutils literal notranslate"><span class="pre">itertools.pairwise</span></code> function.
+Given an iterable denoted by <code class="docutils literal notranslate"><span class="pre">ABCDEF</span></code>,
+<code class="docutils literal notranslate"><span class="pre">itertools.pairwise</span></code> will emit the items in pairs (tuples) like so:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">AB</span> <span class="n">BC</span> <span class="n">CD</span> <span class="n">DE</span> <span class="n">EF</span>
 </pre></div>
 </div>
-<p>Notice how the last item is never emitted as the first item of a pair.
-To “solve this problem”,
+<p>Notice how the last item is never emitted as the first item of a pair, so
+it might require a special treatment if we want to do something
+about each individual token. To “solve this problem”,
 token-utils adds a fake token (<code class="docutils literal notranslate"><span class="pre">$</span></code>) to the iterable list so that each
 token of the original sequence appears as a the first element of the pair:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span>AB BC CD DE EF F$
 </pre></div>
 </div>
-<p>There is also an option to have this extra token at the beginning if it
+<p>This way, as we loop through the tokens, we can focus on doing “something”,
+and then add the first token to the stream.
+There is also an option to have this extra token at the beginning if it
 is more convenient to focus on the second element of a pair.</p>
 <p>As for the rest of the algorithm, we assume that is should be straightforward
 to understand given our description of
@@ -238,9 +277,9 @@ return <code class="docutils literal notranslate"><span class="pre">False</span>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">stack</span> <span class="o">=</span> <span class="n">BracketStack</span><span class="p">()</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="k">for</span> <span class="n">token</span> <span class="ow">in</span> <span class="n">generate_tokens</span><span class="p">(</span><span class="s2">" ({[ ]}) []"</span><span class="p">):</span>
 <span class="gp">... </span>    <span class="k">if</span> <span class="n">token</span><span class="o">.</span><span class="n">is_bracket</span><span class="p">():</span>
-<span class="gp">... </span>        <span class="n">other</span> <span class="o">=</span> <span class="n">stack</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">token</span><span class="p">)</span>
-<span class="gp">... </span>        <span class="k">if</span> <span class="n">other</span><span class="p">:</span>
-<span class="gp">... </span>            <span class="nb">print</span><span class="p">(</span><span class="n">other</span><span class="p">,</span> <span class="n">token</span><span class="p">,</span> <span class="n">stack</span><span class="o">.</span><span class="n">is_empty</span><span class="p">())</span>
+<span class="gp">... </span>        <span class="n">possibly_open</span> <span class="o">=</span> <span class="n">stack</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">token</span><span class="p">)</span>
+<span class="gp">... </span>        <span class="k">if</span> <span class="n">possibly_open</span><span class="p">:</span>
+<span class="gp">... </span>            <span class="nb">print</span><span class="p">(</span><span class="n">possibly_open</span><span class="p">,</span> <span class="n">token</span><span class="p">,</span> <span class="n">stack</span><span class="o">.</span><span class="n">is_empty</span><span class="p">())</span>
 <span class="gp">...</span>
 <span class="go">[ ] False</span>
 <span class="go">{ } False</span>
@@ -334,6 +373,13 @@ ideas&gt; (n + 1)!
 362880
 </pre></div>
 </div>
+<div class="admonition-test-your-understanding admonition">
+<p class="admonition-title">Test your understanding</p>
+<p>Modify the code to add the capability of having a
+<a class="reference external" href="https://en.wikipedia.org/wiki/Double_factorial" rel="noreferrer" target="_blank">double factorial.</a>
+Define a new operator, <code class="docutils literal notranslate"><span class="pre">!!</span></code>, so that you don’t have to identify it
+as two consecutive <code class="docutils literal notranslate"><span class="pre">!</span></code> tokens but as a single token.</p>
+</div>
 </section>
 <section id="keeping-track-of-indentation-with-indentstack">
 <h2>Keeping track of indentation with IndentStack<a class="headerlink" href="#keeping-track-of-indentation-with-indentstack" title="Link to this heading"></a></h2>
@@ -348,7 +394,303 @@ end of line comments, they will appear as the first non-space token
 on a <strong>logical line</strong> terminated by a colon <code class="docutils literal notranslate"><span class="pre">:</span></code>.
 If we use token-utils’ <code class="docutils literal notranslate"><span class="pre">get_logical_lines()</span></code> to analyze some source code, the last token
 of each such line will always be a <code class="docutils literal notranslate"><span class="pre">NEWLINE</span></code> token, preceded by a colon.
-This allowed us to define the utility class <code class="docutils literal notranslate"><span class="pre">IndentStack</span></code>.</p>
+This allowed us to define the utility class <code class="docutils literal notranslate"><span class="pre">IndentStack</span></code> which we will see in action shortly.</p>
+<div class="admonition tip">
+<p class="admonition-title">Tip</p>
+<p>When starting on a new project, I try to use some simple well-formatted code,
+with no comments (or semi-colons <code class="docutils literal notranslate"><span class="pre">;</span></code> !!) where each logical line corresponds to a physical line,
+with possibly some occasional empty lines to separate some statements.
+I then use <code class="docutils literal notranslate"><span class="pre">get_physical_lines()</span></code>, do “something”, and use <code class="docutils literal notranslate"><span class="pre">untokenize()</span></code> to see
+the final result. This allows me to more easily identify some potential problems.</p>
+<p>Later, when I want my code to be more robust, I use <code class="docutils literal notranslate"><span class="pre">get_logical_lines()</span></code>,
+which can combine multiple physical lines into a single line, delete empty lines, etc.,
+and often use <code class="docutils literal notranslate"><span class="pre">stringify</span></code> instead of <code class="docutils literal notranslate"><span class="pre">untokenize</span></code> for more predictable results.</p>
+</div>
+<p>The example I will use is that of adding a decorator to functions, but not to methods of
+a class. The code to be transformed
+is the following:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># decorator_exemple.txt</span>
+
+<span class="k">def</span><span class="w"> </span><span class="nf">f1</span><span class="p">():</span>
+    <span class="k">pass</span>
+
+<span class="k">if</span> <span class="kc">True</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">f2</span><span class="p">():</span>
+        <span class="k">pass</span>
+<span class="k">else</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">f3</span><span class="p">():</span>
+        <span class="k">pass</span>
+
+<span class="k">def</span><span class="w"> </span><span class="nf">f4</span><span class="p">():</span>
+    <span class="k">pass</span>
+
+<span class="k">class</span><span class="w"> </span><span class="nc">Something</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">method</span><span class="p">():</span>
+        <span class="k">pass</span>
+
+<span class="k">if</span> <span class="p">(</span>
+    <span class="kc">True</span>
+<span class="p">):</span>
+    <span class="k">pass</span>
+</pre></div>
+</div>
+<p>First, let’s see how <code class="docutils literal notranslate"><span class="pre">IndentStack()</span></code> works, using the following program.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># view_stack.py</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">token_utils</span><span class="w"> </span><span class="kn">import</span> <span class="n">get_physical_lines</span><span class="p">,</span> <span class="n">IndentStack</span><span class="p">,</span> <span class="n">untokenize</span>
+
+<span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="s2">"decorator_example.txt"</span><span class="p">,</span> <span class="s2">"r"</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+    <span class="n">source</span> <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
+<span class="n">stack</span> <span class="o">=</span> <span class="n">IndentStack</span><span class="p">()</span>
+
+<span class="c1"># It is highly preferable to use get_logical_lines as this example shows.</span>
+<span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">get_physical_lines</span><span class="p">(</span><span class="n">source</span><span class="p">):</span>
+    <span class="nb">print</span><span class="p">(</span>
+        <span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">untokenize</span><span class="p">(</span><span class="n">line</span><span class="p">)</span><span class="o">.</span><span class="n">rstrip</span><span class="p">()</span><span class="si">:</span><span class="s2">&lt;25</span><span class="si">}</span><span class="s2">"</span><span class="p">,</span>
+        <span class="sa">f</span><span class="s2">".update() --&gt; </span><span class="si">{</span><span class="nb">str</span><span class="p">(</span><span class="n">stack</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">line</span><span class="p">))</span><span class="si">:</span><span class="s2">&lt;7</span><span class="si">}</span><span class="s2">"</span><span class="p">,</span>
+        <span class="s2">"==&gt; "</span><span class="p">,</span>
+        <span class="n">end</span><span class="o">=</span><span class="s2">" "</span><span class="p">,</span>
+    <span class="p">)</span>
+    <span class="n">stack</span><span class="o">.</span><span class="n">print_stack</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>The result is the following:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>&gt; py view_stack.py
+# decorator_exemple.txt   .update() --&gt; None    ==&gt;  []
+                          .update() --&gt; None    ==&gt;  []
+def f1():                 .update() --&gt; def     ==&gt;  [('def', (3, 0))]
+    pass                  .update() --&gt; None    ==&gt;  [('def', (3, 0))]
+                          .update() --&gt; None    ==&gt;  [('def', (3, 0))]
+if True:                  .update() --&gt; if      ==&gt;  [('if', (6, 0))]
+    def f2():             .update() --&gt; def     ==&gt;  [('if', (6, 0)), ('def', (7, 4))]
+        pass              .update() --&gt; None    ==&gt;  [('if', (6, 0)), ('def', (7, 4))]
+else:                     .update() --&gt; if      ==&gt;  [('if', (6, 0))]
+    def f3():             .update() --&gt; def     ==&gt;  [('if', (6, 0)), ('def', (10, 4))]
+        pass              .update() --&gt; None    ==&gt;  [('if', (6, 0)), ('def', (10, 4))]
+                          .update() --&gt; None    ==&gt;  [('if', (6, 0)), ('def', (10, 4))]
+def f4():                 .update() --&gt; def     ==&gt;  [('def', (13, 0))]
+    pass                  .update() --&gt; None    ==&gt;  [('def', (13, 0))]
+                          .update() --&gt; None    ==&gt;  [('def', (13, 0))]
+class Something:          .update() --&gt; class   ==&gt;  [('class', (16, 0))]
+    def method():         .update() --&gt; def     ==&gt;  [('class', (16, 0)), ('def', (17, 4))]
+        pass              .update() --&gt; None    ==&gt;  [('class', (16, 0)), ('def', (17, 4))]
+                          .update() --&gt; None    ==&gt;  [('class', (16, 0)), ('def', (17, 4))]
+if (                      .update() --&gt; None    ==&gt;  []
+    True                  .update() --&gt; None    ==&gt;  []
+):                        .update() --&gt; None    ==&gt;  []
+    pass                  .update() --&gt; None    ==&gt;  []
+                          .update() --&gt; None    ==&gt;  []
+</pre></div>
+</div>
+<p>As we can see, the last <code class="docutils literal notranslate"><span class="pre">if</span></code> block was not correctly identified as the line on which it
+appeared did not end in a colon. We could have situations, such as <strong>inside</strong> a comprehension,
+where the code is formatted so that an <code class="docutils literal notranslate"><span class="pre">if</span></code> or <code class="docutils literal notranslate"><span class="pre">for</span></code> appears as the first token on a
+physical line, and does not signal a change in indentation – and the physical line does not end
+in a colon.</p>
+<p>Before trying to add a decorator, let’s use <code class="docutils literal notranslate"><span class="pre">get_logical_lines</span></code> and use a method
+of <code class="docutils literal notranslate"><span class="pre">IndentStack</span></code> to see when we are inside a <code class="docutils literal notranslate"><span class="pre">def</span></code> or <code class="docutils literal notranslate"><span class="pre">class</span></code> block.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># inside_blocks.py</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">token_utils</span><span class="w"> </span><span class="kn">import</span> <span class="n">get_logical_lines</span><span class="p">,</span> <span class="n">IndentStack</span><span class="p">,</span> <span class="n">stringify</span>
+
+<span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="s2">"decorator_example.txt"</span><span class="p">,</span> <span class="s2">"r"</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+    <span class="n">source</span> <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
+
+<span class="n">stack</span> <span class="o">=</span> <span class="n">IndentStack</span><span class="p">()</span>
+
+<span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">get_logical_lines</span><span class="p">(</span><span class="n">source</span><span class="p">):</span>
+    <span class="n">stack</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">line</span><span class="p">)</span>
+    <span class="n">first_token</span> <span class="o">=</span> <span class="n">line</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="n">inside_class</span> <span class="o">=</span> <span class="n">stack</span><span class="o">.</span><span class="n">is_token_in_named_block</span><span class="p">(</span><span class="n">first_token</span><span class="p">,</span> <span class="s2">"class"</span><span class="p">)</span>
+    <span class="n">inside_def</span> <span class="o">=</span> <span class="n">stack</span><span class="o">.</span><span class="n">is_token_in_named_block</span><span class="p">(</span><span class="n">first_token</span><span class="p">,</span> <span class="s2">"def"</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span>
+        <span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">stringify</span><span class="p">(</span><span class="n">line</span><span class="p">)</span><span class="o">.</span><span class="n">rstrip</span><span class="p">()</span><span class="si">:</span><span class="s2">20</span><span class="si">}</span><span class="s2">"</span><span class="p">,</span>
+        <span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">inside_def</span><span class="si">=}</span><span class="s2">;"</span><span class="p">,</span>
+        <span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">inside_class</span><span class="si">=}</span><span class="s2">;"</span><span class="p">,</span>
+        <span class="s2">"  stack:"</span><span class="p">,</span>
+        <span class="n">end</span><span class="o">=</span><span class="s2">" "</span><span class="p">,</span>
+    <span class="p">)</span>
+    <span class="n">stack</span><span class="o">.</span><span class="n">print_stack</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>The result is the following:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">&gt;</span> <span class="n">py</span> <span class="n">inside_blocks</span><span class="o">.</span><span class="n">py</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">f1</span><span class="p">():</span>            <span class="n">inside_def</span><span class="o">=</span><span class="kc">False</span><span class="p">;</span> <span class="n">inside_class</span><span class="o">=</span><span class="kc">False</span><span class="p">;</span>   <span class="n">stack</span><span class="p">:</span> <span class="p">[(</span><span class="s1">'def'</span><span class="p">,</span> <span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">0</span><span class="p">))]</span>
+    <span class="k">pass</span>             <span class="n">inside_def</span><span class="o">=</span><span class="kc">True</span><span class="p">;</span> <span class="n">inside_class</span><span class="o">=</span><span class="kc">False</span><span class="p">;</span>   <span class="n">stack</span><span class="p">:</span> <span class="p">[(</span><span class="s1">'def'</span><span class="p">,</span> <span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">0</span><span class="p">))]</span>
+<span class="k">if</span> <span class="kc">True</span><span class="p">:</span>             <span class="n">inside_def</span><span class="o">=</span><span class="kc">False</span><span class="p">;</span> <span class="n">inside_class</span><span class="o">=</span><span class="kc">False</span><span class="p">;</span>   <span class="n">stack</span><span class="p">:</span> <span class="p">[(</span><span class="s1">'if'</span><span class="p">,</span> <span class="p">(</span><span class="mi">6</span><span class="p">,</span> <span class="mi">0</span><span class="p">))]</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">f2</span><span class="p">():</span>        <span class="n">inside_def</span><span class="o">=</span><span class="kc">False</span><span class="p">;</span> <span class="n">inside_class</span><span class="o">=</span><span class="kc">False</span><span class="p">;</span>   <span class="n">stack</span><span class="p">:</span> <span class="p">[(</span><span class="s1">'if'</span><span class="p">,</span> <span class="p">(</span><span class="mi">6</span><span class="p">,</span> <span class="mi">0</span><span class="p">)),</span> <span class="p">(</span><span class="s1">'def'</span><span class="p">,</span> <span class="p">(</span><span class="mi">7</span><span class="p">,</span> <span class="mi">4</span><span class="p">))]</span>
+        <span class="k">pass</span>         <span class="n">inside_def</span><span class="o">=</span><span class="kc">True</span><span class="p">;</span> <span class="n">inside_class</span><span class="o">=</span><span class="kc">False</span><span class="p">;</span>   <span class="n">stack</span><span class="p">:</span> <span class="p">[(</span><span class="s1">'if'</span><span class="p">,</span> <span class="p">(</span><span class="mi">6</span><span class="p">,</span> <span class="mi">0</span><span class="p">)),</span> <span class="p">(</span><span class="s1">'def'</span><span class="p">,</span> <span class="p">(</span><span class="mi">7</span><span class="p">,</span> <span class="mi">4</span><span class="p">))]</span>
+<span class="k">else</span><span class="p">:</span>                <span class="n">inside_def</span><span class="o">=</span><span class="kc">False</span><span class="p">;</span> <span class="n">inside_class</span><span class="o">=</span><span class="kc">False</span><span class="p">;</span>   <span class="n">stack</span><span class="p">:</span> <span class="p">[(</span><span class="s1">'if'</span><span class="p">,</span> <span class="p">(</span><span class="mi">6</span><span class="p">,</span> <span class="mi">0</span><span class="p">))]</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">f3</span><span class="p">():</span>        <span class="n">inside_def</span><span class="o">=</span><span class="kc">False</span><span class="p">;</span> <span class="n">inside_class</span><span class="o">=</span><span class="kc">False</span><span class="p">;</span>   <span class="n">stack</span><span class="p">:</span> <span class="p">[(</span><span class="s1">'if'</span><span class="p">,</span> <span class="p">(</span><span class="mi">6</span><span class="p">,</span> <span class="mi">0</span><span class="p">)),</span> <span class="p">(</span><span class="s1">'def'</span><span class="p">,</span> <span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">4</span><span class="p">))]</span>
+        <span class="k">pass</span>         <span class="n">inside_def</span><span class="o">=</span><span class="kc">True</span><span class="p">;</span> <span class="n">inside_class</span><span class="o">=</span><span class="kc">False</span><span class="p">;</span>   <span class="n">stack</span><span class="p">:</span> <span class="p">[(</span><span class="s1">'if'</span><span class="p">,</span> <span class="p">(</span><span class="mi">6</span><span class="p">,</span> <span class="mi">0</span><span class="p">)),</span> <span class="p">(</span><span class="s1">'def'</span><span class="p">,</span> <span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">4</span><span class="p">))]</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">f4</span><span class="p">():</span>            <span class="n">inside_def</span><span class="o">=</span><span class="kc">False</span><span class="p">;</span> <span class="n">inside_class</span><span class="o">=</span><span class="kc">False</span><span class="p">;</span>   <span class="n">stack</span><span class="p">:</span> <span class="p">[(</span><span class="s1">'def'</span><span class="p">,</span> <span class="p">(</span><span class="mi">13</span><span class="p">,</span> <span class="mi">0</span><span class="p">))]</span>
+    <span class="k">pass</span>             <span class="n">inside_def</span><span class="o">=</span><span class="kc">True</span><span class="p">;</span> <span class="n">inside_class</span><span class="o">=</span><span class="kc">False</span><span class="p">;</span>   <span class="n">stack</span><span class="p">:</span> <span class="p">[(</span><span class="s1">'def'</span><span class="p">,</span> <span class="p">(</span><span class="mi">13</span><span class="p">,</span> <span class="mi">0</span><span class="p">))]</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">Something</span><span class="p">:</span>     <span class="n">inside_def</span><span class="o">=</span><span class="kc">False</span><span class="p">;</span> <span class="n">inside_class</span><span class="o">=</span><span class="kc">False</span><span class="p">;</span>   <span class="n">stack</span><span class="p">:</span> <span class="p">[(</span><span class="s1">'class'</span><span class="p">,</span> <span class="p">(</span><span class="mi">16</span><span class="p">,</span> <span class="mi">0</span><span class="p">))]</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">method</span><span class="p">():</span>    <span class="n">inside_def</span><span class="o">=</span><span class="kc">False</span><span class="p">;</span> <span class="n">inside_class</span><span class="o">=</span><span class="kc">True</span><span class="p">;</span>   <span class="n">stack</span><span class="p">:</span> <span class="p">[(</span><span class="s1">'class'</span><span class="p">,</span> <span class="p">(</span><span class="mi">16</span><span class="p">,</span> <span class="mi">0</span><span class="p">)),</span> <span class="p">(</span><span class="s1">'def'</span><span class="p">,</span> <span class="p">(</span><span class="mi">17</span><span class="p">,</span> <span class="mi">4</span><span class="p">))]</span>
+        <span class="k">pass</span>         <span class="n">inside_def</span><span class="o">=</span><span class="kc">True</span><span class="p">;</span> <span class="n">inside_class</span><span class="o">=</span><span class="kc">True</span><span class="p">;</span>   <span class="n">stack</span><span class="p">:</span> <span class="p">[(</span><span class="s1">'class'</span><span class="p">,</span> <span class="p">(</span><span class="mi">16</span><span class="p">,</span> <span class="mi">0</span><span class="p">)),</span> <span class="p">(</span><span class="s1">'def'</span><span class="p">,</span> <span class="p">(</span><span class="mi">17</span><span class="p">,</span> <span class="mi">4</span><span class="p">))]</span>
+<span class="k">if</span> <span class="p">(</span>    <span class="kc">True</span><span class="p">):</span>       <span class="n">inside_def</span><span class="o">=</span><span class="kc">False</span><span class="p">;</span> <span class="n">inside_class</span><span class="o">=</span><span class="kc">False</span><span class="p">;</span>   <span class="n">stack</span><span class="p">:</span> <span class="p">[(</span><span class="s1">'if'</span><span class="p">,</span> <span class="p">(</span><span class="mi">20</span><span class="p">,</span> <span class="mi">0</span><span class="p">))]</span>
+    <span class="k">pass</span>             <span class="n">inside_def</span><span class="o">=</span><span class="kc">False</span><span class="p">;</span> <span class="n">inside_class</span><span class="o">=</span><span class="kc">False</span><span class="p">;</span>   <span class="n">stack</span><span class="p">:</span> <span class="p">[(</span><span class="s1">'if'</span><span class="p">,</span> <span class="p">(</span><span class="mi">20</span><span class="p">,</span> <span class="mi">0</span><span class="p">))]</span>
+</pre></div>
+</div>
+<p>Note how the last <code class="docutils literal notranslate"><span class="pre">if</span></code> block is correctly identified, with three physical lines having
+been concatenated to form a single logical line.</p>
+<section id="adding-a-decorator">
+<h3>Adding a decorator<a class="headerlink" href="#adding-a-decorator" title="Link to this heading"></a></h3>
+<p>For our decorator example, we will want both <code class="docutils literal notranslate"><span class="pre">f1,</span> <span class="pre">f2,</span> <span class="pre">f3,</span> <span class="pre">f4</span></code> to be decorated, but not <code class="docutils literal notranslate"><span class="pre">method</span></code>.
+Here’s some code to do it, followed by a brief explanation and the result.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># add_decorator.py</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">token_utils</span><span class="w"> </span><span class="kn">import</span> <span class="n">get_logical_lines</span><span class="p">,</span> <span class="n">IndentStack</span><span class="p">,</span> <span class="n">untokenize</span><span class="p">,</span> <span class="n">stringify</span>
+
+<span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="s2">"decorator_example.txt"</span><span class="p">,</span> <span class="s2">"r"</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+    <span class="n">source</span> <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
+
+<span class="n">stack</span> <span class="o">=</span> <span class="n">IndentStack</span><span class="p">()</span>
+<span class="n">new_lines</span> <span class="o">=</span> <span class="p">[]</span>
+<span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">get_logical_lines</span><span class="p">(</span><span class="n">source</span><span class="p">):</span>
+    <span class="n">stack</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">line</span><span class="p">)</span>
+    <span class="n">first_token</span> <span class="o">=</span> <span class="n">line</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="k">if</span> <span class="n">first_token</span> <span class="o">==</span> <span class="s2">"def"</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">stack</span><span class="o">.</span><span class="n">is_token_in_named_block</span><span class="p">(</span><span class="n">first_token</span><span class="p">,</span> <span class="s2">"class"</span><span class="p">):</span>
+        <span class="n">new_lines</span><span class="o">.</span><span class="n">append</span><span class="p">([</span><span class="s2">" "</span> <span class="o">*</span> <span class="n">first_token</span><span class="o">.</span><span class="n">indentation</span><span class="p">()</span> <span class="o">+</span> <span class="s2">"@decorator</span><span class="se">\n</span><span class="s2">"</span><span class="p">])</span>
+
+    <span class="n">new_lines</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">line</span><span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="n">stringify</span><span class="p">(</span><span class="n">new_lines</span><span class="p">))</span>
+</pre></div>
+</div>
+<p>If a line starts with the word <code class="docutils literal notranslate"><span class="pre">def</span></code> and is not inside a <code class="docutils literal notranslate"><span class="pre">class</span></code> indented block,
+we add a line containing <code class="docutils literal notranslate"><span class="pre">&#64;decorator\n</span></code>, a simple string and not a list of tokens.
+This extra line is added with the same indentation as the function definition,
+which we obtained by doing <code class="docutils literal notranslate"><span class="pre">&quot;</span> <span class="pre">&quot;</span> <span class="pre">*</span> <span class="pre">token.indentation()</span></code>. Here’s the result of running
+this script:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">&gt;</span> <span class="n">py</span> <span class="n">add_decorator</span><span class="o">.</span><span class="n">py</span>
+<span class="nd">@decorator</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">f1</span><span class="p">():</span>
+    <span class="k">pass</span>
+<span class="k">if</span> <span class="kc">True</span><span class="p">:</span>
+    <span class="nd">@decorator</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">f2</span><span class="p">():</span>
+        <span class="k">pass</span>
+<span class="k">else</span><span class="p">:</span>
+    <span class="nd">@decorator</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">f3</span><span class="p">():</span>
+        <span class="k">pass</span>
+<span class="nd">@decorator</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">f4</span><span class="p">():</span>
+    <span class="k">pass</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">Something</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">method</span><span class="p">():</span>
+        <span class="k">pass</span>
+<span class="k">if</span> <span class="p">(</span>    <span class="kc">True</span><span class="p">):</span>
+    <span class="k">pass</span>
+</pre></div>
+</div>
+</section>
+<section id="adding-a-better-keyword-nobreak">
+<h3>Adding a better keyword: nobreak<a class="headerlink" href="#adding-a-better-keyword-nobreak" title="Link to this heading"></a></h3>
+<p>Both <code class="docutils literal notranslate"><span class="pre">for</span></code> and <code class="docutils literal notranslate"><span class="pre">while</span></code> loops can use an <code class="docutils literal notranslate"><span class="pre">else</span></code> clause which seems to
+cause a bit of confusion when people see it for the first time.
+Raymond Hettinger once suggested that a better keyword to use
+instead might have been <code class="docutils literal notranslate"><span class="pre">nobreak</span></code> as it describes better that the
+code in this block is intended to be run if <code class="docutils literal notranslate"><span class="pre">break</span></code> did not
+end a loop.</p>
+<p>Suppose we want to use <code class="docutils literal notranslate"><span class="pre">nobreak</span></code> appropriately, transforming it
+into <code class="docutils literal notranslate"><span class="pre">else</span></code> prior to having it being executed by Python.
+Such an example is actually available in the <strong>ideas</strong> project
+I mentioned previously.</p>
+<p>First, here’s the code we’ll modify:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># nobreak.txt</span>
+
+<span class="k">while</span> <span class="kc">True</span><span class="p">:</span>
+    <span class="k">pass</span>
+<span class="n">nobreak</span><span class="p">:</span>  <span class="c1"># &lt;-- else</span>
+    <span class="k">pass</span>
+
+<span class="k">if</span> <span class="kc">True</span><span class="p">:</span>
+    <span class="k">pass</span>
+<span class="k">elif</span> <span class="n">something</span><span class="p">:</span>
+    <span class="k">pass</span>
+<span class="n">nobreak</span><span class="p">:</span>  <span class="c1"># keep nobreak</span>
+    <span class="n">error</span>
+
+<span class="k">try</span><span class="p">:</span>
+    <span class="o">...</span>
+<span class="k">except</span><span class="p">:</span>
+    <span class="o">...</span>
+<span class="n">nobreak</span><span class="p">:</span>  <span class="c1"># keep nobreak</span>
+    <span class="o">...</span>
+
+<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">3</span><span class="p">):</span>
+    <span class="o">...</span>
+<span class="n">nobreak</span><span class="p">:</span>  <span class="c1"># &lt;-- else</span>
+    <span class="o">...</span>
+
+<span class="k">if</span> <span class="n">something</span><span class="p">:</span>
+    <span class="k">while</span> <span class="kc">True</span><span class="p">:</span>
+        <span class="k">pass</span>
+    <span class="n">nobreak</span><span class="p">:</span>  <span class="c1"># &lt;-- else</span>
+        <span class="n">done</span>
+</pre></div>
+</div>
+<p>We <strong>don’t</strong> want to be able to use <code class="docutils literal notranslate"><span class="pre">nobreak</span></code> in an <code class="docutils literal notranslate"><span class="pre">if</span></code> block
+nor in a <code class="docutils literal notranslate"><span class="pre">try</span></code> block, since we can’t have a <code class="docutils literal notranslate"><span class="pre">break</span></code> statement.
+We include them in this example to demonstrate how we can
+selectively exclude them.
+The code we use is the following:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># nobreak.py</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">token_utils</span><span class="w"> </span><span class="kn">import</span> <span class="n">get_logical_lines</span><span class="p">,</span> <span class="n">untokenize</span><span class="p">,</span> <span class="n">IndentStack</span>
+
+<span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="s2">"nobreak.txt"</span><span class="p">,</span> <span class="s2">"r"</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+    <span class="n">source</span> <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
+
+<span class="n">new_lines</span> <span class="o">=</span> <span class="p">[]</span>
+<span class="n">stack</span> <span class="o">=</span> <span class="n">IndentStack</span><span class="p">()</span>
+<span class="n">stack</span><span class="o">.</span><span class="n">add_same_indent_keyword</span><span class="p">(</span><span class="s2">"nobreak"</span><span class="p">)</span>
+
+<span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">get_logical_lines</span><span class="p">(</span><span class="n">source</span><span class="p">):</span>
+    <span class="n">top</span> <span class="o">=</span> <span class="n">stack</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">line</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">top</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>  <span class="c1"># this line does not introduce an indented block</span>
+        <span class="n">new_lines</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">line</span><span class="p">)</span>
+        <span class="k">continue</span>
+
+    <span class="k">if</span> <span class="n">line</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="s2">"nobreak"</span> <span class="ow">and</span> <span class="n">top</span><span class="o">.</span><span class="n">is_in</span><span class="p">([</span><span class="s2">"for"</span><span class="p">,</span> <span class="s2">"while"</span><span class="p">]):</span>
+        <span class="n">line</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">string</span> <span class="o">=</span> <span class="s2">"else"</span>  <span class="c1"># modify in place</span>
+
+    <span class="n">new_lines</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">line</span><span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="n">untokenize</span><span class="p">(</span><span class="n">new_lines</span><span class="p">))</span>
+</pre></div>
+</div>
+<p>Unlike the previous example, we use <code class="docutils literal notranslate"><span class="pre">untokenize()</span></code> to get a final
+result as this will include the comments in the output.
+Here’s the result:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">&gt;</span> <span class="n">py</span> <span class="n">nobreak</span><span class="o">.</span><span class="n">py</span>
+<span class="k">while</span> <span class="kc">True</span><span class="p">:</span>
+    <span class="k">pass</span>
+<span class="k">else</span><span class="p">:</span>  <span class="c1"># &lt;-- else</span>
+    <span class="k">pass</span>
+<span class="k">if</span> <span class="kc">True</span><span class="p">:</span>
+    <span class="k">pass</span>
+<span class="k">elif</span> <span class="n">something</span><span class="p">:</span>
+    <span class="k">pass</span>
+<span class="n">nobreak</span><span class="p">:</span>  <span class="c1"># keep nobreak</span>
+    <span class="n">error</span>
+<span class="k">try</span><span class="p">:</span>
+    <span class="o">...</span>
+<span class="k">except</span><span class="p">:</span>
+    <span class="o">...</span>
+<span class="n">nobreak</span><span class="p">:</span>  <span class="c1"># keep nobreak</span>
+    <span class="o">...</span>
+<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">3</span><span class="p">):</span>
+    <span class="o">...</span>
+<span class="k">else</span><span class="p">:</span>  <span class="c1"># &lt;-- else</span>
+    <span class="o">...</span>
+<span class="k">if</span> <span class="n">something</span><span class="p">:</span>
+    <span class="k">while</span> <span class="kc">True</span><span class="p">:</span>
+        <span class="k">pass</span>
+    <span class="k">else</span><span class="p">:</span>  <span class="c1"># &lt;-- else</span>
+        <span class="n">done</span>
+</pre></div>
+</div>
+</section>
 </section>
 </section>
 

@@ -74,6 +74,8 @@ Quick links to topics
 
     Token class <token_class>
     Tokenizing related methods <tokenizing_methods>
+    Utility functions and classes <utils>
+    Custom warnings <custom_warnings>
 
 .. toctree::
     :caption: Appendix

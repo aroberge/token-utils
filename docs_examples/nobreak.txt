@@ -1,4 +1,4 @@
-# fake example
+# nobreak.txt
 
 while True:
     pass
@@ -6,23 +6,23 @@ nobreak:  # <-- else
     pass
 
 if True:
-   pass
+    pass
 elif something:
-   pass
+    pass
 nobreak:  # keep nobreak
-   error
+    error
 
 try:
-  ...
+    ...
 except:
-  ...
+    ...
 nobreak:  # keep nobreak
-  ...
+    ...
 
 for i in range(3):
-   ...
+    ...
 nobreak:  # <-- else
-   ...
+    ...
 
 if something:
     while True:

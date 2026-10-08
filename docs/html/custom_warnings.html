@@ -1,0 +1,194 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="./">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Custom warnings &mdash; token-utils 0.3.3 documentation</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=03e43079" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=9edc463e" />
+      <link rel="stylesheet" type="text/css" href="_static/sphinx-new-tab-link.css?v=d87cb1ac" />
+      <link rel="stylesheet" type="text/css" href="_static/custom.css?v=c7e4a82f" />
+
+  
+      <script src="_static/jquery.js?v=5d32c60e"></script>
+      <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="_static/documentation_options.js?v=d5a15cff"></script>
+      <script src="_static/doctools.js?v=9bcbadda"></script>
+      <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="To do" href="todo.html" />
+    <link rel="prev" title="utils" href="utils.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            token-utils
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="about_tokens.html"> About tokens: Python vs token-utils</a></li>
+<li class="toctree-l1"><a class="reference internal" href="untokenizing.html"> About untokenizing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tutorial_prelude.html"> Prelude to the tutorial</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tips.html"> Tutorial: recipes, tips, and tricks</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">API</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="token_class.html">Token class</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tokenizing_methods.html">Tokenizing related methods</a></li>
+<li class="toctree-l1"><a class="reference internal" href="utils.html">Utility functions and classes</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Custom warnings</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#module-token_utils.custom_warnings">API extracted by Sphinx</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#token_utils.custom_warnings.SemiColonWarning"><code class="docutils literal notranslate"><span class="pre">SemiColonWarning</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#token_utils.custom_warnings.SemiColonWarning.__weakref__"><code class="docutils literal notranslate"><span class="pre">SemiColonWarning.__weakref__</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#token_utils.custom_warnings.TokenUtilsEOFWarning"><code class="docutils literal notranslate"><span class="pre">TokenUtilsEOFWarning</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#token_utils.custom_warnings.TokenUtilsEOFWarning.__weakref__"><code class="docutils literal notranslate"><span class="pre">TokenUtilsEOFWarning.__weakref__</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#token_utils.custom_warnings.custom_showwarning"><code class="docutils literal notranslate"><span class="pre">custom_showwarning()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#token_utils.custom_warnings.disable_warnings"><code class="docutils literal notranslate"><span class="pre">disable_warnings()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Appendix</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="todo.html">To do</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">token-utils</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content style-external-links">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">Custom warnings</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/custom_warnings.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul><div class="rst-breadcrumbs-buttons" role="navigation" aria-label="Sequential page navigation">
+        <a href="utils.html" class="btn btn-neutral float-left" title="utils" accesskey="p"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="todo.html" class="btn btn-neutral float-right" title="To do" accesskey="n">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+  </div>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="custom-warnings">
+<h1>Custom warnings<a class="headerlink" href="#custom-warnings" title="Link to this heading"></a></h1>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>While this documentation is extracted from a submodule,
+as shown below, all information is available from
+the top level, i.e. you can (should) use:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">token_utils</span><span class="w"> </span><span class="kn">import</span> <span class="n">disable_warnings</span>
+</pre></div>
+</div>
+<p>since this will always be guaranteed to work, even
+if refactoring occurs.</p>
+</div>
+<section id="module-token_utils.custom_warnings">
+<span id="api-extracted-by-sphinx"></span><h2>API extracted by Sphinx<a class="headerlink" href="#module-token_utils.custom_warnings" title="Link to this heading"></a></h2>
+<dl class="py exception">
+<dt class="sig sig-object py" id="token_utils.custom_warnings.SemiColonWarning">
+<em class="property"><span class="pre">exception</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">token_utils.custom_warnings.</span></span><span class="sig-name descname"><span class="pre">SemiColonWarning</span></span><a class="reference internal" href="_modules/token_utils/custom_warnings.html#SemiColonWarning"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#token_utils.custom_warnings.SemiColonWarning" title="Link to this definition"></a></dt>
+<dd><p>Raised when a semi-colon is found separating statements
+on a logical line other than the first one.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="token_utils.custom_warnings.SemiColonWarning.__weakref__">
+<span class="sig-name descname"><span class="pre">__weakref__</span></span><a class="headerlink" href="#token_utils.custom_warnings.SemiColonWarning.__weakref__" title="Link to this definition"></a></dt>
+<dd><p>list of weak references to the object (if defined)</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py exception">
+<dt class="sig sig-object py" id="token_utils.custom_warnings.TokenUtilsEOFWarning">
+<em class="property"><span class="pre">exception</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">token_utils.custom_warnings.</span></span><span class="sig-name descname"><span class="pre">TokenUtilsEOFWarning</span></span><a class="reference internal" href="_modules/token_utils/custom_warnings.html#TokenUtilsEOFWarning"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#token_utils.custom_warnings.TokenUtilsEOFWarning" title="Link to this definition"></a></dt>
+<dd><p>Raised when and EOF condition is reached.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="token_utils.custom_warnings.TokenUtilsEOFWarning.__weakref__">
+<span class="sig-name descname"><span class="pre">__weakref__</span></span><a class="headerlink" href="#token_utils.custom_warnings.TokenUtilsEOFWarning.__weakref__" title="Link to this definition"></a></dt>
+<dd><p>list of weak references to the object (if defined)</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="token_utils.custom_warnings.custom_showwarning">
+<span class="sig-prename descclassname"><span class="pre">token_utils.custom_warnings.</span></span><span class="sig-name descname"><span class="pre">custom_showwarning</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">message</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">category</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">filename</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lineno</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">file</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">line</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/token_utils/custom_warnings.html#custom_showwarning"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#token_utils.custom_warnings.custom_showwarning" title="Link to this definition"></a></dt>
+<dd><p>Simply show the category and message, as the rest of the potential output
+would not be useful.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="token_utils.custom_warnings.disable_warnings">
+<span class="sig-prename descclassname"><span class="pre">token_utils.custom_warnings.</span></span><span class="sig-name descname"><span class="pre">disable_warnings</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/token_utils/custom_warnings.html#disable_warnings"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#token_utils.custom_warnings.disable_warnings" title="Link to this definition"></a></dt>
+<dd><p>Disable all warnings arising from token_utils.</p>
+</dd></dl>
+
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="utils.html" class="btn btn-neutral float-left" title="utils" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="todo.html" class="btn btn-neutral float-right" title="To do" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2026, André Roberge.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

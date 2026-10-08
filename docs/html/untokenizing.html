@@ -6,7 +6,7 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>About untokenizing &mdash; token-utils 0.3.2 documentation</title>
+  <title>About untokenizing &mdash; token-utils 0.3.3 documentation</title>
       <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=03e43079" />
       <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=9edc463e" />
       <link rel="stylesheet" type="text/css" href="_static/sphinx-new-tab-link.css?v=d87cb1ac" />
@@ -15,7 +15,7 @@
   
       <script src="_static/jquery.js?v=5d32c60e"></script>
       <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="_static/documentation_options.js?v=71d9d8e6"></script>
+      <script src="_static/documentation_options.js?v=d5a15cff"></script>
       <script src="_static/doctools.js?v=9bcbadda"></script>
       <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="_static/js/theme.js"></script>
@@ -59,6 +59,8 @@
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="token_class.html">Token class</a></li>
 <li class="toctree-l1"><a class="reference internal" href="tokenizing_methods.html">Tokenizing related methods</a></li>
+<li class="toctree-l1"><a class="reference internal" href="utils.html">Utility functions and classes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="custom_warnings.html">Custom warnings</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Appendix</span></p>
 <ul>
@@ -283,7 +285,7 @@ Here’s a modified version:</p>
 <h2>Inserting tokens?<a class="headerlink" href="#inserting-tokens" title="Link to this heading"></a></h2>
 <p>What if we were to insert tokens like the example in the Python documentation.</p>
 <p>We can create additional tokens with token-utils in a fairly simple way:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">token_utils</span><span class="w"> </span><span class="kn">import</span> <span class="n">make_fake_token</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">token_utils</span><span class="w"> </span><span class="kn">import</span> <span class="n">make_fake_token</span><span class="p">,</span> <span class="n">generate_tokens</span><span class="p">,</span> <span class="n">untokenize</span><span class="p">,</span> <span class="n">stringify</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">help</span><span class="p">(</span><span class="n">make_fake_token</span><span class="p">)</span>
 <span class="go">Help on function make_fake_token in module token_utils.token_class:</span>
 
@@ -293,6 +295,7 @@ Here’s a modified version:</p>
 
 <span class="gp">&gt;&gt;&gt; </span><span class="n">fake</span> <span class="o">=</span> <span class="n">make_fake_token</span><span class="p">(</span><span class="n">string</span><span class="o">=</span><span class="s2">" | "</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">tokens</span> <span class="o">=</span> <span class="p">[]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">source</span> <span class="o">=</span> <span class="s2">"one two three"</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="k">for</span> <span class="n">token</span> <span class="ow">in</span> <span class="n">generate_tokens</span><span class="p">(</span><span class="n">source</span><span class="p">):</span>
 <span class="gp">... </span>   <span class="n">tokens</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">token</span><span class="p">)</span>
 <span class="gp">... </span>   <span class="k">if</span> <span class="n">token</span><span class="o">.</span><span class="n">is_name</span><span class="p">():</span>   <span class="c1"># or .is_identifier() which is sligtly different</span>
@@ -345,6 +348,13 @@ characters, one can <strong>remove</strong> tokens safely, and their content wil
 reinserted by <code class="docutils literal notranslate"><span class="pre">stringify()</span></code>.</p>
 <p><code class="docutils literal notranslate"><span class="pre">stringify()</span></code> also has an extra parameter, <code class="docutils literal notranslate"><span class="pre">remove_comments=False</span></code>. If sets to <code class="docutils literal notranslate"><span class="pre">True</span></code>,
 it returns a source with end of line comments removed.</p>
+<p>Here’s the result using <code class="docutils literal notranslate"><span class="pre">stringify()</span></code>:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">stringify</span><span class="p">(</span><span class="n">tokens</span><span class="p">)</span>
+<span class="go">'one |     two |         three | '</span>
+</pre></div>
+</div>
+<p>While <code class="docutils literal notranslate"><span class="pre">stringify()</span></code> “does the right thing” when adding tokens, it is usually
+preferable to simply add ordinary strings.</p>
 </section>
 </section>
 

@@ -1,5 +1,5 @@
-utils
-=============
+Custom warnings
+===============
 
 .. note::
 
@@ -7,7 +7,7 @@ utils
    as shown below, all information is available from
    the top level, i.e. you can (should) use::
 
-      from token_utils import pairwise
+      from token_utils import disable_warnings
 
    since this will always be guaranteed to work, even
    if refactoring occurs.
@@ -16,6 +16,6 @@ utils
 API extracted by Sphinx
 --------------------------------------
 
-.. automodule:: token_utils.utils
+.. automodule:: token_utils.custom_warnings
    :members:
    :special-members:

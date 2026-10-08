@@ -5,7 +5,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>token_utils.token_class &mdash; token-utils 0.3.2 documentation</title>
+  <title>token_utils.token_class &mdash; token-utils 0.3.3 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=03e43079" />
       <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=9edc463e" />
       <link rel="stylesheet" type="text/css" href="../../_static/sphinx-new-tab-link.css?v=d87cb1ac" />
@@ -14,7 +14,7 @@
   
       <script src="../../_static/jquery.js?v=5d32c60e"></script>
       <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../../_static/documentation_options.js?v=71d9d8e6"></script>
+      <script src="../../_static/documentation_options.js?v=d5a15cff"></script>
       <script src="../../_static/doctools.js?v=9bcbadda"></script>
       <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../../_static/js/theme.js"></script>
@@ -271,7 +271,6 @@
 <a class="viewcode-back" href="../../token_class.html#token_utils.token_class.Token.is_comparison">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">is_comparison</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">"""Returns True if the token is a comparison operator."""</span>
-
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">string</span> <span class="ow">in</span> <span class="n">_op_categories</span><span class="p">[</span><span class="s2">"comparison"</span><span class="p">]</span></div>
 
 
@@ -543,7 +542,7 @@
 
 
 <div class="viewcode-block" id="make_fake_token">
-<a class="viewcode-back" href="../../tokenizing_methods.html#token_utils.token_class.make_fake_token">[docs]</a>
+<a class="viewcode-back" href="../../token_class.html#token_utils.token_class.make_fake_token">[docs]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">make_fake_token</span><span class="p">(</span>
     <span class="nb">type</span><span class="o">=</span><span class="n">_py_tokenize</span><span class="o">.</span><span class="n">FAKE_TOKEN</span><span class="p">,</span> <span class="n">string</span><span class="o">=</span><span class="s2">"$"</span><span class="p">,</span> <span class="n">start</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="n">end</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="n">line</span><span class="o">=</span><span class="s2">""</span>
 <span class="p">):</span>

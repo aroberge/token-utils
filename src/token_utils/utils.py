@@ -88,10 +88,18 @@ class IndentStack:
         self.indent_keywords = self.top_indent_keywords + self.same_indent_keywords
 
     def add_top_indent_keyword(self, name):
+        """Add a new top indent keyword, similar to class, def, try, etc.
+
+        Useful when working with alternatives to standard Python syntax.
+        """
         self.top_indent_keywords.append(name)
         self.indent_keywords = self.top_indent_keywords + self.same_indent_keywords
 
     def add_same_indent_keyword(self, name):
+        """Add a new same indent keyword, similar to elif, else, except, etc.
+
+        Useful when working with alternatives to standard Python syntax.
+        """
         self.same_indent_keywords.append(name)
         self.indent_keywords = self.top_indent_keywords + self.same_indent_keywords
 
@@ -109,44 +117,72 @@ class IndentStack:
         """Receives a line as a list containing tokens
         and keeps track of the indentation of the code.
 
-        A line will deem to signal a change in indentation if it begins
+        A line will deem to signal the beginning of an indented block if it begins
         with an appropriate keyword (``class, def, if, else, ...``) **and**
         ends with a colon. For this reason, it is highly recommended
         to obtain lines using ``get_logical_lines()`` since lines
         obtained using ``get_physical_lines()`` may have their last token
         on a different physical line.
 
-        If the line signals a change in indentation, this function returns
+        If the line signals a change in indentation (indent or dedent), this function returns
         the last "top token" starting a line at that indentation. By "top token"
         we mean a token that can start a block such as ``if`` (for ``if/elif/else``),
         ``try``, etc.
 
-        It returns None if there is no such token.
+        It returns ``None`` if there is no such token.
         """
-        if not isinstance(line, list) or not line:
-            raise TypeError("'line' parameter must be a list containing tokens")
-        if not isinstance(line[0], Token):
-            raise TypeError("'line' parameter must be a list containing tokens")
-        # A relevant line will include at least a keyword, a colon and a NEWLINE token
-        indenting_line = True
-        first_token = line[0]
+        if not (isinstance(line, list) or isinstance(line[0], Token)):
+            raise TypeError(
+                "'line' parameter must be a list containing 0 or more tokens"
+            )
+        for token in line:
+            if not isinstance(token, Token):
+                raise TypeError("'line' parameter must be a list only Token instances")
 
+        first_token = line[0]
+        if not first_token.string.strip():
+            return None
+        if first_token.is_comment():
+            return None
+
+        # An indenting line will include at least a relevant keyword,
+        # a colon and a NEWLINE token
+        indenting_line = True
         if len(line) < 3:
             indenting_line = False
         elif not first_token.is_in(self.indent_keywords):
             indenting_line = False
         else:  # line could start with a soft keyword
             colon = line[-2]
+            if colon.is_comment():
+                colon = line[-3]
             if colon != ":":
                 indenting_line = False
+        # What about if we have a one-liner like:
+        #    def double(n): return n
+        # While the colon will not have been found, such a line will NOT be the
+        # beginning of an indented block. So, we only care to see if it signal
+        # that we are leaving an indented block and dedenting the code
 
-        if not indenting_line:
+        if not indenting_line:  # is dedenting occuring?
+            popped = 0
             while self.stack:
                 top_item = self.stack.pop()
+                popped += 1
                 if top_item.start_col >= first_token.start_col:
                     continue
+
+                if (top_item.start_col == first_token.start_col) and first_token.is_in(
+                    self.top_indent_keywords
+                ):  # new block at same level
+                    self.stack.append(first_token)
+                    return first_token
+
                 self.stack.append(top_item)
-                return top_item
+                if popped > 1:
+                    return top_item
+                else:
+                    return None
             return None
 
         if not self.stack:

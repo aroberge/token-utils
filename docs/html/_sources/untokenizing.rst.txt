@@ -158,7 +158,7 @@ What if we were to insert tokens like the example in the Python documentation.
 
 We can create additional tokens with token-utils in a fairly simple way::
 
-    >>> from token_utils import make_fake_token
+    >>> from token_utils import make_fake_token, generate_tokens, untokenize, stringify
     >>> help(make_fake_token)
     Help on function make_fake_token in module token_utils.token_class:
 
@@ -168,6 +168,7 @@ We can create additional tokens with token-utils in a fairly simple way::
 
     >>> fake = make_fake_token(string=" | ")
     >>> tokens = []
+    >>> source = "one two three"
     >>> for token in generate_tokens(source):
     ...    tokens.append(token)
     ...    if token.is_name():   # or .is_identifier() which is sligtly different
@@ -221,3 +222,11 @@ reinserted by ``stringify()``.
 
 ``stringify()`` also has an extra parameter, ``remove_comments=False``. If sets to ``True``,
 it returns a source with end of line comments removed.
+
+Here's the result using ``stringify()``::
+
+    >>> stringify(tokens)
+    'one |     two |         three | '
+
+While ``stringify()`` "does the right thing" when adding tokens, it is usually
+preferable to simply add ordinary strings.
