@@ -6,7 +6,6 @@ from token_utils import (
     dedent,
     pairwise,
     sliding_window,
-    untokenize,
     BracketStack,
     stringify,  # for testing commment removal
 )
@@ -87,6 +86,13 @@ def test():
 
 
 """
+
+
+def test_stringify_remove_comments():
+    assert (
+        stringify(list(generate_tokens(with_comments)), remove_comments=True)
+        == without_comments
+    )
 
 
 def test_bracket_stack():

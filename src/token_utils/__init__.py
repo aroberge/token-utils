@@ -5,6 +5,7 @@ from token_utils.utils import (
     IndentStack,
     pairwise,
     sliding_window,
+    split_at_token,
 )  # noqa
 from token_utils.__about__ import version  # noqa
 from token_utils.custom_warnings import disable_warnings  # noqa
