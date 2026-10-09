@@ -26,7 +26,7 @@ blank_re = re.compile(rb"^[ \t\f]*(?:[#\r\n]|$)", re.ASCII)
 
 class TokenInfo(collections.namedtuple("TokenInfo", "type string start end line")):
     def __repr__(self):  # not really needed for us.
-        annotated_type = "%d (%s)" % (self.type, tok_name[self.type])
+        annotated_type = "%d (%s)" % (self.type, tok_name_plus[self.type])
         return (
             "TokenInfo(type=%s, string=%r, start=%r, end=%r, line=%r)"
             % self._replace(type=annotated_type)

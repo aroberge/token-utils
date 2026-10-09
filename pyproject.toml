@@ -36,3 +36,6 @@ path = "src/token_utils/__about__.py"
 
 [tool.pytest.ini_options]
 filterwarnings = ["ignore"]
+
+[tool.mypy]
+mypy_path = "typings/"

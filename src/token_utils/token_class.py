@@ -77,12 +77,12 @@ class Token:
         line = self.line
         if len(line) > 20:
             line = line[:10] + " <...> " + line[-5:]
-        name = _py_tokenize.tok_name[self.type]
+        name = _py_tokenize.tok_name_plus[self.type]
         if name == "OP":
             if self.string in _py_tokenize.EXACT_TOKEN_TYPES:
                 exact_type = _py_tokenize.EXACT_TOKEN_TYPES[self.string]
-                if exact_type in _py_tokenize.tok_name:
-                    exact_name = _py_tokenize.tok_name[exact_type]
+                if exact_type in _py_tokenize.tok_name_plus:
+                    exact_name = _py_tokenize.tok_name_plus[exact_type]
                     name = f"OP: {exact_name}"
         return _token_format.format(
             type="%s (%s)" % (self.type, name),
@@ -332,7 +332,7 @@ def add_operator(string, name, category="other"):
     # update the info for tokenizing.
     tok.__dict__[name] = value
     tok.EXACT_TOKEN_TYPES[string] = value
-    tok.tok_name[value] = name
+    tok.tok_name_plus[value] = name
     tok.Special = tok.group(
         *map(re.escape, sorted(tok.EXACT_TOKEN_TYPES, reverse=True))
     )

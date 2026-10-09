@@ -2,8 +2,11 @@
 
 from token import *
 from token import EXACT_TOKEN_TYPES
+from token import tok_name  # implicit for typing
 
-__all__ = ["tok_name", "ISTERMINAL", "ISNONTERMINAL", "ISEOF", "EXACT_TOKEN_TYPES"]
+# tok_name is apparently defined as Final; so we use a different name
+
+__all__ = ["tok_name_plus", "ISTERMINAL", "ISNONTERMINAL", "ISEOF", "EXACT_TOKEN_TYPES"]
 
 # Special negative values for token_utils
 
@@ -18,9 +21,9 @@ UNCL_TRIPLE = -3
 FAKE_TOKEN = -4
 
 
-tok_name = {
+tok_name_plus = {
     value: name
     for name, value in globals().items()
     if isinstance(value, int) and not name.startswith("_")
 }
-__all__.extend(tok_name.values())
+__all__.extend(tok_name_plus.values())
