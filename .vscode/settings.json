@@ -1,3 +1,4 @@
 {
-    "python.analysis.diagnosticsSource": "Pylance"
+    "python.analysis.diagnosticsSource": "Pylance",
+    "python-envs.defaultEnvManager": "ms-python.python:system"
 }

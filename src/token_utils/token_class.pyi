@@ -12,7 +12,13 @@ class Token:
     string: str
     type: int
 
-    def __init__(self, token: _py_tokenize.TokenInfo) -> None: ...
+    def __init__(
+        self,
+        token: (
+            _py_tokenize.TokenInfo
+            | tuple[int, str, tuple[int, int], tuple[int, int], str]
+        ),
+    ) -> None: ...
     def __eq__(self, other: Token | str) -> bool: ...  # type: ignore[override]
     def __bool__(self) -> bool: ...
     def __repr__(self) -> str: ...

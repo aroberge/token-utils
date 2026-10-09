@@ -1,5 +1,5 @@
 from token_utils.token_class import Token
-from collections.abc import Iterator
+from collections.abc import Iterator, Iterable
 
 class BracketStack:
     stack: list[Token]
@@ -25,7 +25,9 @@ class IndentStack:
 def split_at_token(
     seq: list[Token], token: Token
 ) -> tuple[list[Token], list[Token]]: ...
-def pairwise(iterable: list[Token], prev: int = 0) -> Iterator[tuple[Token, Token]]: ...
+def pairwise(
+    iterable: Iterable[Token], prev: int = 0
+) -> Iterator[tuple[Token, Token]]: ...
 def sliding_window(
     iterable: list[Token], n: int, prev: int = 0
 ) -> Iterator[tuple[Token, ...]]: ...

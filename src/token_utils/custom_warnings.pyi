@@ -1,7 +1,4 @@
-from _typeshed import Incomplete
-
-import sys
-import warnings
+from typing import TextIO
 
 class TokenUtilsEOFWarning(UserWarning): ...
 class SemiColonWarning(UserWarning): ...
@@ -12,6 +9,6 @@ def custom_showwarning(
     category: Warning,
     filename: str,
     lineno: int,
-    file: Incomplete = None,
-    line: Incomplete = None,
+    file: TextIO | None = None,
+    line: str | None = None,
 ) -> None: ...

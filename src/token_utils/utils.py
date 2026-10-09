@@ -236,6 +236,8 @@ def split_at_token(seq, token):
         if tok.is_identical(token):
             break
         before.append(tok)
+    else:
+        raise ValueError("Token not found in the input sequence")
     after = seq[index + 1 :]
     return before, after
 
