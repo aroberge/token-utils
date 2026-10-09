@@ -16,6 +16,22 @@ import itertools as _itertools
 import re
 import warnings
 from token_utils._token_plus import *
+from token_utils._token_plus import (  # to satisfy typing
+    UNCL_SINGLE,
+    UNCL_TRIPLE,
+    ERRORTOKEN,
+    ENDMARKER,
+    OP,
+    NAME,
+    NL,
+    NEWLINE,
+    NUMBER,
+    STRING,
+    COMMENT,
+    DEDENT,
+    BAD_DEDENT,
+    INDENT,
+)
 from token_utils.custom_warnings import TokenUtilsEOFWarning
 
 # prevent accidently importing * from here as names might conflict with our own
