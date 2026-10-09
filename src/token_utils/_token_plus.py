@@ -26,4 +26,4 @@ tok_name_plus = {
     for name, value in globals().items()
     if isinstance(value, int) and not name.startswith("_")
 }
-__all__.extend(tok_name_plus.values())
+__all__.extend(tok_name_plus.values())  # type: ignore

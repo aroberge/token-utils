@@ -16,6 +16,22 @@ import itertools as _itertools
 import re
 import warnings
 from token_utils._token_plus import *
+from token_utils._token_plus import (  # to satisfy typing
+    UNCL_SINGLE,
+    UNCL_TRIPLE,
+    ERRORTOKEN,
+    ENDMARKER,
+    OP,
+    NAME,
+    NL,
+    NEWLINE,
+    NUMBER,
+    STRING,
+    COMMENT,
+    DEDENT,
+    BAD_DEDENT,
+    INDENT,
+)
 from token_utils.custom_warnings import TokenUtilsEOFWarning
 
 # prevent accidently importing * from here as names might conflict with our own
@@ -199,7 +215,7 @@ def generate_tokens(readline):
 
         if contstr:  # continued string
             if not line:
-                end = len(contline.split("\n")[-1])
+                end = len(contline.split("\n")[-1])  # type: ignore
                 warnings.warn(
                     "Unterminated triple quoted string.",
                     TokenUtilsEOFWarning,

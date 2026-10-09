@@ -38,4 +38,4 @@ path = "src/token_utils/__about__.py"
 filterwarnings = ["ignore"]
 
 [tool.mypy]
-mypy_path = "typings/"
+mypy_path = "src/token_utils/"
