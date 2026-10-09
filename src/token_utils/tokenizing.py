@@ -391,18 +391,13 @@ def dedent(tokens, nb):
     return tokenize(end)
 
 
-__all__ = ["__all__"]
-_names = dir()
-
-
-def _make_all():
-    for name in _names:
-        if not name.startswith("_"):
-            __all__.append(name)
-
-
-_make_all()
-__all__.remove("__all__")
-__all__.remove("Token")
-__all__.remove("StringIO")
-__all__.remove("SemiColonWarning")
+__all__ = [
+    "generate_tokens",
+    "tokenize",
+    "get_physical_lines",
+    "get_logical_lines",
+    "untokenize",
+    "stringify",
+    "print_tokens",
+    "dedent",
+]

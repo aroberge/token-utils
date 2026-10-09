@@ -1,6 +1,7 @@
 import ast
 
 from token_utils import _py_tokenize
+from token_utils._token_plus import FAKE_TOKEN
 
 _token_format = "type={type}  string={string}  start={start}  end={end}  line={line}"
 _op_categories = {
@@ -353,9 +354,7 @@ def add_operator(string, name, category="other"):
     return True
 
 
-def make_fake_token(
-    type=_py_tokenize.FAKE_TOKEN, string="$", start=(0, 0), end=(0, 0), line=""
-):
+def make_fake_token(type=FAKE_TOKEN, string="$", start=(0, 0), end=(0, 0), line=""):
     """Useful when we need to process a list of tokens with
     multiple consecutive at a time, and we need to lengthen
     the list for doing so.

@@ -1,5 +1,15 @@
-from token_utils.token_class import Token, make_fake_token, add_operator  # noqa
-from token_utils.tokenizing import *
+from token_utils.token_class import Token, make_fake_token, add_operator
+from token_utils.tokenizing import (
+    generate_tokens,
+    tokenize,
+    get_logical_lines,
+    get_physical_lines,
+    untokenize,
+    stringify,
+    dedent,
+    print_tokens,
+)
+
 from token_utils.utils import (
     BracketStack,
     IndentStack,
@@ -7,8 +17,8 @@ from token_utils.utils import (
     sliding_window,
     split_at_token,
 )  # noqa
-from token_utils.__about__ import version  # noqa
-from token_utils.custom_warnings import disable_warnings  # noqa
+from token_utils.__about__ import version
+from token_utils.custom_warnings import disable_warnings
 
 __all__ = [
     "Token",
@@ -21,4 +31,12 @@ __all__ = [
     "split_at_token",
     "version",
     "disable_warnings",
+    "generate_tokens",
+    "tokenize",
+    "get_physical_lines",
+    "get_logical_lines",
+    "untokenize",
+    "stringify",
+    "print_tokens",
+    "dedent",
 ]
