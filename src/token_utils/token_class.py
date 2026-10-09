@@ -53,6 +53,12 @@ class Token:
         self.end = self.end_row, self.end_col = token[3]
         self.line = token[4]
 
+    def __bool__(self):
+        """Returns False if the object is identical to the NULL Token,
+        True otherwise.
+        """
+        return not self.is_identical(NULL)
+
     def __eq__(self, other):
         """Compares a Token with another object; returns true if
         self.string == other.string or if self.string == other.
@@ -247,6 +253,10 @@ class Token:
         """Returns True if the token represents a number."""
         return self.type == _py_tokenize.NUMBER
 
+    def is_Null(self):
+        """Returns True if the token is the NULL token."""
+        return self.is_identical(NULL)
+
     def is_operator(self):
         """Returns true if the token is of type OP"""
         return self.type == _py_tokenize.OP
@@ -358,3 +368,6 @@ def make_fake_token(
     """
     fake = (type, string, start, end, line)
     return Token(fake)
+
+
+NULL = make_fake_token(string="")
