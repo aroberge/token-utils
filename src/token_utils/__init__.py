@@ -1,4 +1,4 @@
-from token_utils.token_class import Token, make_fake_token, add_operator
+from token_utils.token_class import Token, make_fake_token, add_operator, NULL
 from token_utils.tokenizing import (
     generate_tokens,
     tokenize,
@@ -22,6 +22,7 @@ from token_utils.custom_warnings import disable_warnings
 
 __all__ = [
     "Token",
+    "NULL",
     "make_fake_token",
     "add_operator",
     "BracketStack",

@@ -1,7 +1,7 @@
 from collections import deque
 from itertools import chain, islice
 
-from token_utils.token_class import Token, make_fake_token
+from token_utils.token_class import Token, make_fake_token, NULL
 
 
 class BracketStack:
@@ -21,9 +21,11 @@ class BracketStack:
         that last opening one is returned.
 
         If it is a close bracket not matching the last added one, or the
-        first one added, a TypeError is raised.
+        first one added, a ``TypeError`` is raised.
 
-        If an open bracket is added, False is returned.
+        If an open bracket is added, the ``NULL`` token is returned.
+        Note that the ``NULL`` token evaluates to ``False`` as a condition
+        (e.g.  ``if NULL == if False``.)
         """
         if not isinstance(bracket, Token):
             raise TypeError("'bracket' parameter must be a Token.")
@@ -108,9 +110,9 @@ class IndentStack:
         print([(tok.string, tok.start) for tok in self.stack])
 
     def top_item(self):
-        """Returns the token at the top of the stack or None."""
+        """Returns the token at the top of the stack or a NULL token."""
         if not self.stack:
-            return None
+            return NULL
         return self.stack[-1]
 
     def update(self, line):
@@ -129,7 +131,7 @@ class IndentStack:
         we mean a token that can start a block such as ``if`` (for ``if/elif/else``),
         ``try``, etc.
 
-        It returns ``None`` if there is no such token.
+        It returns the token ``NULL`` if there is no such token.
         """
         if not (isinstance(line, list) or isinstance(line[0], Token)):
             raise TypeError(
@@ -141,9 +143,9 @@ class IndentStack:
 
         first_token = line[0]
         if not first_token.string.strip():
-            return None
+            return NULL
         if first_token.is_comment():
-            return None
+            return NULL
 
         # An indenting line will include at least a relevant keyword,
         # a colon and a NEWLINE token
@@ -182,8 +184,8 @@ class IndentStack:
                 if popped > 1:
                     return top_item
                 else:
-                    return None
-            return None
+                    return NULL
+            return NULL
 
         if not self.stack:
             self.stack.append(first_token)

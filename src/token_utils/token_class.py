@@ -55,8 +55,8 @@ class Token:
         self.line = token[4]
 
     def __bool__(self):
-        """Returns False if the object is identical to the NULL Token,
-        True otherwise.
+        """Returns ``False`` if the object is identical to the ``NULL`` Token,
+        ``True`` otherwise. Therefore, ``if NULL == if False``.
         """
         return not self.is_identical(NULL)
 
@@ -77,9 +77,7 @@ class Token:
         """Nicely formatted token to help with debugging session.
 
         Note that it does **not** print a string representation that could be
-        used to create a new ``Token`` instance, which is something you should
-        never need to do other than indirectly by using the functions
-        provided in this module.
+        used to create a new ``Token`` instance.
         """
         line = self.line
         if len(line) > 20:
@@ -118,7 +116,7 @@ class Token:
         return Token((self.type, self.string, self.start, self.end, self.line))
 
     def indentation(self):
-        """Returns the indentation as a number of spaces."""
+        """Returns the indentation (the value of ``start_col``) as a number of spaces."""
         # Easier to remember than the start_col attribute
         return self.start_col
 
@@ -254,7 +252,7 @@ class Token:
         """Returns True if the token represents a number."""
         return self.type == _py_tokenize.NUMBER
 
-    def is_Null(self):
+    def is_NULL(self):
         """Returns True if the token is the NULL token."""
         return self.is_identical(NULL)
 
@@ -299,7 +297,8 @@ class Token:
 
 
 def add_operator(string, name, category="other"):
-    """Adds a string defining an operator to the tokenizer.
+    """Adds a string defining an operator to the tokenizer,
+    and updates the required ``Token`` methods.
     If the string is already a known operator, nothing other than
     returning ``False`` is done, otherwise ``True`` is returned.
 
@@ -311,7 +310,7 @@ def add_operator(string, name, category="other"):
     as a suffix will be created, with as many underscore needed as to make
     the name unique.
 
-    Defining an operator is essential for proper tokenizing. For example,
+    Defining an operator might be essential for proper tokenizing. For example,
     if one does not define ``!!`` as an operator, ``!!`` would be tokenized
     as two individual ``!`` tokens.
 

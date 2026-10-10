@@ -1,8 +1,8 @@
 """Token constants with additions to Python's stdlib token.py"""
 
-from token import *
-from token import EXACT_TOKEN_TYPES
-from token import tok_name  # implicit for typing
+from token import *  # pyright: ignore[reportWildcardImportFromLibrary]
+from token import EXACT_TOKEN_TYPES  # type: ignore
+from token import tok_name  # type: ignore # implicit for typing
 
 # tok_name is apparently defined as Final; so we use a different name
 
