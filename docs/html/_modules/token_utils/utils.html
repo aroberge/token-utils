@@ -5,7 +5,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>token_utils.utils &mdash; token-utils 0.3.3 documentation</title>
+  <title>token_utils.utils &mdash; token-utils 0.3.4 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=03e43079" />
       <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=9edc463e" />
       <link rel="stylesheet" type="text/css" href="../../_static/sphinx-new-tab-link.css?v=d87cb1ac" />
@@ -14,7 +14,7 @@
   
       <script src="../../_static/jquery.js?v=5d32c60e"></script>
       <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../../_static/documentation_options.js?v=d5a15cff"></script>
+      <script src="../../_static/documentation_options.js?v=1e28cc32"></script>
       <script src="../../_static/doctools.js?v=9bcbadda"></script>
       <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../../_static/js/theme.js"></script>
@@ -51,6 +51,8 @@
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../token_class.html">Token class</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../tokenizing_methods.html">Tokenizing related methods</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../utils.html">Utility functions and classes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../custom_warnings.html">Custom warnings</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Appendix</span></p>
 <ul>
@@ -85,9 +87,11 @@
 <span></span><span class="kn">from</span><span class="w"> </span><span class="nn">collections</span><span class="w"> </span><span class="kn">import</span> <span class="n">deque</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">itertools</span><span class="w"> </span><span class="kn">import</span> <span class="n">chain</span><span class="p">,</span> <span class="n">islice</span>
 
-<span class="kn">from</span><span class="w"> </span><span class="nn">token_utils.token_class</span><span class="w"> </span><span class="kn">import</span> <span class="n">Token</span><span class="p">,</span> <span class="n">make_fake_token</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">token_utils.token_class</span><span class="w"> </span><span class="kn">import</span> <span class="n">Token</span><span class="p">,</span> <span class="n">make_fake_token</span><span class="p">,</span> <span class="n">NULL</span>
 
 
+<div class="viewcode-block" id="BracketStack">
+<a class="viewcode-back" href="../../utils.html#token_utils.utils.BracketStack">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">BracketStack</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">"""Helpful in keeping track of open and close brackets in a token sequence.</span>
 
@@ -95,9 +99,14 @@
 <span class="sd">    added before any close one can be added.</span>
 <span class="sd">    """</span>
 
+<div class="viewcode-block" id="BracketStack.__init__">
+<a class="viewcode-back" href="../../utils.html#token_utils.utils.BracketStack.__init__">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">stack</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">stack</span> <span class="o">=</span> <span class="p">[]</span></div>
 
+
+<div class="viewcode-block" id="BracketStack.add">
+<a class="viewcode-back" href="../../utils.html#token_utils.utils.BracketStack.add">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">add</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">bracket</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">"""Adds a bracket to a stack.</span>
 
@@ -105,9 +114,11 @@
 <span class="sd">        that last opening one is returned.</span>
 
 <span class="sd">        If it is a close bracket not matching the last added one, or the</span>
-<span class="sd">        first one added, a TypeError is raised.</span>
+<span class="sd">        first one added, a ``TypeError`` is raised.</span>
 
-<span class="sd">        If an open bracket is added, False is returned.</span>
+<span class="sd">        If an open bracket is added, the ``NULL`` token is returned.</span>
+<span class="sd">        Note that the ``NULL`` token evaluates to ``False`` as a condition</span>
+<span class="sd">        (e.g.  ``if NULL == if False``.)</span>
 <span class="sd">        """</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">bracket</span><span class="p">,</span> <span class="n">Token</span><span class="p">):</span>
             <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">"'bracket' parameter must be a Token."</span><span class="p">)</span>
@@ -128,13 +139,20 @@
             <span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">stack</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">bracket</span><span class="p">)</span>
-            <span class="k">return</span> <span class="kc">False</span>
+            <span class="k">return</span> <span class="kc">False</span></div>
 
+
+<div class="viewcode-block" id="BracketStack.is_empty">
+<a class="viewcode-back" href="../../utils.html#token_utils.utils.BracketStack.is_empty">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">is_empty</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">"""Return True if the stack is empty, False if it contains brackets."""</span>
-        <span class="k">return</span> <span class="ow">not</span> <span class="nb">bool</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">stack</span><span class="p">)</span>
+        <span class="k">return</span> <span class="ow">not</span> <span class="nb">bool</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">stack</span><span class="p">)</span></div>
+</div>
 
 
+
+<div class="viewcode-block" id="IndentStack">
+<a class="viewcode-back" href="../../utils.html#token_utils.utils.IndentStack">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">IndentStack</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">"""docstring"""</span>
 
@@ -150,6 +168,8 @@
     <span class="c1"># If we use token-utils' ``get_logical_lines()`` to analyze some source code, the last token</span>
     <span class="c1"># of each such line will always be a ``NEWLINE`` token, preceded by a colon.</span>
     <span class="c1"># This allowed us to define the utility class ``IndentStack``.</span>
+<div class="viewcode-block" id="IndentStack.__init__">
+<a class="viewcode-back" href="../../utils.html#token_utils.utils.IndentStack.__init__">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">stack</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">top_indent_keywords</span> <span class="o">=</span> <span class="p">[</span>
@@ -169,34 +189,49 @@
             <span class="s2">"except"</span><span class="p">,</span>
             <span class="s2">"finally"</span><span class="p">,</span>
         <span class="p">]</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">indent_keywords</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">top_indent_keywords</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">same_indent_keywords</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">indent_keywords</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">top_indent_keywords</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">same_indent_keywords</span></div>
 
+
+<div class="viewcode-block" id="IndentStack.add_top_indent_keyword">
+<a class="viewcode-back" href="../../utils.html#token_utils.utils.IndentStack.add_top_indent_keyword">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">add_top_indent_keyword</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">"""Add a new top indent keyword, similar to class, def, try, etc.</span>
 
 <span class="sd">        Useful when working with alternatives to standard Python syntax.</span>
 <span class="sd">        """</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">top_indent_keywords</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">name</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">indent_keywords</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">top_indent_keywords</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">same_indent_keywords</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">indent_keywords</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">top_indent_keywords</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">same_indent_keywords</span></div>
 
+
+<div class="viewcode-block" id="IndentStack.add_same_indent_keyword">
+<a class="viewcode-back" href="../../utils.html#token_utils.utils.IndentStack.add_same_indent_keyword">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">add_same_indent_keyword</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">"""Add a new same indent keyword, similar to elif, else, except, etc.</span>
 
 <span class="sd">        Useful when working with alternatives to standard Python syntax.</span>
 <span class="sd">        """</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">same_indent_keywords</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">name</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">indent_keywords</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">top_indent_keywords</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">same_indent_keywords</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">indent_keywords</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">top_indent_keywords</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">same_indent_keywords</span></div>
 
+
+<div class="viewcode-block" id="IndentStack.print_stack">
+<a class="viewcode-back" href="../../utils.html#token_utils.utils.IndentStack.print_stack">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">print_stack</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">"""Useful for diagnostic"""</span>
-        <span class="nb">print</span><span class="p">([(</span><span class="n">tok</span><span class="o">.</span><span class="n">string</span><span class="p">,</span> <span class="n">tok</span><span class="o">.</span><span class="n">start</span><span class="p">)</span> <span class="k">for</span> <span class="n">tok</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">stack</span><span class="p">])</span>
+        <span class="nb">print</span><span class="p">([(</span><span class="n">tok</span><span class="o">.</span><span class="n">string</span><span class="p">,</span> <span class="n">tok</span><span class="o">.</span><span class="n">start</span><span class="p">)</span> <span class="k">for</span> <span class="n">tok</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">stack</span><span class="p">])</span></div>
 
+
+<div class="viewcode-block" id="IndentStack.top_item">
+<a class="viewcode-back" href="../../utils.html#token_utils.utils.IndentStack.top_item">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">top_item</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">"""Returns the token at the top of the stack or None."""</span>
+<span class="w">        </span><span class="sd">"""Returns the token at the top of the stack or a NULL token."""</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">stack</span><span class="p">:</span>
-            <span class="k">return</span> <span class="kc">None</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">stack</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+            <span class="k">return</span> <span class="n">NULL</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">stack</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span></div>
 
+
+<div class="viewcode-block" id="IndentStack.update">
+<a class="viewcode-back" href="../../utils.html#token_utils.utils.IndentStack.update">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">update</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">line</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">"""Receives a line as a list containing tokens</span>
 <span class="sd">        and keeps track of the indentation of the code.</span>
@@ -213,7 +248,7 @@
 <span class="sd">        we mean a token that can start a block such as ``if`` (for ``if/elif/else``),</span>
 <span class="sd">        ``try``, etc.</span>
 
-<span class="sd">        It returns ``None`` if there is no such token.</span>
+<span class="sd">        It returns the token ``NULL`` if there is no such token.</span>
 <span class="sd">        """</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="p">(</span><span class="nb">isinstance</span><span class="p">(</span><span class="n">line</span><span class="p">,</span> <span class="nb">list</span><span class="p">)</span> <span class="ow">or</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">line</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">Token</span><span class="p">)):</span>
             <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span>
@@ -225,9 +260,9 @@
 
         <span class="n">first_token</span> <span class="o">=</span> <span class="n">line</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">first_token</span><span class="o">.</span><span class="n">string</span><span class="o">.</span><span class="n">strip</span><span class="p">():</span>
-            <span class="k">return</span> <span class="kc">None</span>
+            <span class="k">return</span> <span class="n">NULL</span>
         <span class="k">if</span> <span class="n">first_token</span><span class="o">.</span><span class="n">is_comment</span><span class="p">():</span>
-            <span class="k">return</span> <span class="kc">None</span>
+            <span class="k">return</span> <span class="n">NULL</span>
 
         <span class="c1"># An indenting line will include at least a relevant keyword,</span>
         <span class="c1"># a colon and a NEWLINE token</span>
@@ -266,8 +301,8 @@
                 <span class="k">if</span> <span class="n">popped</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
                     <span class="k">return</span> <span class="n">top_item</span>
                 <span class="k">else</span><span class="p">:</span>
-                    <span class="k">return</span> <span class="kc">None</span>
-            <span class="k">return</span> <span class="kc">None</span>
+                    <span class="k">return</span> <span class="n">NULL</span>
+            <span class="k">return</span> <span class="n">NULL</span>
 
         <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">stack</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">stack</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">first_token</span><span class="p">)</span>
@@ -297,8 +332,11 @@
                 <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">stack</span><span class="p">:</span>
                     <span class="bp">self</span><span class="o">.</span><span class="n">stack</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">first_token</span><span class="p">)</span>
                     <span class="k">return</span> <span class="n">first_token</span>  <span class="c1"># new item at top</span>
-                <span class="k">continue</span>
+                <span class="k">continue</span></div>
 
+
+<div class="viewcode-block" id="IndentStack.is_token_in_named_block">
+<a class="viewcode-back" href="../../utils.html#token_utils.utils.IndentStack.is_token_in_named_block">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">is_token_in_named_block</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">token</span><span class="p">,</span> <span class="n">name</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">"""Returns True if the token is indented more than</span>
 <span class="sd">        a token with the name given.</span>
@@ -309,9 +347,13 @@
         <span class="k">for</span> <span class="n">tok</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">stack</span><span class="p">:</span>
             <span class="k">if</span> <span class="n">tok</span> <span class="o">==</span> <span class="n">name</span> <span class="ow">and</span> <span class="n">tok</span><span class="o">.</span><span class="n">start_col</span> <span class="o">&lt;</span> <span class="n">token</span><span class="o">.</span><span class="n">start_col</span><span class="p">:</span>
                 <span class="k">return</span> <span class="kc">True</span>
-        <span class="k">return</span> <span class="kc">False</span>
+        <span class="k">return</span> <span class="kc">False</span></div>
+</div>
 
 
+
+<div class="viewcode-block" id="split_at_token">
+<a class="viewcode-back" href="../../utils.html#token_utils.utils.split_at_token">[docs]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">split_at_token</span><span class="p">(</span><span class="n">seq</span><span class="p">,</span> <span class="n">token</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">"""Split a list of tokens in two sublists: those occuring before the</span>
 <span class="sd">    token specified, and those after."""</span>
@@ -320,12 +362,15 @@
         <span class="k">if</span> <span class="n">tok</span><span class="o">.</span><span class="n">is_identical</span><span class="p">(</span><span class="n">token</span><span class="p">):</span>
             <span class="k">break</span>
         <span class="n">before</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">tok</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">"Token not found in the input sequence"</span><span class="p">)</span>
     <span class="n">after</span> <span class="o">=</span> <span class="n">seq</span><span class="p">[</span><span class="n">index</span> <span class="o">+</span> <span class="mi">1</span> <span class="p">:]</span>
-    <span class="k">return</span> <span class="n">before</span><span class="p">,</span> <span class="n">after</span>
+    <span class="k">return</span> <span class="n">before</span><span class="p">,</span> <span class="n">after</span></div>
+
 
 
 <div class="viewcode-block" id="pairwise">
-<a class="viewcode-back" href="../../tokenizing_methods.html#token_utils.tokenizing.pairwise">[docs]</a>
+<a class="viewcode-back" href="../../utils.html#token_utils.utils.pairwise">[docs]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">pairwise</span><span class="p">(</span><span class="n">iterable</span><span class="p">,</span> <span class="n">prev</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">"""Similar to itertools.pairwise (Python 3.10+). However, it adds a fake</span>
 <span class="sd">    token at the end if ``prev==0`` (the default) or at the beginning</span>
@@ -351,6 +396,8 @@
 
 
 
+<div class="viewcode-block" id="sliding_window">
+<a class="viewcode-back" href="../../utils.html#token_utils.utils.sliding_window">[docs]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">sliding_window</span><span class="p">(</span><span class="n">iterable</span><span class="p">,</span> <span class="n">n</span><span class="p">,</span> <span class="n">prev</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">"""Collect data into overlapping fixed-length chunks or blocks.</span>
 
@@ -386,7 +433,8 @@
     <span class="n">window</span> <span class="o">=</span> <span class="n">deque</span><span class="p">(</span><span class="n">islice</span><span class="p">(</span><span class="n">updated_iterator</span><span class="p">,</span> <span class="n">n</span> <span class="o">-</span> <span class="mi">1</span><span class="p">),</span> <span class="n">maxlen</span><span class="o">=</span><span class="n">n</span><span class="p">)</span>
     <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">updated_iterator</span><span class="p">:</span>
         <span class="n">window</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
-        <span class="k">yield</span> <span class="nb">tuple</span><span class="p">(</span><span class="n">window</span><span class="p">)</span>
+        <span class="k">yield</span> <span class="nb">tuple</span><span class="p">(</span><span class="n">window</span><span class="p">)</span></div>
+
 </pre></div>
 
            </div>

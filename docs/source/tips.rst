@@ -242,6 +242,15 @@ this is done as an example::
     Define a new operator, ``!!``, so that you don't have to identify it
     as two consecutive ``!`` tokens but as a single token.
 
+
+.. note::
+
+    Unfortunately, using ``add_operator`` does not make it possible to choose
+    any arbitrary string and have the python tokenizer recognize it as an operator.
+    For example, trying to  have the string ``.=`` as a new operator will not work:
+    ``.`` will still be identified as a single token. Simlarly, trying to have a word,
+    like ``plus`` will not work; however, something like ``|plus`` would work.
+
 Keeping track of indentation with IndentStack
 ---------------------------------------------
 

@@ -6,7 +6,7 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Tokenizing related methods &mdash; token-utils 0.3.3 documentation</title>
+  <title>Tokenizing related methods &mdash; token-utils 0.3.4 documentation</title>
       <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=03e43079" />
       <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=9edc463e" />
       <link rel="stylesheet" type="text/css" href="_static/sphinx-new-tab-link.css?v=d87cb1ac" />
@@ -15,7 +15,7 @@
   
       <script src="_static/jquery.js?v=5d32c60e"></script>
       <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="_static/documentation_options.js?v=d5a15cff"></script>
+      <script src="_static/documentation_options.js?v=1e28cc32"></script>
       <script src="_static/doctools.js?v=9bcbadda"></script>
       <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="_static/js/theme.js"></script>
@@ -56,12 +56,10 @@
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Tokenizing related methods</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#module-token_utils.tokenizing">API extracted by Sphinx</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#tokenizing-py">tokenizing.py</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#token_utils.tokenizing.SemiColonWarning"><code class="docutils literal notranslate"><span class="pre">SemiColonWarning</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#token_utils.tokenizing.dedent"><code class="docutils literal notranslate"><span class="pre">dedent()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#token_utils.tokenizing.generate_tokens"><code class="docutils literal notranslate"><span class="pre">generate_tokens()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#token_utils.tokenizing.get_logical_lines"><code class="docutils literal notranslate"><span class="pre">get_logical_lines()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#token_utils.tokenizing.get_physical_lines"><code class="docutils literal notranslate"><span class="pre">get_physical_lines()</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="#token_utils.tokenizing.pairwise"><code class="docutils literal notranslate"><span class="pre">pairwise()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#token_utils.tokenizing.print_tokens"><code class="docutils literal notranslate"><span class="pre">print_tokens()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#token_utils.tokenizing.stringify"><code class="docutils literal notranslate"><span class="pre">stringify()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#token_utils.tokenizing.tokenize"><code class="docutils literal notranslate"><span class="pre">tokenize()</span></code></a></li>
@@ -124,13 +122,6 @@ if refactoring occurs.</p>
 <h3>tokenizing.py<a class="headerlink" href="#tokenizing-py" title="Link to this heading"></a></h3>
 <p>All the functions dealing with tokenizing/untokenizing.</p>
 </section>
-<dl class="py exception">
-<dt class="sig sig-object py" id="token_utils.tokenizing.SemiColonWarning">
-<em class="property"><span class="pre">exception</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">token_utils.tokenizing.</span></span><span class="sig-name descname"><span class="pre">SemiColonWarning</span></span><a class="reference internal" href="_modules/token_utils/custom_warnings.html#SemiColonWarning"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#token_utils.tokenizing.SemiColonWarning" title="Link to this definition"></a></dt>
-<dd><p>Raised when a semi-colon is found separating statements
-on a logical line other than the first one.</p>
-</dd></dl>
-
 <dl class="py function">
 <dt class="sig sig-object py" id="token_utils.tokenizing.dedent">
 <span class="sig-prename descclassname"><span class="pre">token_utils.tokenizing.</span></span><span class="sig-name descname"><span class="pre">dedent</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">tokens</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">nb</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/token_utils/tokenizing.html#dedent"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#token_utils.tokenizing.dedent" title="Link to this definition"></a></dt>
@@ -190,19 +181,6 @@ a new line character (<code class="docutils literal notranslate"><span class="pr
 In that case, the first token oa an inner list could be a comment.</p>
 <p>## If one needs lines with Indentation information still present,
 ## see Issue #14.</p>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="token_utils.tokenizing.pairwise">
-<span class="sig-prename descclassname"><span class="pre">token_utils.tokenizing.</span></span><span class="sig-name descname"><span class="pre">pairwise</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">iterable</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">prev</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/token_utils/utils.html#pairwise"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#token_utils.tokenizing.pairwise" title="Link to this definition"></a></dt>
-<dd><p>Similar to itertools.pairwise (Python 3.10+). However, it adds a fake
-token at the end if <code class="docutils literal notranslate"><span class="pre">prev==0</span></code> (the default) or at the beginning
-if <code class="docutils literal notranslate"><span class="pre">prev==1</span></code>. Any other value will result in a <code class="docutils literal notranslate"><span class="pre">ValueError</span></code></p>
-<p>Given a list of tokens represented by lower case letters, and a fake token by $,
-the default corresponds to something like:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>pairwise('abcde') → ab bc cd de e$
-</pre></div>
-</div>
 </dd></dl>
 
 <dl class="py function">

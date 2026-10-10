@@ -6,7 +6,7 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Tutorial: recipes, tips, and tricks &mdash; token-utils 0.3.3 documentation</title>
+  <title>Tutorial: recipes, tips, and tricks &mdash; token-utils 0.3.4 documentation</title>
       <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=03e43079" />
       <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=9edc463e" />
       <link rel="stylesheet" type="text/css" href="_static/sphinx-new-tab-link.css?v=d87cb1ac" />
@@ -15,7 +15,7 @@
   
       <script src="_static/jquery.js?v=5d32c60e"></script>
       <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="_static/documentation_options.js?v=d5a15cff"></script>
+      <script src="_static/documentation_options.js?v=1e28cc32"></script>
       <script src="_static/doctools.js?v=9bcbadda"></script>
       <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="_static/js/theme.js"></script>
@@ -380,6 +380,14 @@ ideas&gt; (n + 1)!
 Define a new operator, <code class="docutils literal notranslate"><span class="pre">!!</span></code>, so that you don’t have to identify it
 as two consecutive <code class="docutils literal notranslate"><span class="pre">!</span></code> tokens but as a single token.</p>
 </div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Unfortunately, using <code class="docutils literal notranslate"><span class="pre">add_operator</span></code> does not make it possible to choose
+any arbitrary string and have the python tokenizer recognize it as an operator.
+For example, trying to  have the string <code class="docutils literal notranslate"><span class="pre">.=</span></code> as a new operator will not work:
+<code class="docutils literal notranslate"><span class="pre">.</span></code> will still be identified as a single token. Simlarly, trying to have a word,
+like <code class="docutils literal notranslate"><span class="pre">plus</span></code> will not work; however, something like <code class="docutils literal notranslate"><span class="pre">|plus</span></code> would work.</p>
+</div>
 </section>
 <section id="keeping-track-of-indentation-with-indentstack">
 <h2>Keeping track of indentation with IndentStack<a class="headerlink" href="#keeping-track-of-indentation-with-indentstack" title="Link to this heading"></a></h2>
@@ -647,7 +655,7 @@ The code we use is the following:</p>
 
 <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">get_logical_lines</span><span class="p">(</span><span class="n">source</span><span class="p">):</span>
     <span class="n">top</span> <span class="o">=</span> <span class="n">stack</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">line</span><span class="p">)</span>
-    <span class="k">if</span> <span class="n">top</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>  <span class="c1"># this line does not introduce an indented block</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">top</span><span class="p">:</span>  <span class="c1"># this line does not introduce an indented block</span>
         <span class="n">new_lines</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">line</span><span class="p">)</span>
         <span class="k">continue</span>
 

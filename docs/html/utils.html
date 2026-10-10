@@ -6,7 +6,7 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>utils &mdash; token-utils 0.3.3 documentation</title>
+  <title>utils &mdash; token-utils 0.3.4 documentation</title>
       <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=03e43079" />
       <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=9edc463e" />
       <link rel="stylesheet" type="text/css" href="_static/sphinx-new-tab-link.css?v=d87cb1ac" />
@@ -15,7 +15,7 @@
   
       <script src="_static/jquery.js?v=5d32c60e"></script>
       <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="_static/documentation_options.js?v=d5a15cff"></script>
+      <script src="_static/documentation_options.js?v=1e28cc32"></script>
       <script src="_static/doctools.js?v=9bcbadda"></script>
       <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="_static/js/theme.js"></script>
@@ -154,8 +154,10 @@ added before any close one can be added.</p>
 <p>If it is a closing bracket that matches the last added one,
 that last opening one is returned.</p>
 <p>If it is a close bracket not matching the last added one, or the
-first one added, a TypeError is raised.</p>
-<p>If an open bracket is added, False is returned.</p>
+first one added, a <code class="docutils literal notranslate"><span class="pre">TypeError</span></code> is raised.</p>
+<p>If an open bracket is added, the <code class="docutils literal notranslate"><span class="pre">NULL</span></code> token is returned.
+Note that the <code class="docutils literal notranslate"><span class="pre">NULL</span></code> token evaluates to <code class="docutils literal notranslate"><span class="pre">False</span></code> as a condition
+(e.g.  <code class="docutils literal notranslate"><span class="pre">if</span> <span class="pre">NULL</span> <span class="pre">==</span> <span class="pre">if</span> <span class="pre">False</span></code>.)</p>
 </dd></dl>
 
 <dl class="py method">
@@ -213,7 +215,7 @@ a method of a class, or a pure function definition.</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="token_utils.utils.IndentStack.top_item">
 <span class="sig-name descname"><span class="pre">top_item</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/token_utils/utils.html#IndentStack.top_item"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#token_utils.utils.IndentStack.top_item" title="Link to this definition"></a></dt>
-<dd><p>Returns the token at the top of the stack or None.</p>
+<dd><p>Returns the token at the top of the stack or a NULL token.</p>
 </dd></dl>
 
 <dl class="py method">
@@ -231,7 +233,7 @@ on a different physical line.</p>
 the last “top token” starting a line at that indentation. By “top token”
 we mean a token that can start a block such as <code class="docutils literal notranslate"><span class="pre">if</span></code> (for <code class="docutils literal notranslate"><span class="pre">if/elif/else</span></code>),
 <code class="docutils literal notranslate"><span class="pre">try</span></code>, etc.</p>
-<p>It returns <code class="docutils literal notranslate"><span class="pre">None</span></code> if there is no such token.</p>
+<p>It returns the token <code class="docutils literal notranslate"><span class="pre">NULL</span></code> if there is no such token.</p>
 </dd></dl>
 
 </dd></dl>

@@ -6,7 +6,7 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Purpose &mdash; token-utils 0.3.3 documentation</title>
+  <title>Purpose &mdash; token-utils 0.3.4 documentation</title>
       <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=03e43079" />
       <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=9edc463e" />
       <link rel="stylesheet" type="text/css" href="_static/sphinx-new-tab-link.css?v=d87cb1ac" />
@@ -15,7 +15,7 @@
   
       <script src="_static/jquery.js?v=5d32c60e"></script>
       <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="_static/documentation_options.js?v=d5a15cff"></script>
+      <script src="_static/documentation_options.js?v=1e28cc32"></script>
       <script src="_static/doctools.js?v=9bcbadda"></script>
       <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="_static/js/theme.js"></script>
@@ -199,6 +199,7 @@ supporting fancy f-strings.</p>
 <li class="toctree-l1"><a class="reference internal" href="token_class.html">Token class</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="token_class.html#module-token_utils.token_class">API extracted by Sphinx</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="token_class.html#token_utils.token_class.Token"><code class="docutils literal notranslate"><span class="pre">Token</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="token_class.html#token_utils.token_class.Token.__bool__"><code class="docutils literal notranslate"><span class="pre">Token.__bool__()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="token_class.html#token_utils.token_class.Token.__contains__"><code class="docutils literal notranslate"><span class="pre">Token.__contains__()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="token_class.html#token_utils.token_class.Token.__eq__"><code class="docutils literal notranslate"><span class="pre">Token.__eq__()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="token_class.html#token_utils.token_class.Token.__hash__"><code class="docutils literal notranslate"><span class="pre">Token.__hash__</span></code></a></li>
@@ -209,6 +210,7 @@ supporting fancy f-strings.</p>
 <li class="toctree-l4"><a class="reference internal" href="token_class.html#token_utils.token_class.Token.__weakref__"><code class="docutils literal notranslate"><span class="pre">Token.__weakref__</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="token_class.html#token_utils.token_class.Token.clone"><code class="docutils literal notranslate"><span class="pre">Token.clone()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="token_class.html#token_utils.token_class.Token.indentation"><code class="docutils literal notranslate"><span class="pre">Token.indentation()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="token_class.html#token_utils.token_class.Token.is_NULL"><code class="docutils literal notranslate"><span class="pre">Token.is_NULL()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="token_class.html#token_utils.token_class.Token.is_assignment"><code class="docutils literal notranslate"><span class="pre">Token.is_assignment()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="token_class.html#token_utils.token_class.Token.is_bitwise"><code class="docutils literal notranslate"><span class="pre">Token.is_bitwise()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="token_class.html#token_utils.token_class.Token.is_bracket"><code class="docutils literal notranslate"><span class="pre">Token.is_bracket()</span></code></a></li>
@@ -248,12 +250,10 @@ supporting fancy f-strings.</p>
 <li class="toctree-l1"><a class="reference internal" href="tokenizing_methods.html">Tokenizing related methods</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="tokenizing_methods.html#module-token_utils.tokenizing">API extracted by Sphinx</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="tokenizing_methods.html#tokenizing-py">tokenizing.py</a></li>
-<li class="toctree-l3"><a class="reference internal" href="tokenizing_methods.html#token_utils.tokenizing.SemiColonWarning"><code class="docutils literal notranslate"><span class="pre">SemiColonWarning</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="tokenizing_methods.html#token_utils.tokenizing.dedent"><code class="docutils literal notranslate"><span class="pre">dedent()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="tokenizing_methods.html#token_utils.tokenizing.generate_tokens"><code class="docutils literal notranslate"><span class="pre">generate_tokens()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="tokenizing_methods.html#token_utils.tokenizing.get_logical_lines"><code class="docutils literal notranslate"><span class="pre">get_logical_lines()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="tokenizing_methods.html#token_utils.tokenizing.get_physical_lines"><code class="docutils literal notranslate"><span class="pre">get_physical_lines()</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="tokenizing_methods.html#token_utils.tokenizing.pairwise"><code class="docutils literal notranslate"><span class="pre">pairwise()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="tokenizing_methods.html#token_utils.tokenizing.print_tokens"><code class="docutils literal notranslate"><span class="pre">print_tokens()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="tokenizing_methods.html#token_utils.tokenizing.stringify"><code class="docutils literal notranslate"><span class="pre">stringify()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="tokenizing_methods.html#token_utils.tokenizing.tokenize"><code class="docutils literal notranslate"><span class="pre">tokenize()</span></code></a></li>

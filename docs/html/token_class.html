@@ -6,7 +6,7 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Token class &mdash; token-utils 0.3.3 documentation</title>
+  <title>Token class &mdash; token-utils 0.3.4 documentation</title>
       <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=03e43079" />
       <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=9edc463e" />
       <link rel="stylesheet" type="text/css" href="_static/sphinx-new-tab-link.css?v=d87cb1ac" />
@@ -15,7 +15,7 @@
   
       <script src="_static/jquery.js?v=5d32c60e"></script>
       <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="_static/documentation_options.js?v=d5a15cff"></script>
+      <script src="_static/documentation_options.js?v=1e28cc32"></script>
       <script src="_static/doctools.js?v=9bcbadda"></script>
       <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="_static/js/theme.js"></script>
@@ -55,6 +55,7 @@
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Token class</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#module-token_utils.token_class">API extracted by Sphinx</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#token_utils.token_class.Token"><code class="docutils literal notranslate"><span class="pre">Token</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#token_utils.token_class.Token.__bool__"><code class="docutils literal notranslate"><span class="pre">Token.__bool__()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#token_utils.token_class.Token.__contains__"><code class="docutils literal notranslate"><span class="pre">Token.__contains__()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#token_utils.token_class.Token.__eq__"><code class="docutils literal notranslate"><span class="pre">Token.__eq__()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#token_utils.token_class.Token.__hash__"><code class="docutils literal notranslate"><span class="pre">Token.__hash__</span></code></a></li>
@@ -65,6 +66,7 @@
 <li class="toctree-l4"><a class="reference internal" href="#token_utils.token_class.Token.__weakref__"><code class="docutils literal notranslate"><span class="pre">Token.__weakref__</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#token_utils.token_class.Token.clone"><code class="docutils literal notranslate"><span class="pre">Token.clone()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#token_utils.token_class.Token.indentation"><code class="docutils literal notranslate"><span class="pre">Token.indentation()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#token_utils.token_class.Token.is_NULL"><code class="docutils literal notranslate"><span class="pre">Token.is_NULL()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#token_utils.token_class.Token.is_assignment"><code class="docutils literal notranslate"><span class="pre">Token.is_assignment()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#token_utils.token_class.Token.is_bitwise"><code class="docutils literal notranslate"><span class="pre">Token.is_bitwise()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#token_utils.token_class.Token.is_bracket"><code class="docutils literal notranslate"><span class="pre">Token.is_bracket()</span></code></a></li>
@@ -169,6 +171,13 @@ a more convenient form, and with some custom methods.</p>
 we can change the value of any token’s attribute, untokenize the list and
 automatically obtain a transformed source.</p>
 <dl class="py method">
+<dt class="sig sig-object py" id="token_utils.token_class.Token.__bool__">
+<span class="sig-name descname"><span class="pre">__bool__</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/token_utils/token_class.html#Token.__bool__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#token_utils.token_class.Token.__bool__" title="Link to this definition"></a></dt>
+<dd><p>Returns <code class="docutils literal notranslate"><span class="pre">False</span></code> if the object is identical to the <code class="docutils literal notranslate"><span class="pre">NULL</span></code> Token,
+<code class="docutils literal notranslate"><span class="pre">True</span></code> otherwise. Therefore, <code class="docutils literal notranslate"><span class="pre">if</span> <span class="pre">NULL</span> <span class="pre">==</span> <span class="pre">if</span> <span class="pre">False</span></code>.</p>
+</dd></dl>
+
+<dl class="py method">
 <dt class="sig sig-object py" id="token_utils.token_class.Token.__contains__">
 <span class="sig-name descname"><span class="pre">__contains__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">str_arg</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/token_utils/token_class.html#Token.__contains__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#token_utils.token_class.Token.__contains__" title="Link to this definition"></a></dt>
 <dd><p>Returns True if the string argument is a substring of the token string attribute</p>
@@ -203,9 +212,7 @@ self.string == other.string or if self.string == other.</p>
 <span class="sig-name descname"><span class="pre">__repr__</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/token_utils/token_class.html#Token.__repr__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#token_utils.token_class.Token.__repr__" title="Link to this definition"></a></dt>
 <dd><p>Nicely formatted token to help with debugging session.</p>
 <p>Note that it does <strong>not</strong> print a string representation that could be
-used to create a new <code class="docutils literal notranslate"><span class="pre">Token</span></code> instance, which is something you should
-never need to do other than indirectly by using the functions
-provided in this module.</p>
+used to create a new <code class="docutils literal notranslate"><span class="pre">Token</span></code> instance.</p>
 </dd></dl>
 
 <dl class="py method">
@@ -229,7 +236,13 @@ provided in this module.</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="token_utils.token_class.Token.indentation">
 <span class="sig-name descname"><span class="pre">indentation</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/token_utils/token_class.html#Token.indentation"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#token_utils.token_class.Token.indentation" title="Link to this definition"></a></dt>
-<dd><p>Returns the indentation as a number of spaces.</p>
+<dd><p>Returns the indentation (the value of <code class="docutils literal notranslate"><span class="pre">start_col</span></code>) as a number of spaces.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="token_utils.token_class.Token.is_NULL">
+<span class="sig-name descname"><span class="pre">is_NULL</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/token_utils/token_class.html#Token.is_NULL"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#token_utils.token_class.Token.is_NULL" title="Link to this definition"></a></dt>
+<dd><p>Returns True if the token is the NULL token.</p>
 </dd></dl>
 
 <dl class="py method">
@@ -419,7 +432,8 @@ on a given line are not considered to be tokens themselves.</p>
 <dl class="py function">
 <dt class="sig sig-object py" id="token_utils.token_class.add_operator">
 <span class="sig-prename descclassname"><span class="pre">token_utils.token_class.</span></span><span class="sig-name descname"><span class="pre">add_operator</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">string</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">category</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'other'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/token_utils/token_class.html#add_operator"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#token_utils.token_class.add_operator" title="Link to this definition"></a></dt>
-<dd><p>Adds a string defining an operator to the tokenizer.
+<dd><p>Adds a string defining an operator to the tokenizer,
+and updates the required <code class="docutils literal notranslate"><span class="pre">Token</span></code> methods.
 If the string is already a known operator, nothing other than
 returning <code class="docutils literal notranslate"><span class="pre">False</span></code> is done, otherwise <code class="docutils literal notranslate"><span class="pre">True</span></code> is returned.</p>
 <p>For example, prior to Python 3.12, <code class="docutils literal notranslate"><span class="pre">!</span></code> was not a known operator;
@@ -428,7 +442,7 @@ it became so with Python 3.12 and thereafter.</p>
 exists in the module, a modified version with an added underscore
 as a suffix will be created, with as many underscore needed as to make
 the name unique.</p>
-<p>Defining an operator is essential for proper tokenizing. For example,
+<p>Defining an operator might be essential for proper tokenizing. For example,
 if one does not define <code class="docutils literal notranslate"><span class="pre">!!</span></code> as an operator, <code class="docutils literal notranslate"><span class="pre">!!</span></code> would be tokenized
 as two individual <code class="docutils literal notranslate"><span class="pre">!</span></code> tokens.</p>
 <p><code class="docutils literal notranslate"><span class="pre">category</span></code> can be one of “assignment”, “bitwise”, “comparison”,

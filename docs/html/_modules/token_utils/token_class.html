@@ -5,7 +5,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>token_utils.token_class &mdash; token-utils 0.3.3 documentation</title>
+  <title>token_utils.token_class &mdash; token-utils 0.3.4 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=03e43079" />
       <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=9edc463e" />
       <link rel="stylesheet" type="text/css" href="../../_static/sphinx-new-tab-link.css?v=d87cb1ac" />
@@ -14,7 +14,7 @@
   
       <script src="../../_static/jquery.js?v=5d32c60e"></script>
       <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../../_static/documentation_options.js?v=d5a15cff"></script>
+      <script src="../../_static/documentation_options.js?v=1e28cc32"></script>
       <script src="../../_static/doctools.js?v=9bcbadda"></script>
       <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../../_static/js/theme.js"></script>
@@ -51,6 +51,8 @@
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../token_class.html">Token class</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../tokenizing_methods.html">Tokenizing related methods</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../utils.html">Utility functions and classes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../custom_warnings.html">Custom warnings</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Appendix</span></p>
 <ul>
@@ -85,6 +87,7 @@
 <span></span><span class="kn">import</span><span class="w"> </span><span class="nn">ast</span>
 
 <span class="kn">from</span><span class="w"> </span><span class="nn">token_utils</span><span class="w"> </span><span class="kn">import</span> <span class="n">_py_tokenize</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">token_utils._token_plus</span><span class="w"> </span><span class="kn">import</span> <span class="n">FAKE_TOKEN</span>
 
 <span class="n">_token_format</span> <span class="o">=</span> <span class="s2">"type=</span><span class="si">{type}</span><span class="s2">  string=</span><span class="si">{string}</span><span class="s2">  start=</span><span class="si">{start}</span><span class="s2">  end=</span><span class="si">{end}</span><span class="s2">  line=</span><span class="si">{line}</span><span class="s2">"</span>
 <span class="n">_op_categories</span> <span class="o">=</span> <span class="p">{</span>
@@ -142,6 +145,15 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">line</span> <span class="o">=</span> <span class="n">token</span><span class="p">[</span><span class="mi">4</span><span class="p">]</span></div>
 
 
+<div class="viewcode-block" id="Token.__bool__">
+<a class="viewcode-back" href="../../token_class.html#token_utils.token_class.Token.__bool__">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__bool__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">"""Returns ``False`` if the object is identical to the ``NULL`` Token,</span>
+<span class="sd">        ``True`` otherwise. Therefore, ``if NULL == if False``.</span>
+<span class="sd">        """</span>
+        <span class="k">return</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">is_identical</span><span class="p">(</span><span class="n">NULL</span><span class="p">)</span></div>
+
+
 <div class="viewcode-block" id="Token.__eq__">
 <a class="viewcode-back" href="../../token_class.html#token_utils.token_class.Token.__eq__">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="fm">__eq__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
@@ -164,19 +176,17 @@
 <span class="w">        </span><span class="sd">"""Nicely formatted token to help with debugging session.</span>
 
 <span class="sd">        Note that it does **not** print a string representation that could be</span>
-<span class="sd">        used to create a new ``Token`` instance, which is something you should</span>
-<span class="sd">        never need to do other than indirectly by using the functions</span>
-<span class="sd">        provided in this module.</span>
+<span class="sd">        used to create a new ``Token`` instance.</span>
 <span class="sd">        """</span>
         <span class="n">line</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">line</span>
         <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">line</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">20</span><span class="p">:</span>
             <span class="n">line</span> <span class="o">=</span> <span class="n">line</span><span class="p">[:</span><span class="mi">10</span><span class="p">]</span> <span class="o">+</span> <span class="s2">" &lt;...&gt; "</span> <span class="o">+</span> <span class="n">line</span><span class="p">[</span><span class="o">-</span><span class="mi">5</span><span class="p">:]</span>
-        <span class="n">name</span> <span class="o">=</span> <span class="n">_py_tokenize</span><span class="o">.</span><span class="n">tok_name</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">type</span><span class="p">]</span>
+        <span class="n">name</span> <span class="o">=</span> <span class="n">_py_tokenize</span><span class="o">.</span><span class="n">tok_name_plus</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">type</span><span class="p">]</span>
         <span class="k">if</span> <span class="n">name</span> <span class="o">==</span> <span class="s2">"OP"</span><span class="p">:</span>
             <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">string</span> <span class="ow">in</span> <span class="n">_py_tokenize</span><span class="o">.</span><span class="n">EXACT_TOKEN_TYPES</span><span class="p">:</span>
                 <span class="n">exact_type</span> <span class="o">=</span> <span class="n">_py_tokenize</span><span class="o">.</span><span class="n">EXACT_TOKEN_TYPES</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">string</span><span class="p">]</span>
-                <span class="k">if</span> <span class="n">exact_type</span> <span class="ow">in</span> <span class="n">_py_tokenize</span><span class="o">.</span><span class="n">tok_name</span><span class="p">:</span>
-                    <span class="n">exact_name</span> <span class="o">=</span> <span class="n">_py_tokenize</span><span class="o">.</span><span class="n">tok_name</span><span class="p">[</span><span class="n">exact_type</span><span class="p">]</span>
+                <span class="k">if</span> <span class="n">exact_type</span> <span class="ow">in</span> <span class="n">_py_tokenize</span><span class="o">.</span><span class="n">tok_name_plus</span><span class="p">:</span>
+                    <span class="n">exact_name</span> <span class="o">=</span> <span class="n">_py_tokenize</span><span class="o">.</span><span class="n">tok_name_plus</span><span class="p">[</span><span class="n">exact_type</span><span class="p">]</span>
                     <span class="n">name</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">"OP: </span><span class="si">{</span><span class="n">exact_name</span><span class="si">}</span><span class="s2">"</span>
         <span class="k">return</span> <span class="n">_token_format</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
             <span class="nb">type</span><span class="o">=</span><span class="s2">"</span><span class="si">%s</span><span class="s2"> (</span><span class="si">%s</span><span class="s2">)"</span> <span class="o">%</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">type</span><span class="p">,</span> <span class="n">name</span><span class="p">),</span>
@@ -220,7 +230,7 @@
 <div class="viewcode-block" id="Token.indentation">
 <a class="viewcode-back" href="../../token_class.html#token_utils.token_class.Token.indentation">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">indentation</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">"""Returns the indentation as a number of spaces."""</span>
+<span class="w">        </span><span class="sd">"""Returns the indentation (the value of ``start_col``) as a number of spaces."""</span>
         <span class="c1"># Easier to remember than the start_col attribute</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">start_col</span></div>
 
@@ -426,6 +436,13 @@
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">type</span> <span class="o">==</span> <span class="n">_py_tokenize</span><span class="o">.</span><span class="n">NUMBER</span></div>
 
 
+<div class="viewcode-block" id="Token.is_NULL">
+<a class="viewcode-back" href="../../token_class.html#token_utils.token_class.Token.is_NULL">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">is_NULL</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">"""Returns True if the token is the NULL token."""</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">is_identical</span><span class="p">(</span><span class="n">NULL</span><span class="p">)</span></div>
+
+
 <div class="viewcode-block" id="Token.is_operator">
 <a class="viewcode-back" href="../../token_class.html#token_utils.token_class.Token.is_operator">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">is_operator</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -485,7 +502,8 @@
 <div class="viewcode-block" id="add_operator">
 <a class="viewcode-back" href="../../token_class.html#token_utils.token_class.add_operator">[docs]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">add_operator</span><span class="p">(</span><span class="n">string</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">category</span><span class="o">=</span><span class="s2">"other"</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">"""Adds a string defining an operator to the tokenizer.</span>
+<span class="w">    </span><span class="sd">"""Adds a string defining an operator to the tokenizer,</span>
+<span class="sd">    and updates the required ``Token`` methods.</span>
 <span class="sd">    If the string is already a known operator, nothing other than</span>
 <span class="sd">    returning ``False`` is done, otherwise ``True`` is returned.</span>
 
@@ -497,7 +515,7 @@
 <span class="sd">    as a suffix will be created, with as many underscore needed as to make</span>
 <span class="sd">    the name unique.</span>
 
-<span class="sd">    Defining an operator is essential for proper tokenizing. For example,</span>
+<span class="sd">    Defining an operator might be essential for proper tokenizing. For example,</span>
 <span class="sd">    if one does not define ``!!`` as an operator, ``!!`` would be tokenized</span>
 <span class="sd">    as two individual ``!`` tokens.</span>
 
@@ -529,7 +547,7 @@
     <span class="c1"># update the info for tokenizing.</span>
     <span class="n">tok</span><span class="o">.</span><span class="vm">__dict__</span><span class="p">[</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span>
     <span class="n">tok</span><span class="o">.</span><span class="n">EXACT_TOKEN_TYPES</span><span class="p">[</span><span class="n">string</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span>
-    <span class="n">tok</span><span class="o">.</span><span class="n">tok_name</span><span class="p">[</span><span class="n">value</span><span class="p">]</span> <span class="o">=</span> <span class="n">name</span>
+    <span class="n">tok</span><span class="o">.</span><span class="n">tok_name_plus</span><span class="p">[</span><span class="n">value</span><span class="p">]</span> <span class="o">=</span> <span class="n">name</span>
     <span class="n">tok</span><span class="o">.</span><span class="n">Special</span> <span class="o">=</span> <span class="n">tok</span><span class="o">.</span><span class="n">group</span><span class="p">(</span>
         <span class="o">*</span><span class="nb">map</span><span class="p">(</span><span class="n">re</span><span class="o">.</span><span class="n">escape</span><span class="p">,</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">tok</span><span class="o">.</span><span class="n">EXACT_TOKEN_TYPES</span><span class="p">,</span> <span class="n">reverse</span><span class="o">=</span><span class="kc">True</span><span class="p">))</span>
     <span class="p">)</span>
@@ -543,9 +561,7 @@
 
 <div class="viewcode-block" id="make_fake_token">
 <a class="viewcode-back" href="../../token_class.html#token_utils.token_class.make_fake_token">[docs]</a>
-<span class="k">def</span><span class="w"> </span><span class="nf">make_fake_token</span><span class="p">(</span>
-    <span class="nb">type</span><span class="o">=</span><span class="n">_py_tokenize</span><span class="o">.</span><span class="n">FAKE_TOKEN</span><span class="p">,</span> <span class="n">string</span><span class="o">=</span><span class="s2">"$"</span><span class="p">,</span> <span class="n">start</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="n">end</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="n">line</span><span class="o">=</span><span class="s2">""</span>
-<span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">make_fake_token</span><span class="p">(</span><span class="nb">type</span><span class="o">=</span><span class="n">FAKE_TOKEN</span><span class="p">,</span> <span class="n">string</span><span class="o">=</span><span class="s2">"$"</span><span class="p">,</span> <span class="n">start</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="n">end</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="n">line</span><span class="o">=</span><span class="s2">""</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">"""Useful when we need to process a list of tokens with</span>
 <span class="sd">    multiple consecutive at a time, and we need to lengthen</span>
 <span class="sd">    the list for doing so.</span>
@@ -559,6 +575,9 @@
     <span class="n">fake</span> <span class="o">=</span> <span class="p">(</span><span class="nb">type</span><span class="p">,</span> <span class="n">string</span><span class="p">,</span> <span class="n">start</span><span class="p">,</span> <span class="n">end</span><span class="p">,</span> <span class="n">line</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">Token</span><span class="p">(</span><span class="n">fake</span><span class="p">)</span></div>
 
+
+
+<span class="n">NULL</span> <span class="o">=</span> <span class="n">make_fake_token</span><span class="p">(</span><span class="n">string</span><span class="o">=</span><span class="s2">""</span><span class="p">)</span>
 </pre></div>
 
            </div>
