@@ -59,3 +59,8 @@ triple_quoted: Incomplete
 tabsize: Literal[8] = 8
 
 def generate_tokens(readline: Incomplete) -> Incomplete: ...
+
+BAD_DEDENT: Literal[-1]
+UNCL_SINGLE: Literal[-2]
+UNCL_TRIPLE: Literal[-3]
+FAKE_TOKEN: Literal[-4]

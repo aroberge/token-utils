@@ -157,7 +157,7 @@ for _prefix in _all_string_prefixes():
     endpats[_prefix + '"'] = Double
     endpats[_prefix + "'''"] = Single3
     endpats[_prefix + '"""'] = Double3
-del _prefix
+del _prefix  # type: ignore
 
 # A set of all of the single and triple quoted string prefixes,
 #  including the opening quotes.
@@ -168,7 +168,7 @@ for t in _all_string_prefixes():
         single_quoted.add(u)
     for u in (t + '"""', t + "'''"):
         triple_quoted.add(u)
-del t, u
+del t, u  # type: ignore
 
 tabsize = 8
 
@@ -195,6 +195,7 @@ def generate_tokens(readline):
     contstr, needcont = "", 0
     contline = None
     indents = [0]
+    strstart = (0, 0)  # to silence a typing warning
 
     last_line = ""
     line = ""
@@ -224,7 +225,7 @@ def generate_tokens(readline):
                 unterminated_triple = True
                 yield TokenInfo(UNCL_TRIPLE, contstr, strstart, (lnum, end), contline)
                 break
-            endmatch = endprog.match(line)
+            endmatch = endprog.match(line)  # type: ignore
             if endmatch:
                 pos = end = endmatch.end(0)
                 yield TokenInfo(
