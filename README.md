@@ -4,19 +4,9 @@ Installation: `pip install token-utils`.
 
 The purpose of token-utils is to simplify manipulations of tokens normally
 obtaind from Python's [tokenize module](https://docs.python.org/3/library/tokenize.html).
-One of token-utils' features is that, unlike Python's version, the following
-is always guaranteed:
-
-```python
-from token_utils import tokenize, untokenize
-
-source = "Arbitrary Python code here"
-
-assert source == untokenize(tokenize(source))
-```
 
 To get an idea of the simplicity of using token-utils,
-consider [this example from Python's standard library](https://docs.python.org/3/library/tokenize.html#examples) which substitute Decimals for floats in a string of statements:
+consider [this example from Python's own documentation](https://docs.python.org/3/library/tokenize.html#examples) which substitute Decimals for floats in a string of statements:
 
 ```python
 from tokenize import tokenize, untokenize, NUMBER, STRING, NAME, OP
