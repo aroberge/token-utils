@@ -49,3 +49,4 @@ project-excludes = ["venv*", "build/", "docs_examples/"]
 include = ["src/token_utils", "tests"]
 stubPath = "."
 extraPaths = ["."]
+

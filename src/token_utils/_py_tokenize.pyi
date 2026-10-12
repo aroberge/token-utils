@@ -64,3 +64,15 @@ BAD_DEDENT: Literal[-1]
 UNCL_SINGLE: Literal[-2]
 UNCL_TRIPLE: Literal[-3]
 FAKE_TOKEN: Literal[-4]
+ERRORTOKEN: int
+ENDMARKER: int
+OP: int
+NAME: int
+NL: int
+NEWLINE: int
+NUMBER: int
+STRING: int
+COMMENT: int
+DEDENT: int
+INDENT: int
+N_TOKENS: int
