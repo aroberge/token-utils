@@ -76,3 +76,4 @@ COMMENT: int
 DEDENT: int
 INDENT: int
 N_TOKENS: int
+ENCODING: int

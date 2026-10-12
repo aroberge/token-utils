@@ -175,10 +175,7 @@ def get_logical_lines(source, remove_comments=True, remove_semi_colons=True):
 
 
 def untokenize(tokens):
-    """Return source code based on tokens.
-
-    Adapted from https://github.com/myint/untokenize,
-    Copyright (C) 2013-2018 Steven Myint, MIT License (same as this project).
+    """Returns a string built from tokens, or list of tokens.
 
     This is similar to Python's own tokenize.untokenize(), except that it
     preserves spacing between tokens, by using the line
@@ -189,74 +186,12 @@ def untokenize(tokens):
     in the source code produced by untokenize.
 
     Thus ``source == untokenize(tokenize(source))``.
-
-    Note: if you you modifying tokens from an original source:
-
-    Instead of full token object, ``untokenize`` will accept simple
-    strings; however, it will only insert them *as is* without taking them
-    into account when it comes with figuring out spacing between tokens.
-
-    It is often more effective to "mutate" a token string to insert new
-    content.
-
-    Finally, while token_utils only deals with sources as string,
-    and doesn't do encoding, this function will drop tokens
-    identified as being of type ``ENCODING``, which would mean that they
-    came from another source.
     """
-    # Main changes from original:
-    # 1. We accumulate substrings in a list, rather than concatenating them
-    #    as we go along
-    # 2. We allow the inclusion of pure strings as token, but without
-    #    taking their length into consideration.
-    # 3. We accept lines of lines of tokens
-    # Begin code (for extraction by Sphinx)
-    # Allow both lists of Tokens or strings, or lists of lists of Tokens or strings
-    if isinstance(tokens[0], list):
-        tokens = [token for line in tokens for token in line]
-    assert isinstance(tokens[0], (Token, str))
-
-    words = []
-    previous_line = ""
-    last_row = 0
-    last_column = -1
-    last_non_whitespace_token_type = None
-    for token in tokens:
-        if isinstance(token, str):
-            words.append(token)
-            continue
-        if token.type == _py_tokenize.ENCODING:
-            continue
-
-        # Preserve escaped newlines.
-        if (
-            last_non_whitespace_token_type != _py_tokenize.COMMENT
-            and token.start_row > last_row
-            and previous_line.endswith(("\\\n", "\\\r\n", "\\\r"))
-        ):
-            words.append(previous_line[len(previous_line.rstrip(" \t\n\r\\")) :])
-
-        # Preserve spacing.
-        if token.start_row > last_row:
-            last_column = 0
-        if token.start_col > last_column:
-            # Insert the content that was skipped between tokens
-            words.append(token.line[last_column : token.start_col])
-
-        words.append(token.string)
-
-        previous_line = token.line
-        last_row = token.end_row
-        last_column = token.end_col
-        if not token.is_space():
-            last_non_whitespace_token_type = token.type
-
-    return "".join(words)
-    # End code (for extraction by Sphinx)
+    return _untokenize(tokens)
 
 
 def stringify(tokens, remove_comments=False):
-    """Returns a string built from tokens.
+    """Returns a string built from tokens, or list of tokens.
 
     It is somewhat similar to untokenize except that it doesn't add any
     missing information from tokens that might have been removed,
@@ -279,15 +214,41 @@ def stringify(tokens, remove_comments=False):
 
         ideas.utils.remove_comments(source)
     """
+    return _untokenize(
+        tokens, recover_missing_text=False, remove_comments=remove_comments
+    )
+
+
+def _untokenize(tokens, recover_missing_text=True, remove_comments=False):
+    """Private function: do not use. Use either untokenize() or stringify()."""
+
+    # This was adapted from https://github.com/myint/untokenize,
+    #  Copyright (C) 2013-2018 Steven Myint, MIT License (same as this project).
+    # Changes from original:
+    # 1. We accumulate substrings in a list, rather than concatenating them
+    #    as we go along
+    # 2. We allow the inclusion of pure strings as token, but without
+    #    taking their length into consideration.
+    # 3. We accept lines of lines of tokens
+    # 4. tokens are token_utils tokens instead of Python tokenize tokens.
+    # 5. We give the possibility of replacing missing content by spaces
+    #    instead of retrieving that content by using the line attribute of tokens.
+    # 6. We give the possibility of removing comments; this is only possible
+    #    when we replace the missing content by spaces, otherwise the comments
+    #    would be recovered even if we attempt to not include comments tokens.
+
+    if remove_comments and recover_missing_text:
+        raise ValueError("Incompatible values in private function _untokenize().")
+
     if isinstance(tokens[0], list):
         tokens = [token for line in tokens for token in line]
+    assert isinstance(tokens[0], (Token, str))
 
     words = []
     previous_line = ""
     last_row = 0
     last_column = -1
     last_non_whitespace_token_type = None
-
     for token in tokens:
         if isinstance(token, str):
             words.append(token)
@@ -309,9 +270,14 @@ def stringify(tokens, remove_comments=False):
         # Preserve spacing.
         if token.start_row > last_row:
             last_column = 0
-        if token.start_col > last_column and not token.is_space():
+
+        if recover_missing_text:
+            if token.start_col > last_column:
+                # Insert the content that was skipped between tokens
+                words.append(token.line[last_column : token.start_col])
+        elif token.start_col > last_column and not token.is_space():
             # Insert spaces instead of the content that was skipped between tokens
-            # except at the end of line before a NL or NEWLINE token
+            # except at the end of line before a NL, NEWLINE, or ENDMARKER token
             words.append(" " * (token.start_col - last_column))
 
         words.append(token.string)

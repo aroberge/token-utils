@@ -54,20 +54,23 @@ class BracketStack:
 
 
 class IndentStack:
-    """docstring"""
+    """Class designed to help keep track of indentation associated with the use
+    of specific keywords."""
 
     # In Python, the following keywords, or soft keywords, can signal the introduction
     # of an indented block::
 
-    #     class, def, if/elif/else, for/else, try/except/else/finally, while/else, with, match, case
+    #     class, def, if/elif/else, for/else, try/except/else/finally, while/else,
+    #     with, match, case
 
-    # For some code analysis or code modification, it might be very useful of keeping track
-    # of such keywords when they introduce a change in indentation. When they do so, and ignoring
-    # end of line comments, they will appear as the first non-space token
+    # For some code analysis or code modification, it might be very useful to track
+    # of such keywords when they introduce a change in indentation.
+    # When they do so, and ignoring end of line comments,
+    # they will appear as the first non-space token
     # on a **logical line** terminated by a colon ``:``.
-    # If we use token-utils' ``get_logical_lines()`` to analyze some source code, the last token
-    # of each such line will always be a ``NEWLINE`` token, preceded by a colon.
-    # This allowed us to define the utility class ``IndentStack``.
+    # If we use token-utils' ``get_logical_lines()`` to analyze some source code,
+    # the last token of each such line will always be a ``NEWLINE`` token,
+    # preceded by a colon.
     def __init__(self):
         self.stack = []
         self.top_indent_keywords = [
@@ -166,7 +169,7 @@ class IndentStack:
         # beginning of an indented block. So, we only care to see if it signal
         # that we are leaving an indented block and dedenting the code
 
-        if not indenting_line:  # is dedenting occuring?
+        if not indenting_line:  # perhaps dedenting is occuring
             popped = 0
             while self.stack:
                 top_item = self.stack.pop()
@@ -184,7 +187,7 @@ class IndentStack:
                 if popped > 1:
                     return top_item
                 else:
-                    return NULL
+                    return NULL  # no change: dedenting did not occur
             return NULL
 
         if not self.stack:

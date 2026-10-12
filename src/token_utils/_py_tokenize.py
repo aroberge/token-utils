@@ -31,6 +31,7 @@ from token_utils._token_plus import (  # to satisfy typing
     DEDENT,
     BAD_DEDENT,
     INDENT,
+    ENCODING,  # noqa
 )
 from token_utils.custom_warnings import TokenUtilsEOFWarning
 
