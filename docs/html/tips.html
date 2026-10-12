@@ -6,7 +6,7 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Tutorial: recipes, tips, and tricks &mdash; token-utils 0.3.4 documentation</title>
+  <title>Tutorial: recipes, tips, and tricks &mdash; token-utils 0.3.7 documentation</title>
       <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=03e43079" />
       <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=9edc463e" />
       <link rel="stylesheet" type="text/css" href="_static/sphinx-new-tab-link.css?v=d87cb1ac" />
@@ -15,7 +15,7 @@
   
       <script src="_static/jquery.js?v=5d32c60e"></script>
       <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="_static/documentation_options.js?v=1e28cc32"></script>
+      <script src="_static/documentation_options.js?v=29d04658"></script>
       <script src="_static/doctools.js?v=9bcbadda"></script>
       <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="_static/js/theme.js"></script>
@@ -134,11 +134,13 @@ brackets (<code class="docutils literal notranslate"><span class="pre">()</span>
 <li><p><code class="docutils literal notranslate"><span class="pre">IndentStack()</span></code>, which helps to keep track of statement indentation.</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">split_at_token()</span></code>, which is useful when changes are needed in two distant
 parts of a list of tokens.</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">add_operator()</span></code>, which is useful for exploring potential addition to Python’s syntax.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">add_operator()</span></code>, which is useful for exploring potential addition to Python’s syntax
+and simplify the analysis as previously separate Python tokens can be combined
+into a single token.</p></li>
 </ul>
 <p>In addition, the <code class="docutils literal notranslate"><span class="pre">Token</span></code> class has well over 30 different methods which are very useful
 to identify types of tokens (and more) in a very readable way.</p>
-<p>In what follows, I will attempt to demonstrate how to use these functions,
+<p>In what follows, I briefly demonstrate how to use these functions,
 using examples of modifying Python’s syntax.</p>
 <section id="adding-a-factorial-symbol">
 <h2>Adding a factorial symbol<a class="headerlink" href="#adding-a-factorial-symbol" title="Link to this heading"></a></h2>
@@ -184,13 +186,13 @@ be really useful to add new operators to the tokenizer.</p>
 <p>We can see that, not only <code class="docutils literal notranslate"><span class="pre">!</span></code> is a valid operator token, but it is also
 recognized as such by the <code class="docutils literal notranslate"><span class="pre">Token</span></code> method <code class="docutils literal notranslate"><span class="pre">is_operator()</span></code>.
 The function <code class="docutils literal notranslate"><span class="pre">add_operator()</span></code> returned <code class="docutils literal notranslate"><span class="pre">True</span></code>. If we were to add
-a string already known to be an operator, it would return <code class="docutils literal notranslate"><span class="pre">False</span></code>,
-with no negative consequence.</p>
+a string already known to be an operator, <code class="docutils literal notranslate"><span class="pre">add_operator()</span></code>
+would return <code class="docutils literal notranslate"><span class="pre">False</span></code>, with no negative consequence.</p>
 <aside class="sidebar">
 <p class="sidebar-title">‘!’ in Python 3.12+</p>
 <p>For Python 3.12+, if you use Python’s <code class="docutils literal notranslate"><span class="pre">tokenize</span></code>
 module directly, you will see that <code class="docutils literal notranslate"><span class="pre">!</span></code>
-is defined as an operator.</p>
+is already defined as an operator.</p>
 </aside>
 <p>While Python does not care about spaces between tokens, humans do.
 For the mathematically inclined, it wouldn’t be appropriate to write something
@@ -202,8 +204,8 @@ like:</p>
 require <code class="docutils literal notranslate"><span class="pre">!</span></code> to come <strong>immediately after</strong> either a variable name (identifier)
 or an integer; by ‘immediately after’, we mean no space between the two
 tokens.</p>
-<p>Here is how we can do it, using token-utils’ <code class="docutils literal notranslate"><span class="pre">immediately_after()</span></code> instead
-of <code class="docutils literal notranslate"><span class="pre">immediately_before()</span></code> as it looks more natural in this example.</p>
+<p>Here is how we can do it, using token-utils’ <code class="docutils literal notranslate"><span class="pre">immediately_before()</span></code> instead
+of <code class="docutils literal notranslate"><span class="pre">immediately_after()</span></code> as it looks more natural in this example.</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># factorial_1.py</span>
 
 <span class="kn">from</span><span class="w"> </span><span class="nn">token_utils</span><span class="w"> </span><span class="kn">import</span> <span class="n">tokenize</span><span class="p">,</span> <span class="n">untokenize</span><span class="p">,</span> <span class="n">add_operator</span><span class="p">,</span> <span class="n">pairwise</span>
@@ -288,7 +290,7 @@ return <code class="docutils literal notranslate"><span class="pre">False</span>
 </pre></div>
 </div>
 <p>Going back to our factorial: in addition to appearing after
-integers or variable names, the factorial symbol, <code class="docutils literal notranslate"><span class="pre">!</span></code>,
+integers or variable names, in mathematics, the factorial symbol, <code class="docutils literal notranslate"><span class="pre">!</span></code>,
 can appear after a closing parenthesis, <code class="docutils literal notranslate"><span class="pre">)</span></code>,
 as in <code class="docutils literal notranslate"><span class="pre">(n</span> <span class="pre">+</span> <span class="pre">1)!</span></code>, for example.
 We can modify our <code class="docutils literal notranslate"><span class="pre">make_factorial()</span></code> function to include
@@ -302,7 +304,7 @@ like the following:</p>
 </pre></div>
 </div>
 <p>If we proceed to add tokens as we find them to a <code class="docutils literal notranslate"><span class="pre">new_tokens</span></code> list,
-when we arrive at <code class="docutils literal notranslate"><span class="pre">)!</span></code>, we would have to go backwards, retrieve
+when we arrive at <code class="docutils literal notranslate"><span class="pre">)!</span></code>, we have to go backwards, retrieve
 all the previously added tokens (<code class="docutils literal notranslate"><span class="pre">a</span> <span class="pre">b</span> <span class="pre">c</span></code>), until we find the
 right open parenthesis, do the appropriate modification and add back
 the extracted material. This can actually be done easily using

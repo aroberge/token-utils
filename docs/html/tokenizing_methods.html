@@ -6,7 +6,7 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Tokenizing related methods &mdash; token-utils 0.3.4 documentation</title>
+  <title>Tokenizing related methods &mdash; token-utils 0.3.7 documentation</title>
       <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=03e43079" />
       <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=9edc463e" />
       <link rel="stylesheet" type="text/css" href="_static/sphinx-new-tab-link.css?v=d87cb1ac" />
@@ -15,7 +15,7 @@
   
       <script src="_static/jquery.js?v=5d32c60e"></script>
       <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="_static/documentation_options.js?v=1e28cc32"></script>
+      <script src="_static/documentation_options.js?v=29d04658"></script>
       <script src="_static/doctools.js?v=9bcbadda"></script>
       <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="_static/js/theme.js"></script>
@@ -198,7 +198,7 @@ or a list of lists of tokens.</p>
 <dl class="py function">
 <dt class="sig sig-object py" id="token_utils.tokenizing.stringify">
 <span class="sig-prename descclassname"><span class="pre">token_utils.tokenizing.</span></span><span class="sig-name descname"><span class="pre">stringify</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">tokens</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">remove_comments</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/token_utils/tokenizing.html#stringify"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#token_utils.tokenizing.stringify" title="Link to this definition"></a></dt>
-<dd><p>Returns a string built from tokens.</p>
+<dd><p>Returns a string built from tokens, or list of tokens.</p>
 <p>It is somewhat similar to untokenize except that it doesn’t add any
 missing information from tokens that might have been removed,
 inserting spaces instead. For example, removing “two”:</p>
@@ -230,9 +230,7 @@ efficient to use:</p>
 <dl class="py function">
 <dt class="sig sig-object py" id="token_utils.tokenizing.untokenize">
 <span class="sig-prename descclassname"><span class="pre">token_utils.tokenizing.</span></span><span class="sig-name descname"><span class="pre">untokenize</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">tokens</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/token_utils/tokenizing.html#untokenize"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#token_utils.tokenizing.untokenize" title="Link to this definition"></a></dt>
-<dd><p>Return source code based on tokens.</p>
-<p>Adapted from <a class="reference external" href="https://github.com/myint/untokenize" rel="noreferrer" target="_blank">https://github.com/myint/untokenize</a>,
-Copyright (C) 2013-2018 Steven Myint, MIT License (same as this project).</p>
+<dd><p>Returns a string built from tokens, or list of tokens.</p>
 <p>This is similar to Python’s own tokenize.untokenize(), except that it
 preserves spacing between tokens, by using the line
 information recorded by Python’s tokenize.generate_tokens.
@@ -241,16 +239,6 @@ some tokens or if escaped newlines were used or if tab characters
 were present in the original source, those will also be present
 in the source code produced by untokenize.</p>
 <p>Thus <code class="docutils literal notranslate"><span class="pre">source</span> <span class="pre">==</span> <span class="pre">untokenize(tokenize(source))</span></code>.</p>
-<p>Note: if you you modifying tokens from an original source:</p>
-<p>Instead of full token object, <code class="docutils literal notranslate"><span class="pre">untokenize</span></code> will accept simple
-strings; however, it will only insert them <em>as is</em> without taking them
-into account when it comes with figuring out spacing between tokens.</p>
-<p>It is often more effective to “mutate” a token string to insert new
-content.</p>
-<p>Finally, while token_utils only deals with sources as string,
-and doesn’t do encoding, this function will drop tokens
-identified as being of type <code class="docutils literal notranslate"><span class="pre">ENCODING</span></code>, which would mean that they
-came from another source.</p>
 </dd></dl>
 
 </section>

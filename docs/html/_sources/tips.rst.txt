@@ -42,13 +42,15 @@ the following:
 - ``split_at_token()``, which is useful when changes are needed in two distant
   parts of a list of tokens.
 
-- ``add_operator()``, which is useful for exploring potential addition to Python's syntax.
+- ``add_operator()``, which is useful for exploring potential addition to Python's syntax
+  and simplify the analysis as previously separate Python tokens can be combined
+  into a single token.
 
 In addition, the ``Token`` class has well over 30 different methods which are very useful
 to identify types of tokens (and more) in a very readable way.
 
 
-In what follows, I will attempt to demonstrate how to use these functions,
+In what follows, I briefly demonstrate how to use these functions,
 using examples of modifying Python's syntax.
 
 
@@ -99,14 +101,14 @@ be really useful to add new operators to the tokenizer.
 We can see that, not only ``!`` is a valid operator token, but it is also
 recognized as such by the ``Token`` method ``is_operator()``.
 The function ``add_operator()`` returned ``True``. If we were to add
-a string already known to be an operator, it would return ``False``,
-with no negative consequence.
+a string already known to be an operator, ``add_operator()``
+would return ``False``, with no negative consequence.
 
 .. sidebar:: '!' in Python 3.12+
 
     For Python 3.12+, if you use Python's ``tokenize``
     module directly, you will see that ``!``
-    is defined as an operator.
+    is already defined as an operator.
 
 While Python does not care about spaces between tokens, humans do.
 For the mathematically inclined, it wouldn't be appropriate to write something
@@ -119,8 +121,8 @@ require ``!`` to come **immediately after** either a variable name (identifier)
 or an integer; by 'immediately after', we mean no space between the two
 tokens.
 
-Here is how we can do it, using token-utils' ``immediately_after()`` instead
-of ``immediately_before()`` as it looks more natural in this example.
+Here is how we can do it, using token-utils' ``immediately_before()`` instead
+of ``immediately_after()`` as it looks more natural in this example.
 
 .. literalinclude:: ../../docs_examples/factorial_1.py
 
@@ -188,7 +190,7 @@ Here's a sample session::
     [ ] True
 
 Going back to our factorial: in addition to appearing after
-integers or variable names, the factorial symbol, ``!``,
+integers or variable names, in mathematics, the factorial symbol, ``!``,
 can appear after a closing parenthesis, ``)``,
 as in ``(n + 1)!``, for example.
 We can modify our ``make_factorial()`` function to include
@@ -203,7 +205,7 @@ like the following::
     A B C D E ( a b c )!
 
 If we proceed to add tokens as we find them to a ``new_tokens`` list,
-when we arrive at ``)!``, we would have to go backwards, retrieve
+when we arrive at ``)!``, we have to go backwards, retrieve
 all the previously added tokens (``a b c``), until we find the
 right open parenthesis, do the appropriate modification and add back
 the extracted material. This can actually be done easily using

@@ -5,7 +5,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>token_utils.utils &mdash; token-utils 0.3.4 documentation</title>
+  <title>token_utils.utils &mdash; token-utils 0.3.7 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=03e43079" />
       <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=9edc463e" />
       <link rel="stylesheet" type="text/css" href="../../_static/sphinx-new-tab-link.css?v=d87cb1ac" />
@@ -14,7 +14,7 @@
   
       <script src="../../_static/jquery.js?v=5d32c60e"></script>
       <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../../_static/documentation_options.js?v=1e28cc32"></script>
+      <script src="../../_static/documentation_options.js?v=29d04658"></script>
       <script src="../../_static/doctools.js?v=9bcbadda"></script>
       <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../../_static/js/theme.js"></script>
@@ -154,20 +154,23 @@
 <div class="viewcode-block" id="IndentStack">
 <a class="viewcode-back" href="../../utils.html#token_utils.utils.IndentStack">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">IndentStack</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">"""docstring"""</span>
+<span class="w">    </span><span class="sd">"""Class designed to help keep track of indentation associated with the use</span>
+<span class="sd">    of specific keywords."""</span>
 
     <span class="c1"># In Python, the following keywords, or soft keywords, can signal the introduction</span>
     <span class="c1"># of an indented block::</span>
 
-    <span class="c1">#     class, def, if/elif/else, for/else, try/except/else/finally, while/else, with, match, case</span>
+    <span class="c1">#     class, def, if/elif/else, for/else, try/except/else/finally, while/else,</span>
+    <span class="c1">#     with, match, case</span>
 
-    <span class="c1"># For some code analysis or code modification, it might be very useful of keeping track</span>
-    <span class="c1"># of such keywords when they introduce a change in indentation. When they do so, and ignoring</span>
-    <span class="c1"># end of line comments, they will appear as the first non-space token</span>
+    <span class="c1"># For some code analysis or code modification, it might be very useful to track</span>
+    <span class="c1"># of such keywords when they introduce a change in indentation.</span>
+    <span class="c1"># When they do so, and ignoring end of line comments,</span>
+    <span class="c1"># they will appear as the first non-space token</span>
     <span class="c1"># on a **logical line** terminated by a colon ``:``.</span>
-    <span class="c1"># If we use token-utils' ``get_logical_lines()`` to analyze some source code, the last token</span>
-    <span class="c1"># of each such line will always be a ``NEWLINE`` token, preceded by a colon.</span>
-    <span class="c1"># This allowed us to define the utility class ``IndentStack``.</span>
+    <span class="c1"># If we use token-utils' ``get_logical_lines()`` to analyze some source code,</span>
+    <span class="c1"># the last token of each such line will always be a ``NEWLINE`` token,</span>
+    <span class="c1"># preceded by a colon.</span>
 <div class="viewcode-block" id="IndentStack.__init__">
 <a class="viewcode-back" href="../../utils.html#token_utils.utils.IndentStack.__init__">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -283,7 +286,7 @@
         <span class="c1"># beginning of an indented block. So, we only care to see if it signal</span>
         <span class="c1"># that we are leaving an indented block and dedenting the code</span>
 
-        <span class="k">if</span> <span class="ow">not</span> <span class="n">indenting_line</span><span class="p">:</span>  <span class="c1"># is dedenting occuring?</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">indenting_line</span><span class="p">:</span>  <span class="c1"># perhaps dedenting is occuring</span>
             <span class="n">popped</span> <span class="o">=</span> <span class="mi">0</span>
             <span class="k">while</span> <span class="bp">self</span><span class="o">.</span><span class="n">stack</span><span class="p">:</span>
                 <span class="n">top_item</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">stack</span><span class="o">.</span><span class="n">pop</span><span class="p">()</span>
@@ -301,7 +304,7 @@
                 <span class="k">if</span> <span class="n">popped</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
                     <span class="k">return</span> <span class="n">top_item</span>
                 <span class="k">else</span><span class="p">:</span>
-                    <span class="k">return</span> <span class="n">NULL</span>
+                    <span class="k">return</span> <span class="n">NULL</span>  <span class="c1"># no change: dedenting did not occur</span>
             <span class="k">return</span> <span class="n">NULL</span>
 
         <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">stack</span><span class="p">:</span>

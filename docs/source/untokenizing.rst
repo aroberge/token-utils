@@ -49,33 +49,25 @@ and the second **begins at column 8**. For both tokens, the
 
 .. sidebar:: Original version
 
-    `The original version <https://github.com/myint/untokenize>`_
-    created in 2013, is unmaintained and apparently
+    `The original untokenize() version <https://github.com/myint/untokenize>`_
+    designed to work with Python's tokenize tokens and which we
+    modified, was created in 2013, is currently unmaintained and apparently
     can no longer be installed from Pypi as it is uses
     an old ``setup.py`` version.
 
-Below is the slightly modified ``untokenize`` used in
-token-utils,
-based on the clever algorithm designed by Steven Mynt,
-which guarantees to recover every character
-initially present in the source, thus enabling a perfect
-tokenize/untokenize round trip.
+When tokenizing a source code, Python's tokenizer consider the
+space between tokens as irrelevant. However, the entire content
+of a line in which a token is found is stored in the ``line``
+attribute of a token. We can use that information to retrieve
+the content, such as number of space and tab characters,
+that was present in the original source and put it back
+between each tokens when we convert the source from tokens
+back into a string.
 
-Other than adapting to use with token-utils tokens rather
-that those coming from Python's ``tokenize`` module,
-the only addition we made was to allow the insertion of
-simple strings (instead of tokens) as a way to insert
-content into an original source.
-
-.. literalinclude:: ../../src/token_utils/tokenizing.py
-   :language: python
-   :start-after: # Begin code (for extraction by Sphinx)
-   :end-before: # End code (for extraction by Sphinx)
-   :linenos:
-   :emphasize-lines: 12-14, 29-31, 36
-
-
-Let's focus on the following for the example we just saw.
+However, this can cause some problems as we in the
+example above. Let's focus on the following for that
+example and write down a simplfied version of the
+code that is executed.
 
 .. code-block:: none
 
@@ -83,27 +75,19 @@ Let's focus on the following for the example we just saw.
     ( ).....(   )
       3     8
 
-    ...
     if token.start_col > last_column:
         # Insert the content that was skipped between tokens
         words.append(token.line[last_column : token.start_col])
-    ...
 
+    # this translates as
     if 8 > 3:
-        words.append(line[3:8])
+        words.append(line[3:8])  # --> ' two '
 
 Now we see why ``two`` was included in the untokenized output
 even though we removed the token having it as a string.
 
-Also note:
-
-.. code-block::
-
-    ...
-    if isinstance(token, str):
-        words.append(token)
-        continue
-
+Note that, in addition to working with tokens,
+we also allow the insertion of normal string.
 So, in order to modify the source code, there are two
 ways to proceed when using ``untokenize()`` to recover modified source:
 
@@ -154,7 +138,7 @@ Let's use it::
 Inserting tokens?
 ------------------
 
-What if we were to insert tokens like the example in the Python documentation.
+What if we were to insert tokens like the example in the Python documentation?
 
 We can create additional tokens with token-utils in a fairly simple way::
 
@@ -199,7 +183,8 @@ why the weird-looking result is produced, and why this is definitely not recomme
 About stringify()
 -----------------
 
-``stringify()`` is nearly identical to ``untokenize()``. However, instead of having::
+``stringify()`` is nearly identical to ``untokenize()``. However, instead of
+effectively doing::
 
     ...
     if token.start_col > last_column:
@@ -207,26 +192,23 @@ About stringify()
         words.append(token.line[last_column : token.start_col])
     ...
 
-it has::
+it does something like the following::
 
-    ...
-    if token.start_col > last_column and not token.is_space():
+    if token.start_col > last_column:
         # Insert spaces instead of the content that was skipped between tokens
-        # except at the end of line before a NL or NEWLINE token
         words.append(" " * (token.start_col - last_column))
-    ...
 
 Thus, as long as one does not care about tab characters being converted into single space
 characters, one can **remove** tokens safely, and their content will not be
 reinserted by ``stringify()``.
 
-``stringify()`` also has an extra parameter, ``remove_comments=False``. If sets to ``True``,
-it returns a source with end of line comments removed.
-
-Here's the result using ``stringify()``::
+Here's the result of inserting tokens using ``stringify()``::
 
     >>> stringify(tokens)
     'one |     two |         three | '
 
 While ``stringify()`` "does the right thing" when adding tokens, it is usually
 preferable to simply add ordinary strings.
+
+Note that ``stringify()`` also has an extra parameter, ``remove_comments=False``.
+If it is set to ``True``, ``stringify()`` returns a source with end of line comments removed.
