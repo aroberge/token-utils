@@ -418,8 +418,6 @@ def generate_tokens(readline):
                         )
                 pos += 1
 
-    # TODO: see if we can remove this!!!
-    # Add an implicit NEWLINE if the input doesn't end in one
     if not unterminated_triple:
         if (
             last_line

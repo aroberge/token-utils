@@ -1,3 +1,5 @@
+from pathlib import Path
+
 from token_utils import (
     generate_tokens,
     tokenize,
@@ -109,3 +111,34 @@ def test_bracket_stack():
             else:
                 assert result  # bracket popped
     assert bracket_stack.is_empty()
+
+
+def test_decorator_example():
+    # Not a unit test, but it will do for now
+    current_path = Path(__file__)
+    current_dir = current_path.parent
+    target = current_dir / "decorator_example_out.txt"
+    with open(target, "r") as f:
+        expected = f.read()
+    from . import add_decorator
+
+    assert add_decorator.output == expected
+
+
+def test_nobreak_example():
+    # not a unit test but it will do for now
+    current_path = Path(__file__)
+    current_dir = current_path.parent
+    target = current_dir / "nobreak_out.txt"
+    with open(target, "r") as f:
+        expected = f.read()
+    from . import nobreak
+
+    assert nobreak.output == expected
+
+
+def test_factorial_example():
+    from .factorial import make_factorial
+
+    assert make_factorial("3!") == "factorial(3)"
+    assert make_factorial("(2+3)!") == "factorial(2+3)"

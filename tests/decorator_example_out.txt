@@ -1,0 +1,19 @@
+@decorator
+def f1():
+    pass
+if True:
+    @decorator
+    def f2():
+        pass
+else:
+    @decorator
+    def f3():
+        pass
+@decorator
+def f4():
+    pass
+class Something:
+    def method():
+        pass
+if (    True):
+    pass

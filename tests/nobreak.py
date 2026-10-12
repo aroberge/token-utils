@@ -1,0 +1,27 @@
+# nobreak.py
+from pathlib import Path
+from token_utils import get_logical_lines, untokenize, IndentStack
+
+current_path = Path(__file__)
+current_dir = current_path.parent
+target = current_dir / "nobreak.txt"
+
+with open(target, "r") as f:
+    source = f.read()
+
+new_lines = []
+stack = IndentStack()
+stack.add_same_indent_keyword("nobreak")
+
+for line in get_logical_lines(source):
+    top = stack.update(line)
+    if not top:  # this line does not introduce an indented block
+        new_lines.append(line)
+        continue
+
+    if line[0] == "nobreak" and top.is_in(["for", "while"]):
+        line[0].string = "else"  # modify in place
+
+    new_lines.append(line)
+
+output = untokenize(new_lines)
