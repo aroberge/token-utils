@@ -38,7 +38,7 @@ class BracketStack:
                 )
             else:
                 self.stack.append(bracket)
-                return False
+                return NULL
 
         elif not bracket.is_open_bracket():
             raise TypeError(
@@ -46,7 +46,7 @@ class BracketStack:
             )
         else:
             self.stack.append(bracket)
-            return False
+            return NULL
 
     def is_empty(self):
         """Return True if the stack is empty, False if it contains brackets."""

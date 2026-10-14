@@ -1,4 +1,4 @@
 from typing import Literal
 
-version: Literal['0.3.4'] = "0.3.4"
+version: int
 name: Literal['token_utils'] = "token_utils"

@@ -43,7 +43,7 @@ mypy_path = "src/token_utils/"
 [tool.pyrefly]
 search-path = ["src/token_utils/"]
 preset = "legacy"
-project-excludes = ["venv*", "build/", "docs_examples/"]
+project-excludes = ["venv*", "build/", "docs_examples/", "tests/"]
 
 [tool.pyright]
 include = ["src/token_utils", "tests"]
