@@ -238,7 +238,7 @@ def split_at_token(seq, token):
     token specified, and those after."""
     before = []
     for index, tok in enumerate(seq):
-        if tok.is_identical(token):
+        if isinstance(tok, Token) and tok.is_identical(token):
             break
         before.append(tok)
     else:
