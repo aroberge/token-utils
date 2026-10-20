@@ -14,7 +14,9 @@ of tokens obtained more or less in an ad-hoc way. If you have come
 across token-utils before, and have followed a jupyter notebook
 tutorial that I wrote, you know what I mean ...
 
-.. sidebar:: Suggestions welcome
+.. note:: 
+  :title: Suggestions welcome
+  :collapsible:
 
   If you can think of other useful examples,
   newer or better helper functions,
@@ -104,7 +106,9 @@ The function ``add_operator()`` returned ``True``. If we were to add
 a string already known to be an operator, ``add_operator()``
 would return ``False``, with no negative consequence.
 
-.. sidebar:: '!' in Python 3.12+
+.. note:: 
+    :title: '!' in Python 3.12+
+    :collapsible:
 
     For Python 3.12+, if you use Python's ``tokenize``
     module directly, you will see that ``!``

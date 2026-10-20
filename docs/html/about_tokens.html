@@ -1,109 +1,741 @@
 
 
-<!DOCTYPE html>
-<html class="writer-html5" lang="en" data-content_root="./">
-<head>
-  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>About tokens: Python vs token-utils &mdash; token-utils 0.3.7 documentation</title>
-      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=03e43079" />
-      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=9edc463e" />
-      <link rel="stylesheet" type="text/css" href="_static/sphinx-new-tab-link.css?v=d87cb1ac" />
-      <link rel="stylesheet" type="text/css" href="_static/custom.css?v=c7e4a82f" />
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+      
+      
+      
+        <link rel="prev" href="index.html">
+      
+      
+        <link rel="next" href="untokenizing.html">
+      
+      
+      <link rel="icon" href="">
+    
+    
+      
+        <title>About tokens: Python vs token-utils - token-utils 0.3.11 documentation</title>
+      
+    
+    
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+        <link rel="stylesheet" type="text/css" href="_static/sphinx_immaterial_theme.52c4e8fabf605a32c.min.css?v=d165d98b" />
+        <link rel="stylesheet" type="text/css" href="_static/sphinx-new-tab-link.css?v=d87cb1ac" />
+        <link rel="stylesheet" type="text/css" href="_static/custom.css?v=c7e4a82f" />
+    <script>__md_scope=new URL(".",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+    
+  </head>
+  
+  
+    <body dir="ltr">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#about-python-tokens" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
 
   
-      <script src="_static/jquery.js?v=5d32c60e"></script>
-      <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="_static/documentation_options.js?v=29d04658"></script>
-      <script src="_static/doctools.js?v=9bcbadda"></script>
-      <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
-    <script src="_static/js/theme.js"></script>
-    <link rel="index" title="Index" href="genindex.html" />
-    <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="About untokenizing" href="untokenizing.html" />
-    <link rel="prev" title="Purpose" href="index.html" /> 
-</head>
 
-<body class="wy-body-for-nav"> 
-  <div class="wy-grid-for-nav">
-    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
-      <div class="wy-side-scroll">
-        <div class="wy-side-nav-search" >
-
-          
-          
-          <a href="index.html" class="icon icon-home">
-            token-utils
-          </a>
-<div role="search">
-  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
-    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
-    <input type="hidden" name="check_keywords" value="yes" />
-    <input type="hidden" name="area" value="default" />
-  </form>
-</div>
-        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
-              <ul class="current">
-<li class="toctree-l1 current"><a class="current reference internal" href="#"> About tokens: Python vs token-utils</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="#about-python-tokens">About Python tokens</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#about-token-utils-tokens">About token-utils tokens</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#highlighting-potential-problems-with-python-s-tokenize-untokenize">Highlighting potential problems with Python’s tokenize/untokenize</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#continuation-character">Continuation character</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#mix-of-tabs-and-spaces">Mix of tabs and spaces</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#indentationerror">IndentationError</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#unterminated-string">Unterminated string</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#the-dreaded-eof">The dreaded EOF …</a></li>
-</ul>
-</li>
-</ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="untokenizing.html"> About untokenizing</a></li>
-<li class="toctree-l1"><a class="reference internal" href="tutorial_prelude.html"> Prelude to the tutorial</a></li>
-<li class="toctree-l1"><a class="reference internal" href="tips.html"> Tutorial: recipes, tips, and tricks</a></li>
-</ul>
-<p class="caption" role="heading"><span class="caption-text">API</span></p>
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="token_class.html">Token class</a></li>
-<li class="toctree-l1"><a class="reference internal" href="tokenizing_methods.html">Tokenizing related methods</a></li>
-<li class="toctree-l1"><a class="reference internal" href="utils.html">Utility functions and classes</a></li>
-<li class="toctree-l1"><a class="reference internal" href="custom_warnings.html">Custom warnings</a></li>
-</ul>
-<p class="caption" role="heading"><span class="caption-text">Appendix</span></p>
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="todo.html">To do</a></li>
-</ul>
-
+<header class="md-header md-header--shadow" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href="index.html" title="token-utils 0.3.11 documentation" class="md-header__button md-logo" aria-label="token-utils 0.3.11 documentation" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            token-utils 0.3.11 documentation
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              About tokens: Python vs token-utils
+            
+          </span>
         </div>
       </div>
-    </nav>
-
-    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
-          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
-          <a href="index.html">token-utils</a>
+    </div>
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      <label class="md-header__button md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+      </label>
+      <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
       </nav>
-
-      <div class="wy-nav-content">
-        <div class="rst-content style-external-links">
-          <div role="navigation" aria-label="Page navigation">
-  <ul class="wy-breadcrumbs">
-      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
-      <li class="breadcrumb-item active">About tokens: Python vs token-utils</li>
-      <li class="wy-breadcrumbs-aside">
-            <a href="_sources/about_tokens.rst.txt" rel="nofollow"> View page source</a>
-      </li>
-  </ul><div class="rst-breadcrumbs-buttons" role="navigation" aria-label="Sequential page navigation">
-        <a href="index.html" class="btn btn-neutral float-left" title="Purpose" accesskey="p"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
-        <a href="untokenizing.html" class="btn btn-neutral float-right" title="About untokenizing" accesskey="n">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
   </div>
-  <hr/>
 </div>
-          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
-           <div itemprop="articleBody">
-             
-  <section id="about-tokens-python-vs-token-utils">
-<h1>About tokens: Python vs token-utils<a class="headerlink" href="#about-tokens-python-vs-token-utils" title="Link to this heading"></a></h1>
-<div class="admonition-summary admonition">
+    
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+
+<nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="index.html" title="token-utils 0.3.11 documentation" class="md-nav__button md-logo" aria-label="token-utils 0.3.11 documentation" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+    </a>
+    token-utils 0.3.11 documentation
+  </label>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+    
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    <span> About tokens:<wbr> Python vs token-<wbr>utils</span>
+    
+  </span>
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="#" class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    <span> About tokens:<wbr> Python vs token-<wbr>utils</span>
+    
+  </span>
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary">
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#about-python-tokens" class="md-nav__link">
+    
+    <span class="md-ellipsis">
+      <span>About Python tokens</span>
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#about-token-utils-tokens" class="md-nav__link">
+    
+    <span class="md-ellipsis">
+      <span>About token-<wbr>utils tokens</span>
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#highlighting-potential-problems-with-python-s-tokenize-untokenize" class="md-nav__link">
+    
+    <span class="md-ellipsis">
+      <span>Highlighting potential problems with Python’s tokenize/untokenize</span>
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Highlighting potential problems with Python’s tokenize/untokenize">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#continuation-character" class="md-nav__link">
+    
+    <span class="md-ellipsis">
+      <span>Continuation character</span>
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#mix-of-tabs-and-spaces" class="md-nav__link">
+    
+    <span class="md-ellipsis">
+      <span>Mix of tabs and spaces</span>
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#indentationerror" class="md-nav__link">
+    
+    <span class="md-ellipsis">
+      <span>Indentation<wbr>Error</span>
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#unterminated-string" class="md-nav__link">
+    
+    <span class="md-ellipsis">
+      <span>Unterminated string</span>
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#the-dreaded-eof" class="md-nav__link">
+    
+    <span class="md-ellipsis">
+      <span>The dreaded EOF …</span>
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="untokenizing.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    <span> About untokenizing</span>
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="tutorial_prelude.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    <span> Prelude to the tutorial</span>
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="tips.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    <span> Tutorial:<wbr> recipes, tips, and tricks</span>
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5" >
+        
+          
+          <label class="md-nav__link" for="__nav_5" id="__nav_5_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    <span>API</span>
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_5_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_5">
+            <span class="md-nav__icon md-icon"></span>
+            <span>API</span>
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="token_class.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    <span>Token class</span>
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="tokenizing_methods.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    <span>Tokenizing related methods</span>
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="utils.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    <span>Utility functions and classes</span>
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="custom_warnings.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    <span>Custom warnings</span>
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_6" >
+        
+          
+          <label class="md-nav__link" for="__nav_6" id="__nav_6_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    <span>Appendix</span>
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_6_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_6">
+            <span class="md-nav__icon md-icon"></span>
+            <span>Appendix</span>
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="todo.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    <span>To do</span>
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary">
+  
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#about-python-tokens" class="md-nav__link">
+    
+    <span class="md-ellipsis">
+      <span>About Python tokens</span>
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#about-token-utils-tokens" class="md-nav__link">
+    
+    <span class="md-ellipsis">
+      <span>About token-<wbr>utils tokens</span>
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#highlighting-potential-problems-with-python-s-tokenize-untokenize" class="md-nav__link">
+    
+    <span class="md-ellipsis">
+      <span>Highlighting potential problems with Python’s tokenize/untokenize</span>
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Highlighting potential problems with Python’s tokenize/untokenize">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#continuation-character" class="md-nav__link">
+    
+    <span class="md-ellipsis">
+      <span>Continuation character</span>
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#mix-of-tabs-and-spaces" class="md-nav__link">
+    
+    <span class="md-ellipsis">
+      <span>Mix of tabs and spaces</span>
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#indentationerror" class="md-nav__link">
+    
+    <span class="md-ellipsis">
+      <span>Indentation<wbr>Error</span>
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#unterminated-string" class="md-nav__link">
+    
+    <span class="md-ellipsis">
+      <span>Unterminated string</span>
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#the-dreaded-eof" class="md-nav__link">
+    
+    <span class="md-ellipsis">
+      <span>The dreaded EOF …</span>
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              <article class="md-content__inner md-typeset" role="main">
+                
+                
+                  
+
+
+<h1 id="about-tokens-python-vs-token-utils">About tokens: Python vs token-utils<a class="headerlink" href="#about-tokens-python-vs-token-utils" title="Link to this heading">¶</a></h1>
+<div class="admonition">
 <p class="admonition-title">Summary</p>
 <p>We highlight the diffences between tokenizing code with Python
 and token-utils. We show how token-utils can handle some
@@ -111,8 +743,7 @@ and token-utils. We show how token-utils can handle some
 uses it to convert syntax in multiple steps, some of which
 may temporarily yield syntactically invalid Python code.</p>
 </div>
-<section id="about-python-tokens">
-<h2>About Python tokens<a class="headerlink" href="#about-python-tokens" title="Link to this heading"></a></h2>
+<h2 id="about-python-tokens">About Python tokens<a class="headerlink" href="#about-python-tokens" title="Link to this heading">¶</a></h2>
 <p>Using token-utils requires knowing what “tokens” produced
 by Python’s tokenize module are.
 If you are not familiar with those and want to find out more,
@@ -157,12 +788,10 @@ or a list of <strong>two-tuple tokens</strong> that include only the <strong>typ
 information as we have seen in the previous example to which we will
 soon come back.</p></li>
 </ul>
-</section>
-<section id="about-token-utils-tokens">
-<h2>About token-utils tokens<a class="headerlink" href="#about-token-utils-tokens" title="Link to this heading"></a></h2>
+<h2 id="about-token-utils-tokens">About token-utils tokens<a class="headerlink" href="#about-token-utils-tokens" title="Link to this heading">¶</a></h2>
 <p><strong>token_utils</strong> tokens are instances of a class created via the following:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">token</span> <span class="o">=</span> <span class="n">Token</span><span class="p">(</span><span class="n">python_token</span><span class="p">)</span>
-</pre></div>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><code><span class="n">token</span> <span class="o">=</span> <span class="n">Token</span><span class="p">(</span><span class="n">python_token</span><span class="p">)</span>
+</code></pre></div>
 </div>
 <p>By contrast with Python’s tokens, we have the following:</p>
 <ul class="simple">
@@ -187,9 +816,7 @@ we simply write <code class="docutils literal notranslate"><span class="pre">tok
 can prevent accidental misidentification - for example, if a complex
 number is present.</p></li>
 </ul>
-</section>
-<section id="highlighting-potential-problems-with-python-s-tokenize-untokenize">
-<h2>Highlighting potential problems with Python’s tokenize/untokenize<a class="headerlink" href="#highlighting-potential-problems-with-python-s-tokenize-untokenize" title="Link to this heading"></a></h2>
+<h2 id="highlighting-potential-problems-with-python-s-tokenize-untokenize">Highlighting potential problems with Python’s tokenize/untokenize<a class="headerlink" href="#highlighting-potential-problems-with-python-s-tokenize-untokenize" title="Link to this heading">¶</a></h2>
 <p>I created token-utils to use in various of my projects,
 adding more features as needed. The main projects in which I
 use it are:</p>
@@ -207,42 +834,40 @@ an entire source completely without an exception being raised,
 so that the source be either transformed into valid Python syntax
 (for <strong>ideas</strong>) or examined closely around the token where the
 exception was raised (for <strong>friendly/friendly-traceback</strong>).</p>
-<aside class="sidebar">
-<p>Currently, token-utils only works with normal string sources.
+<details class="caution warning admonition">
+<summary class="admonition-title">No binary support</summary><p>Currently, token-utils only works with normal string sources.
 Binary strings which need to be decoded, perhaps using a specific
 codec, are not currently handled. If you need this, please file
 an issue, including as much information as you can.</p>
-</aside>
+</details>
 <p>Let’s compare the result of first tokenizing followed by untokenizing
 some “problematic” source code. We will proceed from the least problematic cases
 to the worst ones; admittedly, the first few cases, especially the first one,
 will likely not seem as problematic by most Python programmers.</p>
 <p>In the following, we will do something like:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">output</span> <span class="o">=</span> <span class="n">untokenize</span><span class="p">(</span><span class="n">tokenize</span><span class="p">(</span><span class="n">source</span><span class="p">))</span>  <span class="c1"># actual code different for Python</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><code><span class="n">output</span> <span class="o">=</span> <span class="n">untokenize</span><span class="p">(</span><span class="n">tokenize</span><span class="p">(</span><span class="n">source</span><span class="p">))</span>  <span class="c1"># actual code different for Python</span>
 
 <span class="k">for</span> <span class="n">line1</span><span class="p">,</span> <span class="n">line2</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">source</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">"</span><span class="se">\n</span><span class="s2">"</span><span class="p">),</span> <span class="n">output</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">"</span><span class="se">\n</span><span class="s2">"</span><span class="p">)):</span>
     <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"line </span><span class="si">{</span><span class="n">lineno</span><span class="si">}</span><span class="s2"> in : </span><span class="si">{</span><span class="nb">repr</span><span class="p">(</span><span class="n">line1</span><span class="p">)</span><span class="si">}</span><span class="s2">|"</span><span class="p">)</span>
     <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"line </span><span class="si">{</span><span class="n">lineno</span><span class="si">}</span><span class="s2"> out: </span><span class="si">{</span><span class="nb">repr</span><span class="p">(</span><span class="n">line2</span><span class="p">)</span><span class="si">}</span><span class="s2">|"</span><span class="p">)</span>
     <span class="n">lineno</span> <span class="o">+=</span> <span class="mi">1</span>
     <span class="nb">print</span><span class="p">()</span>
-</pre></div>
+</code></pre></div>
 </div>
-<aside class="sidebar">
-<p class="sidebar-title">Do not take my word for it!</p>
-<p>In all these cases, while we don’t show it here,
+<details class="note admonition">
+<summary class="admonition-title">Do not take my word for it!</summary><p>In all these cases, while we don’t show it here,
 token-utils does a perfect tokenize/untokenize round trip,
 i.e. we recover <strong>exactly</strong> the original
 source.</p>
 <p>Try by yourself and see how token-utils
 does do a perfect tokenize/untokenize
 round trip!</p>
-</aside>
-<section id="continuation-character">
-<h3>Continuation character<a class="headerlink" href="#continuation-character" title="Link to this heading"></a></h3>
+</details>
+<h3 id="continuation-character">Continuation character<a class="headerlink" href="#continuation-character" title="Link to this heading">¶</a></h3>
 <p>Our first example is for a code sample containing a continuation
 character.</p>
 <p>This would be the result using Python:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">Source</span> <span class="k">with</span> <span class="n">continuation</span> <span class="n">character</span><span class="p">:</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><code><span class="n">Source</span> <span class="k">with</span> <span class="n">continuation</span> <span class="n">character</span><span class="p">:</span>
 <span class="n">x</span> <span class="o">=</span>   \
     <span class="mi">1</span>
 <span class="n">line</span> <span class="mi">1</span> <span class="ow">in</span> <span class="p">:</span> <span class="s1">'x =   </span><span class="se">\\</span><span class="s1">'</span><span class="o">|</span>
@@ -250,16 +875,14 @@ character.</p>
 
 <span class="n">line</span> <span class="mi">2</span> <span class="ow">in</span> <span class="p">:</span> <span class="s1">'    1'</span><span class="o">|</span>
 <span class="n">line</span> <span class="mi">2</span> <span class="n">out</span><span class="p">:</span> <span class="s1">'    1'</span><span class="o">|</span>
-</pre></div>
+</code></pre></div>
 </div>
 <p>Note how some (trivial) space is lost on the first line, before the
 continuation character.</p>
-</section>
-<section id="mix-of-tabs-and-spaces">
-<h3>Mix of tabs and spaces<a class="headerlink" href="#mix-of-tabs-and-spaces" title="Link to this heading"></a></h3>
+<h3 id="mix-of-tabs-and-spaces">Mix of tabs and spaces<a class="headerlink" href="#mix-of-tabs-and-spaces" title="Link to this heading">¶</a></h3>
 <p>Next, we consider some code containing tab characters and spaces.</p>
 <p>Using Python 3.11 and earlier, we would observe the following:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">Source</span> <span class="k">with</span> <span class="n">tabs</span> <span class="ow">and</span> <span class="n">spaces</span> <span class="p">(</span><span class="s1">'x </span><span class="se">\t</span><span class="s1">= </span><span class="se">\t</span><span class="s1"> 1</span><span class="se">\n</span><span class="s1"> </span><span class="se">\t</span><span class="s1"> '</span><span class="p">):</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><code><span class="n">Source</span> <span class="k">with</span> <span class="n">tabs</span> <span class="ow">and</span> <span class="n">spaces</span> <span class="p">(</span><span class="s1">'x </span><span class="se">\t</span><span class="s1">= </span><span class="se">\t</span><span class="s1"> 1</span><span class="se">\n</span><span class="s1"> </span><span class="se">\t</span><span class="s1"> '</span><span class="p">):</span>
 <span class="n">x</span>       <span class="o">=</span>        <span class="mi">1</span>
 
 <span class="n">line</span> <span class="mi">1</span> <span class="ow">in</span> <span class="p">:</span> <span class="s1">'x </span><span class="se">\t</span><span class="s1">= </span><span class="se">\t</span><span class="s1"> 1'</span><span class="o">|</span>
@@ -267,19 +890,17 @@ continuation character.</p>
 
 <span class="n">line</span> <span class="mi">2</span> <span class="ow">in</span> <span class="p">:</span> <span class="s1">' </span><span class="se">\t</span><span class="s1"> '</span><span class="o">|</span>
 <span class="n">line</span> <span class="mi">2</span> <span class="n">out</span><span class="p">:</span> <span class="s1">''</span><span class="o">|</span>
-</pre></div>
+</code></pre></div>
 </div>
 <p>All the tab characters are replaced by single spaces.
 Furthermore, when the last line contains only space-like characters,
 the content is entirely dropped. With Python 3.12+ this last observation
 is no longer valid: Python now keep in the space in the last line,
 albeit with tab characters still converted to space characters.</p>
-</section>
-<section id="indentationerror">
-<h3>IndentationError<a class="headerlink" href="#indentationerror" title="Link to this heading"></a></h3>
+<h3 id="indentationerror">IndentationError<a class="headerlink" href="#indentationerror" title="Link to this heading">¶</a></h3>
 <p>Next, let’s look at a more problematic example, with using
 Python’s tokenize module.</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">tokenize</span><span class="w"> </span><span class="kn">import</span> <span class="n">untokenize</span><span class="p">,</span> <span class="n">generate_tokens</span>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><code><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">tokenize</span><span class="w"> </span><span class="kn">import</span> <span class="n">untokenize</span><span class="p">,</span> <span class="n">generate_tokens</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">io</span><span class="w"> </span><span class="kn">import</span> <span class="n">StringIO</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="s1">'temp.txt'</span><span class="p">,</span> <span class="s1">'r'</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
 <span class="gp">... </span>   <span class="n">source</span> <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
@@ -305,13 +926,13 @@ Python’s tokenize module.</p>
   File <span class="nb">"&lt;tokenize&gt;"</span>, line <span class="m">3</span>
 <span class="w">    </span><span class="n">c</span> <span class="o">=</span> <span class="n">d</span>
 <span class="gr">IndentationError</span>: <span class="n">unindent does not match any outer indentation level</span>
-</pre></div>
+</code></pre></div>
 </div>
 <p>We definitely have a problem. In the above example, we used Python 3.11.
 Let’s try with Python 3.12, which gives essentially the same result except
 for the traceback which indicates that the error was in the _generate_tokens_from_c_tokenizer
 writen in C:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">...</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><code><span class="o">...</span>
 <span class="n">TokenInfo</span><span class="p">(</span><span class="nb">type</span><span class="o">=</span><span class="mi">4</span> <span class="p">(</span><span class="n">NEWLINE</span><span class="p">),</span> <span class="n">string</span><span class="o">=</span><span class="s1">'</span><span class="se">\n</span><span class="s1">'</span><span class="p">,</span> <span class="n">start</span><span class="o">=</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">9</span><span class="p">),</span> <span class="n">end</span><span class="o">=</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">10</span><span class="p">),</span> <span class="n">line</span><span class="o">=</span><span class="s1">'    a = b</span><span class="se">\n</span><span class="s1">'</span><span class="p">)</span>
 <span class="n">Traceback</span> <span class="p">(</span><span class="n">most</span> <span class="n">recent</span> <span class="n">call</span> <span class="n">last</span><span class="p">):</span>
   <span class="n">File</span> <span class="s2">"&lt;stdin&gt;"</span><span class="p">,</span> <span class="n">line</span> <span class="mi">1</span><span class="p">,</span> <span class="ow">in</span> <span class="o">&lt;</span><span class="n">module</span><span class="o">&gt;</span>
@@ -324,12 +945,12 @@ writen in C:</p>
     <span class="n">c</span> <span class="o">=</span> <span class="n">d</span>
         <span class="o">^</span>
 <span class="ne">IndentationError</span><span class="p">:</span> <span class="n">unindent</span> <span class="n">does</span> <span class="ow">not</span> <span class="n">match</span> <span class="nb">any</span> <span class="n">outer</span> <span class="n">indentation</span> <span class="n">level</span>
-</pre></div>
+</code></pre></div>
 </div>
 <p>Let’s try with token-utils,
 by first doing the tokenize/untokenize round trip, and then look
 at the individual tokens.</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">token_utils</span><span class="w"> </span><span class="kn">import</span> <span class="n">tokenize</span><span class="p">,</span> <span class="n">untokenize</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><code><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">token_utils</span><span class="w"> </span><span class="kn">import</span> <span class="n">tokenize</span><span class="p">,</span> <span class="n">untokenize</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="s1">'temp.txt'</span><span class="p">,</span> <span class="s1">'r'</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
 <span class="gp">... </span>    <span class="n">source</span> <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
 <span class="gp">...</span>
@@ -373,17 +994,15 @@ at the individual tokens.</p>
 <span class="go">type=4 (NEWLINE)  string='\n'  start=(4, 9)  end=(4, 10)  line='    e = f\n'</span>
 
 <span class="go">type=0 (ENDMARKER)  string=''  start=(5, 0)  end=(5, 0)  line=''</span>
-</pre></div>
+</code></pre></div>
 </div>
 <p>Note how the first token of the third line has <code class="docutils literal notranslate"><span class="pre">BAD_DEDENT</span></code> as a token type:
 this is a type that does not exists in Python’s tokens.</p>
-</section>
-<section id="unterminated-string">
-<h3>Unterminated string<a class="headerlink" href="#unterminated-string" title="Link to this heading"></a></h3>
+<h3 id="unterminated-string">Unterminated string<a class="headerlink" href="#unterminated-string" title="Link to this heading">¶</a></h3>
 <p>Next, we consider a simple example where we have an
 unterminated single-quoted string.
 We first use Python 3.11:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">&gt;</span> <span class="n">py</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><code><span class="o">&gt;</span> <span class="n">py</span>
 <span class="n">Python</span> <span class="mf">3.11.9</span> <span class="o">...</span>
 <span class="o">&gt;&gt;&gt;</span> <span class="kn">from</span><span class="w"> </span><span class="nn">tokenize</span><span class="w"> </span><span class="kn">import</span> <span class="n">generate_tokens</span>
 <span class="o">&gt;&gt;&gt;</span> <span class="kn">from</span><span class="w"> </span><span class="nn">io</span><span class="w"> </span><span class="kn">import</span> <span class="n">StringIO</span>
@@ -402,12 +1021,12 @@ We first use Python 3.11:</p>
 <span class="o">&gt;&gt;&gt;</span> <span class="n">output</span> <span class="o">=</span> <span class="n">untokenize</span><span class="p">(</span><span class="n">tokens</span><span class="p">)</span>
 <span class="o">&gt;&gt;&gt;</span> <span class="n">output</span> <span class="o">==</span> <span class="n">source</span>
 <span class="kc">True</span>
-</pre></div>
+</code></pre></div>
 </div>
 <p>We note that we have an <code class="docutils literal notranslate"><span class="pre">ERRORTOKEN</span></code>, but that we can do
 the untokenize/tokenize round trip with no problem.</p>
 <p>Next we try with Python 3.12:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">Python</span> <span class="mf">3.12.9</span> <span class="o">...</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><code><span class="n">Python</span> <span class="mf">3.12.9</span> <span class="o">...</span>
 <span class="o">&gt;&gt;&gt;</span> <span class="kn">from</span><span class="w"> </span><span class="nn">tokenize</span><span class="w"> </span><span class="kn">import</span> <span class="n">untokenize</span><span class="p">,</span> <span class="n">generate_tokens</span>
 <span class="o">&gt;&gt;&gt;</span> <span class="kn">from</span><span class="w"> </span><span class="nn">io</span><span class="w"> </span><span class="kn">import</span> <span class="n">StringIO</span>
 <span class="o">&gt;&gt;&gt;</span> <span class="n">source</span> <span class="o">=</span> <span class="s2">" ' "</span>
@@ -420,11 +1039,11 @@ the untokenize/tokenize round trip with no problem.</p>
   <span class="n">File</span> <span class="s2">"C:\Users\Andre\AppData\Local\Programs\Python\Python312\Lib</span><span class="se">\t</span><span class="s2">okenize.py"</span><span class="p">,</span> <span class="n">line</span> <span class="mi">576</span><span class="p">,</span> <span class="ow">in</span> <span class="n">_generate_tokens_from_c_tokenizer</span>
     <span class="k">raise</span> <span class="n">TokenError</span><span class="p">(</span><span class="n">msg</span><span class="p">,</span> <span class="p">(</span><span class="n">e</span><span class="o">.</span><span class="n">lineno</span><span class="p">,</span> <span class="n">e</span><span class="o">.</span><span class="n">offset</span><span class="p">))</span> <span class="kn">from</span><span class="w"> </span><span class="kc">None</span>
 <span class="n">tokenize</span><span class="o">.</span><span class="n">TokenError</span><span class="p">:</span> <span class="p">(</span><span class="s1">'unterminated string literal (detected at line 1)'</span><span class="p">,</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">))</span>
-</pre></div>
+</code></pre></div>
 </div>
 <p>As expected from the warning in the documentation, tokenizing cannot be done.</p>
 <p>Finally, we try with token-utils:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">token_utils</span><span class="w"> </span><span class="kn">import</span> <span class="n">tokenize</span><span class="p">,</span> <span class="n">untokenize</span><span class="p">,</span> <span class="n">generate_tokens</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><code><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">token_utils</span><span class="w"> </span><span class="kn">import</span> <span class="n">tokenize</span><span class="p">,</span> <span class="n">untokenize</span><span class="p">,</span> <span class="n">generate_tokens</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">source</span> <span class="o">=</span> <span class="s2">" ' "</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="k">for</span> <span class="n">token</span> <span class="ow">in</span> <span class="n">generate_tokens</span><span class="p">(</span><span class="n">source</span><span class="p">):</span>
 <span class="gp">... </span>   <span class="nb">print</span><span class="p">(</span><span class="nb">repr</span><span class="p">(</span><span class="n">token</span><span class="p">))</span>
@@ -435,22 +1054,20 @@ the untokenize/tokenize round trip with no problem.</p>
 <span class="go">type=0 (ENDMARKER)  string=''  start=(2, 0)  end=(2, 0)  line=''</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">untokenize</span><span class="p">(</span><span class="n">tokenize</span><span class="p">(</span><span class="n">source</span><span class="p">))</span> <span class="o">==</span> <span class="n">source</span>
 <span class="go">True</span>
-</pre></div>
+</code></pre></div>
 </div>
 <p>This time, rather than using <code class="docutils literal notranslate"><span class="pre">tokenize</span></code> which produces a list
 of tokens, we use <code class="docutils literal notranslate"><span class="pre">generate_tokens</span></code>. Note that we have
 a special type of token, <code class="docutils literal notranslate"><span class="pre">UNCL_SINGLE</span></code> rather than a
 generic <code class="docutils literal notranslate"><span class="pre">ERRORTOKEN</span></code>. Also, we print the <code class="docutils literal notranslate"><span class="pre">repr</span></code> of tokens:
 with token-utils, the <code class="docutils literal notranslate"><span class="pre">__str__</span></code> value is its string attribute only.</p>
-</section>
-<section id="the-dreaded-eof">
-<h3>The dreaded EOF …<a class="headerlink" href="#the-dreaded-eof" title="Link to this heading"></a></h3>
+<h3 id="the-dreaded-eof">The dreaded EOF …<a class="headerlink" href="#the-dreaded-eof" title="Link to this heading">¶</a></h3>
 <p>For our final example of this category,
 we use an unterminated triple-quoted string.
 We know that this is an invalid syntax, so we
 don’t need to check with Python 3.12+.
 Let’s try with Python 3.11:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">tokenize</span><span class="w"> </span><span class="kn">import</span> <span class="n">generate_tokens</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><code><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">tokenize</span><span class="w"> </span><span class="kn">import</span> <span class="n">generate_tokens</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">io</span><span class="w"> </span><span class="kn">import</span> <span class="n">StringIO</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">source</span> <span class="o">=</span> <span class="s2">" ''' this is the end"</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="k">for</span> <span class="n">token</span> <span class="ow">in</span> <span class="n">generate_tokens</span><span class="p">(</span><span class="n">StringIO</span><span class="p">(</span><span class="n">source</span><span class="p">)</span><span class="o">.</span><span class="n">readline</span><span class="p">):</span>
@@ -462,10 +1079,10 @@ Let’s try with Python 3.11:</p>
   File <span class="nb">"C:\Users\Andre\AppData\Local\Programs\Python\Python311\Lib\tokenize.py"</span>, line <span class="m">465</span>, in <span class="n">_tokenize</span>
 <span class="w">    </span><span class="k">raise</span> <span class="n">TokenError</span><span class="p">(</span><span class="s2">"EOF in multi-line string"</span><span class="p">,</span> <span class="n">strstart</span><span class="p">)</span>
 <span class="gr">tokenize.TokenError</span>: <span class="n">('EOF in multi-line string', (1, 1))</span>
-</pre></div>
+</code></pre></div>
 </div>
 <p>So, this doesn’t work. What about with token_utils?</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">token_utils</span><span class="w"> </span><span class="kn">import</span> <span class="n">generate_tokens</span><span class="p">,</span> <span class="n">untokenize</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><code><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">token_utils</span><span class="w"> </span><span class="kn">import</span> <span class="n">generate_tokens</span><span class="p">,</span> <span class="n">untokenize</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">source</span> <span class="o">=</span> <span class="s2">"  ''' this is the end."</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="k">for</span> <span class="n">token</span> <span class="ow">in</span> <span class="n">generate_tokens</span><span class="p">(</span><span class="n">source</span><span class="p">):</span>
 <span class="gp">... </span>    <span class="nb">print</span><span class="p">(</span><span class="nb">repr</span><span class="p">(</span><span class="n">token</span><span class="p">))</span>
@@ -474,51 +1091,79 @@ Let’s try with Python 3.11:</p>
 
 <span class="go">TokenUtilsEOFWarning: Unterminated triple quoted string.</span>
 <span class="go">type=-3 (UNCL_TRIPLE)  string="''' this is the end."  start=(1, 2)  end=(2, 22)  line="  ''' this &lt;...&gt;  end."</span>
-</pre></div>
+</code></pre></div>
 </div>
 <p>We notice a <code class="docutils literal notranslate"><span class="pre">warning</span></code> interfering with the
 printout of tokens. We will silence it next.</p>
 <p>We also notice yet another type of token: <code class="docutils literal notranslate"><span class="pre">UNCL_TRIPLE</span></code>.
 Finally, can we do the round trip as we said we could?</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">token_utils</span><span class="w"> </span><span class="kn">import</span> <span class="n">disable_warnings</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><code><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">token_utils</span><span class="w"> </span><span class="kn">import</span> <span class="n">disable_warnings</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">disable_warnings</span><span class="p">()</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">untokenize</span><span class="p">(</span><span class="n">generate_tokens</span><span class="p">(</span><span class="n">source</span><span class="p">))</span> <span class="o">==</span> <span class="n">source</span>
 <span class="go">True</span>
-</pre></div>
+</code></pre></div>
 </div>
-</section>
-</section>
-</section>
 
 
-           </div>
-          </div>
-          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
-        <a href="index.html" class="btn btn-neutral float-left" title="Purpose" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
-        <a href="untokenizing.html" class="btn btn-neutral float-right" title="About untokenizing" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
-    </div>
 
-  <hr/>
 
-  <div role="contentinfo">
-    <p>&#169; Copyright 2026, André Roberge.</p>
-  </div>
 
-  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
-    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
-    provided by <a href="https://readthedocs.org">Read the Docs</a>.
-   
 
-</footer>
+
+  
+  
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
         </div>
-      </div>
-    </section>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  
+  
+  <div class="md-footer-meta md-typeset">
+    
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+    <div class="md-footer-copyright__highlight">
+        &#169; Copyright 2026, André Roberge.
+        
+    </div>
+  
+    Created using
+    <a href="https://www.sphinx-doc.org/" target="_blank" rel="noopener">Sphinx</a>
+    8.1.3.
+     and
+    <a href="https://github.com/jbms/sphinx-immaterial/" target="_blank" rel="noopener">Sphinx-Immaterial</a>
+  
+</div>
+      
+    </div>
+    
   </div>
-  <script>
-      jQuery(function () {
-          SphinxRtdTheme.Navigation.enable(true);
-      });
-  </script> 
-
-</body>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    <script id="__config" type="application/json">{"base": ".", "features": [], "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}}</script>
+    
+      
+        <script src="_static/sphinx_immaterial_theme.32136f45f91ae6956.min.js?v=a7a9472a"></script>
+    
+  </body>
 </html>

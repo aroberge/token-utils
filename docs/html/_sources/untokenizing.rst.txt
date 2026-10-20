@@ -47,7 +47,9 @@ Note that tokens are on the same row/line (1); the first **ends at column 3**
 and the second **begins at column 8**. For both tokens, the
 **line attribute** contains the entire content of the original line.
 
-.. sidebar:: Original version
+.. seealso:: 
+    :title: Original version
+    :collapsible:
 
     `The original untokenize() version <https://github.com/myint/untokenize>`_
     designed to work with Python's tokenize tokens and which we

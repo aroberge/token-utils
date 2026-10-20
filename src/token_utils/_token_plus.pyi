@@ -1,7 +1,7 @@
 from typing import Literal
 
 from token import *
-from token import EXACT_TOKEN_TYPES  # type: ignore
+from token import EXACT_TOKEN_TYPES  # pyright: ignore[reportGeneralTypeIssues]
 
 __all__ = ["tok_name_plus", "ISTERMINAL", "ISNONTERMINAL", "ISEOF", "EXACT_TOKEN_TYPES"]
 BAD_DEDENT: Literal[-1]

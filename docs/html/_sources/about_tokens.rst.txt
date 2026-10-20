@@ -113,7 +113,9 @@ so that the source be either transformed into valid Python syntax
 (for **ideas**) or examined closely around the token where the
 exception was raised (for **friendly/friendly-traceback**).
 
-.. sidebar::
+.. caution::
+    :title: No binary support
+    :collapsible:
 
     Currently, token-utils only works with normal string sources.
     Binary strings which need to be decoded, perhaps using a specific
@@ -135,7 +137,9 @@ In the following, we will do something like::
         lineno += 1
         print()
 
-.. sidebar:: Do not take my word for it!
+.. note::
+    :title: Do not take my word for it!
+    :collapsible:
 
     In all these cases, while we don't show it here,
     token-utils does a perfect tokenize/untokenize round trip,

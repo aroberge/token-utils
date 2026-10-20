@@ -1,4 +1,4 @@
-.. sidebar::
+.. seealso::
 
     `Code on Github <https://github.com/aroberge/token-utils>`_
 
@@ -34,7 +34,9 @@ where we changed the name of the function for greater clarity:
 .. literalinclude:: ../../docs_examples/decimal_py.py
 
 
-.. sidebar:: About the examples
+.. note:: 
+    :title: About the examples
+    :collapsible:
 
     The files with a name as a top comment
     are found in the ``/docs_examples``
