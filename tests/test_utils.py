@@ -11,6 +11,8 @@ from token_utils import (
     pairwise,
     sliding_window,
     BracketStack,
+    OrphanedClosingBracket,
+    MismatchedBrackets,
     stringify,  # for testing commment removal
 )
 
@@ -113,6 +115,37 @@ def test_bracket_stack():
             else:
                 assert result  # bracket popped
     assert bracket_stack.is_empty()
+
+
+def test_orphaned_bracket():
+    stack = BracketStack()
+    tokens = tokenize("a ]")
+    bracket = tokens[1]
+    exception_raised = False
+    for token in tokens:
+        if token.is_bracket():
+            try:
+                stack.add(token)
+            except OrphanedClosingBracket as e:
+                exception_raised = True
+                assert e.bracket == bracket
+    assert exception_raised
+
+
+def test_mismatched_brackets():
+    stack = BracketStack()
+    tokens = tokenize("( ]")
+    opened = tokens[0]
+    close = tokens[1]
+    exception_raised = False
+    stack.add(opened)
+    try:
+        stack.add(close)
+    except MismatchedBrackets as e:
+        exception_raised = True
+        assert e.open_bracket == opened
+        assert e.close_bracket == close
+    assert exception_raised
 
 
 def test_decorator_example():

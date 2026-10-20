@@ -31,3 +31,13 @@ def pairwise(
 def sliding_window(
     iterable: list[Token], n: int, prev: int = 0
 ) -> Iterator[tuple[Token, ...]]: ...
+
+class OrphanedClosingBracket(Exception):
+    def __init__(self, bracket: Token | None = None) -> None: ...
+
+class MismatchedBrackets(Exception):
+    def __init__(
+        self,
+        open_bracket: Token | None = None,
+        close_bracket: Token | None = None,
+    ) -> None: ...

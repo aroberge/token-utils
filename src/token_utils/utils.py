@@ -20,8 +20,14 @@ class BracketStack:
         If it is a closing bracket that matches the last added one,
         that last opening one is returned.
 
-        If it is a close bracket not matching the last added one, or the
-        first one added, a ``TypeError`` is raised.
+        If something else than a ``Token`` instance is added,
+        a ``TypeError`` exception is raised.
+
+        If it is a close bracket not matching the last added one,
+        a ``MismatchedBrackets`` exception is raised.
+
+        If a close bracket is added to an empty stack,
+        an ``OrphanedClosingBracket`` exception is raised.
 
         If an open bracket is added, the ``NULL`` token is returned.
         Note that the ``NULL`` token evaluates to ``False`` as a condition
@@ -33,17 +39,15 @@ class BracketStack:
             if bracket.is_matching_bracket(self.stack[-1]):
                 return self.stack.pop()
             elif not bracket.is_open_bracket():
-                raise TypeError(
-                    f"Close bracket does not match anything: {repr(bracket)}"
+                # closing but not matching
+                raise MismatchedBrackets(
+                    open_bracket=self.stack[-1], close_bracket=bracket
                 )
             else:
                 self.stack.append(bracket)
                 return NULL
-
-        elif not bracket.is_open_bracket():
-            raise TypeError(
-                f"First bracket added cannot be a closing one: {repr(bracket)}"
-            )
+        elif not bracket.is_open_bracket():  # no stack
+            raise OrphanedClosingBracket(bracket=bracket)
         else:
             self.stack.append(bracket)
             return NULL
@@ -307,3 +311,31 @@ def sliding_window(iterable, n, prev=0):
     for x in updated_iterator:
         window.append(x)
         yield tuple(window)
+
+
+class OrphanedClosingBracket(Exception):
+    """Raised when a closing bracket is found without its opening partner"""
+
+    def __init__(self, bracket=None):
+        message = f"Close bracket does not match anything: bracket={bracket.string}"
+        super().__init__(message)
+        self.bracket = bracket
+
+
+class MismatchedBrackets(Exception):
+    """Raised when a closing bracket is found that does not correspond to
+    the currently open one.
+    """
+
+    def __init__(
+        self,
+        open_bracket=None,
+        close_bracket=None,
+    ):
+        message = (
+            "Close bracket does not match open bracket:\n"
+            + f"   open={open_bracket.string}; close={close_bracket.string}"
+        )
+        super().__init__(message)
+        self.open_bracket = open_bracket
+        self.close_bracket = close_bracket

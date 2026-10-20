@@ -17,6 +17,8 @@ from token_utils.utils import (
     pairwise,
     sliding_window,
     split_at_token,
+    OrphanedClosingBracket,
+    MismatchedBrackets,
 )  # noqa
 from token_utils.__about__ import version
 from token_utils.custom_warnings import disable_warnings

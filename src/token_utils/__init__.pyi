@@ -12,6 +12,8 @@ from token_utils.tokenizing import (
 from token_utils.utils import (
     BracketStack,
     IndentStack,
+    OrphanedClosingBracket,
+    MismatchedBrackets,
     pairwise,
     sliding_window,
     split_at_token,
@@ -25,6 +27,8 @@ __all__ = [
     "make_fake_token",
     "add_operator",
     "BracketStack",
+    "OrphanedClosingBracket",
+    "MismatchedBrackets",
     "IndentStack",
     "pairwise",
     "sliding_window",
