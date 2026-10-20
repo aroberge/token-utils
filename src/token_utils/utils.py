@@ -57,6 +57,34 @@ class BracketStack:
         return not bool(self.stack)
 
 
+class OrphanedClosingBracket(Exception):
+    """Raised when a closing bracket is found without its opening partner"""
+
+    def __init__(self, bracket=None):
+        message = f"Close bracket does not match anything: bracket={bracket.string}"
+        super().__init__(message)
+        self.bracket = bracket
+
+
+class MismatchedBrackets(Exception):
+    """Raised when a closing bracket is found that does not correspond to
+    the currently open one.
+    """
+
+    def __init__(
+        self,
+        open_bracket=None,
+        close_bracket=None,
+    ):
+        message = (
+            "Close bracket does not match open bracket:\n"
+            + f"   open={open_bracket.string}; close={close_bracket.string}"
+        )
+        super().__init__(message)
+        self.open_bracket = open_bracket
+        self.close_bracket = close_bracket
+
+
 class IndentStack:
     """Class designed to help keep track of indentation associated with the use
     of specific keywords."""
@@ -140,6 +168,26 @@ class IndentStack:
 
         It returns the token ``NULL`` if there is no such token.
         """
+        if (first_token := IndentStack._validate_update(line)) == NULL:
+            return NULL
+        indenting_line = self._is_indenting_line(first_token, line)
+        if not indenting_line:  # perhaps dedenting is occuring
+            return self._handle_non_indenting(first_token)
+        if not self.stack:
+            self.stack.append(first_token)
+            return first_token
+        return self._update_indenting_line(first_token)
+
+    @staticmethod
+    def _validate_update(line):
+        """Verifies that the ``line`` added signals a change in indentation.
+        ``line`` must be list of Tokens, otherwise a ``TypeError`` exception
+        is raised.
+
+        If the line does not contain tokens that might signal a change in
+        indentation, the ``NULL`` token is returned. Otherwise, the first
+        token on that line is returned.
+        """
         if not (isinstance(line, list) or isinstance(line[0], Token)):
             raise TypeError(
                 "'line' parameter must be a list containing 0 or more tokens"
@@ -153,7 +201,10 @@ class IndentStack:
             return NULL
         if first_token.is_comment():
             return NULL
+        return first_token
 
+    def _is_indenting_line(self, first_token, line):
+        """Determines if the line added could signal a change in indentation"""
         # An indenting line will include at least a relevant keyword,
         # a colon and a NEWLINE token
         indenting_line = True
@@ -167,37 +218,34 @@ class IndentStack:
                 colon = line[-3]
             if colon != ":":
                 indenting_line = False
-        # What about if we have a one-liner like:
-        #    def double(n): return n
-        # While the colon will not have been found, such a line will NOT be the
-        # beginning of an indented block. So, we only care to see if it signal
-        # that we are leaving an indented block and dedenting the code
+        return indenting_line
 
-        if not indenting_line:  # perhaps dedenting is occuring
-            popped = 0
-            while self.stack:
-                top_item = self.stack.pop()
-                popped += 1
-                if top_item.start_col >= first_token.start_col:
-                    continue
+    def _handle_non_indenting(self, first_token):
+        """Takes care of updating the indentation when the line that was added
+        might signal an indentation decrease."""
+        popped = 0
+        while self.stack:
+            top_item = self.stack.pop()
+            popped += 1
+            if top_item.start_col >= first_token.start_col:
+                continue
 
-                if (top_item.start_col == first_token.start_col) and first_token.is_in(
-                    self.top_indent_keywords
-                ):  # new block at same level
-                    self.stack.append(first_token)
-                    return first_token
+            if (top_item.start_col == first_token.start_col) and first_token.is_in(
+                self.top_indent_keywords
+            ):  # new block at same level
+                self.stack.append(first_token)
+                return first_token
 
-                self.stack.append(top_item)
-                if popped > 1:
-                    return top_item
-                else:
-                    return NULL  # no change: dedenting did not occur
-            return NULL
+            self.stack.append(top_item)
+            if popped > 1:
+                return top_item
+            else:
+                return NULL  # no change: dedenting did not occur
+        return NULL
 
-        if not self.stack:
-            self.stack.append(first_token)
-            return first_token
-
+    def _update_indenting_line(self, first_token):
+        """Updates the indentation stack as the first token indicates that a
+        new indentation block has begun."""
         while True:
             top_item = self.stack.pop()
 
@@ -311,31 +359,3 @@ def sliding_window(iterable, n, prev=0):
     for x in updated_iterator:
         window.append(x)
         yield tuple(window)
-
-
-class OrphanedClosingBracket(Exception):
-    """Raised when a closing bracket is found without its opening partner"""
-
-    def __init__(self, bracket=None):
-        message = f"Close bracket does not match anything: bracket={bracket.string}"
-        super().__init__(message)
-        self.bracket = bracket
-
-
-class MismatchedBrackets(Exception):
-    """Raised when a closing bracket is found that does not correspond to
-    the currently open one.
-    """
-
-    def __init__(
-        self,
-        open_bracket=None,
-        close_bracket=None,
-    ):
-        message = (
-            "Close bracket does not match open bracket:\n"
-            + f"   open={open_bracket.string}; close={close_bracket.string}"
-        )
-        super().__init__(message)
-        self.open_bracket = open_bracket
-        self.close_bracket = close_bracket
