@@ -44,7 +44,7 @@ def _fix_empty_line(source, prev_token, last_token):
     return last_token
 
 
-def generate_tokens(source):
+def generate_tokens(source, keep_indent_tokens=True, remove_comment=False):
     """Tokenize a source (string) yielding tokens one at a time."""
     # Unfortunately, there is still a bug in py_tokenize._tokenize
     # that drops entirely a last line
@@ -56,6 +56,10 @@ def generate_tokens(source):
     try:
         for tok in _py_tokenize.generate_tokens(StringIO(source).readline):
             token = Token(tok)
+            if not keep_indent_tokens and token.is_indentation():
+                continue
+            if remove_comment and token.is_comment():
+                continue
             if token.type != _py_tokenize.ENDMARKER or not perhaps_fix_needed:
                 yield token
             else:
@@ -74,10 +78,14 @@ def generate_tokens(source):
         print(exc, repr(exc))
 
 
-def tokenize(source):
+def tokenize(source, keep_indent_token=True, remove_comments=False):
     """Transforms a source (string) into a list of Tokens."""
 
-    return list(generate_tokens(source))
+    return list(
+        generate_tokens(
+            source, keep_indent_tokens=keep_indent_token, remove_comment=remove_comments
+        )
+    )
 
 
 def get_physical_lines(source, remove_comments=True):
@@ -106,15 +114,13 @@ def get_physical_lines(source, remove_comments=True):
     """
     lines = []
     new_line = []
-    for token in generate_tokens(source):
+    for token in generate_tokens(
+        source, keep_indent_tokens=False, remove_comment=remove_comments
+    ):
         if token.is_newline():
             new_line.append(token)
             lines.append(new_line)
             new_line = []
-            continue
-        elif token.is_indentation():
-            continue
-        if remove_comments and token.is_comment():
             continue
         new_line.append(token)
     if new_line:
@@ -122,7 +128,9 @@ def get_physical_lines(source, remove_comments=True):
     return lines
 
 
-def get_logical_lines(source, remove_comments=True, remove_semi_colons=True):
+def get_logical_lines(
+    source, keep_indent_tokens=False, remove_comments=True, remove_semi_colons=True
+):
     """This retrieves logical lines, each essentially correponding to a single statement.
 
     Warning: untokenize(get_logical_lines) != source in general. However, the
@@ -145,17 +153,19 @@ def get_logical_lines(source, remove_comments=True, remove_semi_colons=True):
     """
     lines = []
     new_line = []
-    for token, next_ in pairwise(generate_tokens(source)):
+    for token, next_ in pairwise(
+        generate_tokens(
+            source,
+            keep_indent_tokens=keep_indent_tokens,
+            remove_comment=remove_comments,
+        )
+    ):
         if token.type == _py_tokenize.NEWLINE:
             new_line.append(token)
             lines.append(new_line)
             new_line = []
             continue
         elif token.type == _py_tokenize.NL:
-            continue
-        elif token.is_indentation():
-            continue
-        elif token.is_comment() and remove_comments:
             continue
         elif token == ";" and next_.is_newline() and remove_semi_colons:
             continue
@@ -172,6 +182,21 @@ def get_logical_lines(source, remove_comments=True, remove_semi_colons=True):
     if new_line:
         lines.append(new_line)
     return lines
+
+
+def get_significant_tokens(source):
+    """Gets a list of tokens from a source (str), ignoring comments
+    as well as any token whose string value is either null or
+    consists of spaces, newline or tab characters.
+
+    This is only meant to be useful when analyzing a source.
+    """
+    tokens = []
+    for token in generate_tokens(source, keep_indent_tokens=False, remove_comment=True):
+        if token.is_space():
+            continue
+        tokens.append(token)
+    return tokens
 
 
 def untokenize(tokens):

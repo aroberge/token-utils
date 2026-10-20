@@ -5,6 +5,8 @@ from token_utils import (
     tokenize,
     make_fake_token,
     get_physical_lines,
+    get_logical_lines,
+    get_significant_tokens,
     dedent,
     pairwise,
     sliding_window,
@@ -142,3 +144,10 @@ def test_factorial_example():
 
     assert make_factorial("3!") == "factorial(3)"
     assert make_factorial("(2+3)!") == "factorial(2+3)"
+
+
+def test_get_significant():
+    source = "A test # comment"
+    assert get_logical_lines(source)[0][:-1] == get_significant_tokens(source)
+    assert len(get_significant_tokens(source)) == 2
+    assert get_significant_tokens("# Only a comment") == []

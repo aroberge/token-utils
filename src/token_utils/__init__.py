@@ -4,6 +4,7 @@ from token_utils.tokenizing import (
     tokenize,
     get_logical_lines,
     get_physical_lines,
+    get_significant_tokens,
     untokenize,
     stringify,
     dedent,
