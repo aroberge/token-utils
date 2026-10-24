@@ -1,5 +1,5 @@
 from token_utils.token_class import Token
-from collections.abc import Iterator, MutableSequence
+from collections.abc import Iterator
 from typing import List
 
 def _fix_empty_line(
@@ -13,29 +13,25 @@ def tokenize(
 ) -> List[Token]: ...
 def get_physical_lines(
     source: str, keep_indent_tokens: bool = False, remove_comments: bool = True
-) -> Iterator[MutableSequence[Token]]: ...
+) -> Iterator[list[Token]]: ...
 def get_logical_lines(
     source: str,
     keep_indent_tokens: bool = False,
     remove_comments: bool = True,
     remove_semi_colons: bool = True,
-) -> Iterator[MutableSequence[Token]]: ...
+) -> list[Token]: ...
 def get_significant_tokens(source: str) -> list[Token]: ...
 def untokenize(
-    tokens: (
-        MutableSequence[Token | str] | MutableSequence[MutableSequence[Token | str]]
-    ),
+    tokens: list[Token | str] | list[list[Token | str]],
 ) -> str: ...
 def stringify(
-    tokens: (
-        MutableSequence[Token | str] | MutableSequence[MutableSequence[Token | str]]
-    ),
+    tokens: list[Token | str] | list[list[Token | str]],
     remove_comments: bool = False,
 ) -> str: ...
 def print_tokens(
-    tokens: str | MutableSequence[Token] | MutableSequence[MutableSequence[Token]],
+    tokens: str | list[Token] | list[list[Token]],
 ) -> None: ...
-def dedent(tokens: MutableSequence[Token], nb: int) -> MutableSequence[Token]: ...
+def dedent(tokens: list[Token], nb: int) -> list[Token]: ...
 
 __all__ = [
     "generate_tokens",

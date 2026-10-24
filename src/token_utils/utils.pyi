@@ -1,5 +1,5 @@
 from token_utils.token_class import Token
-from collections.abc import Iterator, Iterable, MutableSequence
+from collections.abc import Iterator, Iterable
 
 class BracketStack:
     stack: list[Token]
@@ -23,8 +23,8 @@ class IndentStack:
     def is_token_in_named_block(self, token: Token, name: str) -> bool: ...
 
 def split_at_token(
-    seq: MutableSequence[Token | str], token: Token
-) -> tuple[MutableSequence[Token | str], MutableSequence[Token | str]]: ...
+    seq: list[Token | str], token: Token
+) -> tuple[list[Token | str], list[Token | str]]: ...
 def pairwise(
     iterable: Iterable[Token], prev: int = 0
 ) -> Iterator[tuple[Token, Token]]: ...
@@ -33,9 +33,12 @@ def sliding_window(
 ) -> Iterator[tuple[Token, ...]]: ...
 
 class OrphanedClosingBracket(Exception):
+    bracket: Token
     def __init__(self, bracket: Token | None = None) -> None: ...
 
 class MismatchedBrackets(Exception):
+    open_bracket: Token
+    close_bracket: Token
     def __init__(
         self,
         open_bracket: Token | None = None,

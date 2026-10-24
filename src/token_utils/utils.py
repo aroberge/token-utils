@@ -60,7 +60,7 @@ class BracketStack:
 class OrphanedClosingBracket(Exception):
     """Raised when a closing bracket is found without its opening partner"""
 
-    def __init__(self, bracket=None):
+    def __init__(self, bracket=NULL):
         message = f"Close bracket does not match anything: bracket={bracket.string}"
         super().__init__(message)
         self.bracket = bracket
@@ -73,8 +73,8 @@ class MismatchedBrackets(Exception):
 
     def __init__(
         self,
-        open_bracket=None,
-        close_bracket=None,
+        open_bracket=NULL,
+        close_bracket=NULL,
     ):
         message = (
             "Close bracket does not match open bracket:\n"
@@ -91,10 +91,8 @@ class IndentStack:
 
     # In Python, the following keywords, or soft keywords, can signal the introduction
     # of an indented block::
-
     #     class, def, if/elif/else, for/else, try/except/else/finally, while/else,
     #     with, match, case
-
     # For some code analysis or code modification, it might be very useful to track
     # of such keywords when they introduce a change in indentation.
     # When they do so, and ignoring end of line comments,
@@ -205,14 +203,14 @@ class IndentStack:
 
     def _is_indenting_line(self, first_token, line):
         """Determines if the line added could signal a change in indentation"""
+        indenting_line = True
         # An indenting line will include at least a relevant keyword,
         # a colon and a NEWLINE token
-        indenting_line = True
         if len(line) < 3:
             indenting_line = False
         elif not first_token.is_in(self.indent_keywords):
             indenting_line = False
-        else:  # line could start with a soft keyword
+        else:  # line could start with a soft keyword, so we check for colon
             colon = line[-2]
             if colon.is_comment():
                 colon = line[-3]
@@ -222,7 +220,7 @@ class IndentStack:
 
     def _handle_non_indenting(self, first_token):
         """Takes care of updating the indentation when the line that was added
-        might signal an indentation decrease."""
+        might signal a dedenting line."""
         popped = 0
         while self.stack:
             top_item = self.stack.pop()
