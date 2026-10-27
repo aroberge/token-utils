@@ -23,6 +23,17 @@ from token_utils.utils import (
 from token_utils.__about__ import version
 from token_utils.custom_warnings import disable_warnings
 
+
+def is_invisible_control_character(char):
+    """Used to determine if a character would be visible when printed."""
+    if len(char) != 1:  # protect against invalid input
+        return False
+    n = ord(char)
+    if 0 <= n <= 0x1F or n == 0x7F or 0x80 <= n <= 0x9F:
+        return char
+    return False
+
+
 __all__ = [
     "Token",
     "NULL",
@@ -43,4 +54,5 @@ __all__ = [
     "stringify",
     "print_tokens",
     "dedent",
+    "is_invisible_control_character",
 ]
